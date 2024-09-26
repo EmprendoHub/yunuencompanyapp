@@ -1,0 +1,66 @@
+#html5qr-code-full-region {
+  img[alt='Info icon'] {
+    display: none;
+  }
+}
+#html5-qrcode-button-camera-permission {
+  text-indent: -9999px;
+  line-height: 0;
+  margin-bottom: 10px;
+}
+#html5-qrcode-button-camera-permission:after {
+  content: 'Escanear Con Cámara';
+  text-indent: 0;
+  display: block;
+  line-height: initial;
+  background-color: black;
+  padding: 20px;
+  color: white;
+}
+#html5-qrcode-anchor-scan-type-change {
+  font-size: 0;
+}
+#html5-qrcode-anchor-scan-type-change:after {
+  font-size: 0.7rem;
+  margin-top: 10px;
+  content: 'Seleccionar Imagen';
+  cursor: pointer;
+}
+#html5-qrcode-button-file-selection {
+  text-indent: -9999px;
+  line-height: 0;
+  margin-bottom: 0 !important;
+}
+#html5-qrcode-button-file-selection:after {
+  content: 'Seleccione Archivo';
+  text-indent: 0;
+  display: block;
+  line-height: initial;
+}
+
+#html5qr-code-full-region__dashboard_section {
+  div:first-of-type {
+    div:last-of-type {
+      div {
+        text-indent: -9999px;
+        line-height: 0;
+      }
+      div:after {
+        content: 'Puedes arrastrar y soltar la foto.';
+        text-indent: 0;
+        display: block;
+        line-height: initial;
+      }
+    }
+  }
+}
+#html5qr-code-full-region__header_message {
+  text-indent: -9999px;
+  line-height: 0;
+}
+#html5qr-code-full-region__header_message:after {
+  content: 'El código QR no se puede leer en la foto cargada, recórtalo y vuele a intentarlo.';
+  text-indent: 0;
+  display: block;
+  line-height: initial;
+}

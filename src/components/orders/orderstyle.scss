@@ -1,0 +1,9 @@
+.react-datetime-picker__inputGroup__leadingZero,
+.react-datetime-picker__inputGroup__minute,
+.react-datetime-picker__inputGroup__input--hasLeadingZero {
+  display: none !important;
+}
+
+input[name="hour24"] {
+  display: none !important;
+}
