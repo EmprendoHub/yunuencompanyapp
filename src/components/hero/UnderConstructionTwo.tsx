@@ -8,7 +8,7 @@ const UnderConstructionTwo = () => {
     >
       <div className="flex flex-col items-center justify-center z-20 w-full">
         <SquareLogo className={"w-[250px]"} />
-        <p className="text-2xl text-foreground tracking-wide">¡Muy Pronto!</p>
+        <p className="text-2xl text-foreground tracking-wide">POS</p>
       </div>
 
       {/* overlay */}
