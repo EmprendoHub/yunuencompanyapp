@@ -7,7 +7,7 @@ export default function BulkEmailPage() {
     <div className="flex flex-col items-center justify-center">
       <Template />
       <br />
-      <div className="border  border-1 shadow-lg p-8 maxsm:px-1 rounded-lg w-full">
+      <div className="border border-1 shadow-lg p-8 maxsm:px-1 rounded-lg w-full">
         <TabOne />
       </div>
     </div>
