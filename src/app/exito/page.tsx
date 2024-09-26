@@ -44,7 +44,7 @@ const SuccessPage = async ({ searchParams }: { searchParams: any }) => {
             <h2 className="text-7xl font-EB_Garamond">Gracias</h2>
 
             <h3 className="font-EB_Garamond text-2xl mt-3">
-              Por registrarte En OFERTAZOSMX
+              Por registrarte En yunuencompany
             </h3>
             <p className="text-base text-slate-600 mt-5">
               Ya puedes iniciar tu session.

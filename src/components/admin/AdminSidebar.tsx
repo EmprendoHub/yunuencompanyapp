@@ -7,8 +7,6 @@ import { FiLogOut } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { UrlObject } from "url";
-import UsageTrack from "@/app/admin/aicontent/_components/UsageTrack";
 
 export interface SidebarContextType {
   expandSidebar: boolean;
@@ -37,9 +35,9 @@ const AdminSidebar = ({ children }: { children: any }) => {
           <div className=" py-2 flex justify-center items-center">
             <Image
               alt="image"
-              src={"/images/horizontal_logo.png"}
-              width={500}
-              height={500}
+              src={"/logos/yunuen_logo_Horixontal.webp"}
+              width={250}
+              height={250}
               className={`overflow-hidden transition-all ease-in-out ${
                 expandSidebar ? "w-36 h-auto  maxmd:w-36 maxmd:ml-1" : "w-0 h-0"
               }`}
@@ -67,9 +65,7 @@ const AdminSidebar = ({ children }: { children: any }) => {
             className={`transition-all ease-in-out px-2 ${
               expandSidebar ? "w-full" : "w-0 hidden"
             }`}
-          >
-            <UsageTrack />
-          </div>
+          ></div>
           {/* user avatar */}
           <div
             onClick={() => setExpandSidebar((currentState) => !currentState)}

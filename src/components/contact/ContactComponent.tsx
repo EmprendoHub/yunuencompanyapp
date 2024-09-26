@@ -11,7 +11,7 @@ const ContactComponent = () => {
           <div className="relative container mx-auto flex justify-center items-center text-center p-5 sm:py-20 z-10">
             <HeroColTextComponent
               pretitle={"CONTACTO"}
-              title={"OFERTAZOSMX"}
+              title={"yunuencompany"}
               subtitle={"Tienes una duda o propuesta? ponte en contacto."}
               word={""}
             />
@@ -32,9 +32,9 @@ const ContactComponent = () => {
                 textThree={"Platiquemos en persona"}
                 phoneLinkOne={"tel:3532464146"}
                 phoneLinkTextOne={"(+52)353-246-4146"}
-                linkTwo={"mailto:ofertazosmx@gmail.com"}
+                linkTwo={"mailto:yunuencompany01@gmail.com"}
                 linkThree={"https://maps.app.goo.gl/8122sB7xggByVweT8"}
-                linkTwoText={"ofertazosmx@gmail.com"}
+                linkTwoText={"yunuencompany01@gmail.com"}
                 textAddressThree={"Calle Via Láctea 715"}
                 textAddressBThree={"Col. La Gloria del Colli"}
                 textAddressCThree={"Zapopan, Jalisco  45010"}

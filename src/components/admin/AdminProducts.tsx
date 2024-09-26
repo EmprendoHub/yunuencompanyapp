@@ -321,14 +321,14 @@ const AdminProducts = ({
                     onClick={() =>
                       deactivateMercadoLibreHandler(
                         product?._id,
-                        product?.availability?.instagram
+                        product?.availability?.socials
                       )
                     }
                     className="p-2 inline-block text-foreground hover:text-card-foreground bg-background shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer "
                   >
                     <SiMercadopago
                       className={` ${
-                        product?.availability.instagram === true
+                        product?.availability.socials === true
                           ? "bg-gradient-to-tr from-yellow-700 to-yellow-500 maxsm:text-[10px] rounded-full"
                           : "text-muted maxsm:text-[10px]"
                       }`}

@@ -54,10 +54,10 @@ export async function POST(req: any) {
       const bodyTwo = `Puedes contactar por:`;
       const phoneContact = `Telefono:`;
       const emailContact = `Email:`;
-      const senderName = "www.ofertazosmx.xyz";
+      const senderName = "www.yunuencompany.com";
       const bestRegards = "¡Creciendo tu presencia un contacto a la vez!";
       const contact_email = email;
-      const sender_email = "ofertazosmx@gmail.com";
+      const sender_email = "yunuencompany01@gmail.com";
 
       var transporter = nodemailer.createTransport({
         service: "gmail",

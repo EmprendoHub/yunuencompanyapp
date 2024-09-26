@@ -11,23 +11,23 @@ const POSSearch = ({ pageName }: { pageName: string }) => {
 
     if (pathname.includes("admin")) {
       if (keyword) {
-        if (pageName === "Instagram") {
-          router.push(`/admin/pos/instagram/?keyword=${keyword}`);
+        if (pageName === "socials") {
+          router.push(`/admin/pos/socials/?keyword=${keyword}`);
         } else {
           router.push(`/admin/pos/tienda/?keyword=${keyword}`);
         }
       } else {
-        if (pageName === "Instagram") {
-          router.push("/admin/pos/instagram");
+        if (pageName === "socials") {
+          router.push("/admin/pos/socials");
         } else {
           router.push("/admin/pos/tienda");
         }
       }
     } else {
       if (keyword) {
-        router.push(`/instagram/tienda/?keyword=${keyword}`);
+        router.push(`/socials/tienda/?keyword=${keyword}`);
       } else {
-        router.push("/instagram/tienda");
+        router.push("/socials/tienda");
       }
     }
   };

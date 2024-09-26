@@ -88,7 +88,7 @@ export async function POST(req: any, res: any) {
       images?.map(async (image: any, index: number) => {
         let image_url = image.i_file;
         let p_images = {
-          url: `https://minio.salvawebpro.com:9000/ofertazosmx/posts/${image_url}`,
+          url: `https://minio.salvawebpro.com:9000/yunuencompany/posts/${image_url}`,
         };
         if (index === 0) {
           mainImage = p_images;
@@ -130,7 +130,7 @@ export async function POST(req: any, res: any) {
         await writeFile(path, buffer);
         const fileName = "/posts/" + String(image.i_file);
 
-        await uploadToBucket("ofertazosmx", fileName, path);
+        await uploadToBucket("yunuencompany", fileName, path);
       });
       const response = NextResponse.json({
         message: "Publicación creada exitosamente",
@@ -180,7 +180,7 @@ export async function PUT(req: any, res: any) {
         if (image.i_filePreview) {
           image_url = image.i_file;
           p_images = {
-            url: `https://minio.salvawebpro.com:9000/ofertazosmx/posts/${image_url}`,
+            url: `https://minio.salvawebpro.com:9000/yunuencompany/posts/${image_url}`,
           };
           if (index === 0) {
             mainImage = p_images;
@@ -223,7 +223,7 @@ export async function PUT(req: any, res: any) {
         await writeFile(path, buffer);
         const fileName = "/posts/" + String(image.i_file);
 
-        await uploadToBucket("ofertazosmx", fileName, path);
+        await uploadToBucket("yunuencompany", fileName, path);
       });
       const response = NextResponse.json({
         message: "Publicación actualizado exitosamente",

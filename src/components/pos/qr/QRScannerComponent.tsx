@@ -57,8 +57,8 @@ const QRScannerComponent = () => {
         router.push(`/admin/pos/scan/${scanResult}`);
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/scan/${scanResult}`);
-      } else if (pathname.includes("instagram")) {
-        router.push(`/instagram/scan/${scanResult}`);
+      } else if (pathname.includes("socials")) {
+        router.push(`/socials/scan/${scanResult}`);
       }
     }
 
@@ -71,10 +71,11 @@ const QRScannerComponent = () => {
         router.push(`/admin/pos/scan/${id_part}`);
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/scan/${id_part}`);
-      } else if (pathname.includes("instagram")) {
-        router.push(`/instagram/scan/${id_part}`);
+      } else if (pathname.includes("socials")) {
+        router.push(`/socials/scan/${id_part}`);
       }
     }
+    //eslint-disable-next-line
   }, [scanResult, query]);
 
   return (

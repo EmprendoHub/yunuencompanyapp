@@ -9,7 +9,7 @@ declare global {
   var mongooseCache: CachedMongoose | undefined;
 }
 
-const MONGO_URL = process.env.MONGODB_OFERTAZOS_URL;
+const MONGO_URL = process.env.MONGO_URL;
 if (!MONGO_URL) {
   throw new Error(
     "Please define the MONGODB_URI environment variable inside .env.local"

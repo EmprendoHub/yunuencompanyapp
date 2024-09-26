@@ -20,7 +20,7 @@ export async function POST(request: any, res: any) {
       tags,
       featured,
       branchAvailability,
-      instagramAvailability,
+      socialsAvailability,
       onlineAvailability,
       mainImage,
       brand,
@@ -84,7 +84,7 @@ export async function POST(request: any, res: any) {
     createdAt = newCSTDate();
 
     const availability = {
-      instagram: instagramAvailability,
+      socials: socialsAvailability,
       branch: branchAvailability,
       online: onlineAvailability,
     };
@@ -154,7 +154,7 @@ export async function PUT(request: any, res: any) {
       tags,
       featured,
       branchAvailability,
-      instagramAvailability,
+      socialsAvailability,
       onlineAvailability,
       mainImage,
       brand,
@@ -222,7 +222,7 @@ export async function PUT(request: any, res: any) {
     updatedAt = new Date(updatedAt);
 
     const availability = {
-      instagram: instagramAvailability,
+      socials: socialsAvailability,
       branch: branchAvailability,
       online: onlineAvailability,
     };

@@ -5,17 +5,12 @@ import { TbDeviceIpadDollar, TbReport, TbScanEye } from "react-icons/tb";
 import { PiUserListLight } from "react-icons/pi";
 import { CiGrid31 } from "react-icons/ci";
 import { TfiDashboard } from "react-icons/tfi";
-import {
-  MdOutlineFactCheck,
-  MdOutlinePostAdd,
-  MdPayments,
-} from "react-icons/md";
+import { MdOutlineFactCheck, MdOutlinePostAdd } from "react-icons/md";
 import { LuReceipt } from "react-icons/lu";
 import { LiaCashRegisterSolid, LiaStoreAltSolid } from "react-icons/lia";
-import { GiClothes, GiEnergyArrow } from "react-icons/gi";
+import { GiClothes } from "react-icons/gi";
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
-import { BsAmazon, BsCalendar, BsQrCodeScan, BsRobot } from "react-icons/bs";
-import { SiAuth0, SiMercadopago } from "react-icons/si";
+import { BsQrCodeScan } from "react-icons/bs";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -101,33 +96,6 @@ export default function UserLayout({ children }: { children: any }) {
           />
 
           <hr className="my-3 maxmd:my-1" />
-          <SideBarItem
-            icon={<SiMercadopago size={20} />}
-            text={"MercadoLibre"}
-            active={
-              pathname === "/admin/mercadolibre" ||
-              pathname === "/admin/mercadolibre/producto"
-            }
-            url={"/admin/aicontent"}
-            alert
-            dropdownItems={[
-              {
-                text: "Auth",
-                url: "/admin/mercadolibre",
-                active: pathname === "/admin/mercadolibre" ? "true" : "false",
-                icon: <SiAuth0 size={20} />,
-              },
-              {
-                text: "+Producto",
-                url: "/admin/mercadolibre/producto",
-                active:
-                  pathname === "/admin/mercadolibre/producto"
-                    ? "true"
-                    : "false",
-                icon: <SiMercadopago size={20} />,
-              },
-            ]}
-          />
 
           <hr className="my-3 maxmd:my-1" />
           <SideBarItem
@@ -149,9 +117,9 @@ export default function UserLayout({ children }: { children: any }) {
                 icon: <LiaStoreAltSolid size={20} />,
               },
               {
-                text: "Instagram",
-                url: "/admin/pos/instagram",
-                active: pathname === "/admin/pos/instagram" ? "true" : "false",
+                text: "Socials",
+                url: "/admin/pos/socials",
+                active: pathname === "/admin/pos/socials" ? "true" : "false",
                 icon: <FaInstagram size={20} />,
               },
               {
@@ -167,79 +135,17 @@ export default function UserLayout({ children }: { children: any }) {
                 icon: <BsQrCodeScan size={20} />,
               },
               {
-                text: "Revisa-Precio",
+                text: "Precio",
                 url: "/admin/pos/qr/idscanner",
                 active:
                   pathname === "/admin/pos/qr/idscanner" ? "true" : "false",
                 icon: <TbScanEye size={20} />,
               },
               {
-                text: "Generador",
+                text: "Etiquetas",
                 url: "/admin/pos/productos",
                 active: pathname === "/admin/pos/productos" ? "true" : "false",
                 icon: <MdOutlineFactCheck size={20} />,
-              },
-              // Add more dropdown items as needed
-            ]}
-          />
-
-          <hr className="my-3 maxmd:my-1" />
-          <SideBarItem
-            icon={<BsRobot size={20} />}
-            text={"AiContent"}
-            active={
-              pathname === "/admin/aicontent" ||
-              pathname === "/admin/aicontent/historial" ||
-              pathname === "/admin/aicontent/planes" ||
-              pathname === "admin/aicontent/calendario" ||
-              pathname === "/admin/aicontent/amazon" ||
-              pathname === "/admin/aicontent/mercadolibre"
-            }
-            url={"/admin/aicontent"}
-            alert
-            dropdownItems={[
-              {
-                text: "Generador",
-                url: "/admin/aicontent",
-                active: pathname === "/admin/aicontent" ? "true" : "false",
-                icon: <GiEnergyArrow size={20} />,
-              },
-              {
-                text: "Historial",
-                url: "/admin/aicontent/historial",
-                active:
-                  pathname === "/admin/aicontent/historial" ? "true" : "false",
-                icon: <LiaStoreAltSolid size={20} />,
-              },
-              {
-                text: "Planes",
-                url: "/admin/aicontent/planes",
-                active:
-                  pathname === "/admin/aicontent/planes" ? "true" : "false",
-                icon: <MdPayments size={20} />,
-              },
-              {
-                text: "Calendario",
-                url: "/admin/aicontent/calendario",
-                active:
-                  pathname === "/admin/aicontent/calendario" ? "true" : "false",
-                icon: <BsCalendar size={20} />,
-              },
-              {
-                text: "Amazon",
-                url: "/admin/aicontent/amazon",
-                active:
-                  pathname === "/admin/aicontent/amazon" ? "true" : "false",
-                icon: <BsAmazon size={20} />,
-              },
-              {
-                text: "MercadoLibre",
-                url: "/admin/aicontent/mercadolibre",
-                active:
-                  pathname === "/admin/aicontent/mercadolibre"
-                    ? "true"
-                    : "false",
-                icon: <SiMercadopago size={20} />,
               },
               // Add more dropdown items as needed
             ]}

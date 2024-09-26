@@ -14,7 +14,7 @@ const BonusHero = ({ lottery }: { lottery: any }) => {
             <TextLeftMotion
               title={"Descubre el Lujo a Tu Manera:"}
               subtitle={
-                "En OFERTAZOSMX, te ofrecemos una exquisita selección de productos de lujo de marcas renombradas como Chanel, Louis Vuitton, y Dior. Desde accesorios de moda hasta prendas icónicas, nuestro catálogo es una expresión de sofisticación y buen gusto."
+                "En yunuencompany, te ofrecemos una exquisita selección de productos de lujo de marcas renombradas como Chanel, Louis Vuitton, y Dior. Desde accesorios de moda hasta prendas icónicas, nuestro catálogo es una expresión de sofisticación y buen gusto."
               }
               className={""}
             />

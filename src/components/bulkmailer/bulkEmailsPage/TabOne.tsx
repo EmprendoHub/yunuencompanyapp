@@ -34,6 +34,7 @@ export default function TabOne() {
     if (emailListData.length <= 0) {
       return router.push("/admin/clientes");
     }
+    //eslint-disable-next-line
   }, [emailListData]);
 
   const [checked, setChecked] = useState(false);
@@ -81,7 +82,7 @@ export default function TabOne() {
             greeting,
             bestRegards,
             recipient_email: emailListData[i].email,
-            sender_email: "ofertazosmx@gmail.com.mx",
+            sender_email: "yunuencompany01@gmail.com",
             name: senderName,
           }),
         });

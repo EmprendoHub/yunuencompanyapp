@@ -5,7 +5,7 @@ import ServerPagination from "@/components/pagination/ServerPagination";
 import StoreMainHero from "@/components/store/StoreMainHero";
 
 export const metadata = {
-  title: "Tienda OFERTAZOSMX",
+  title: "Tienda yunuencompany",
   description:
     "Ven y explora nuestra tienda en linea y descubre modelos exclusivos de marcas de alta gama.",
 };

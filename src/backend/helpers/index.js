@@ -7,17 +7,6 @@ export const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-export const generateCodeChallenge = async () => {
-  // Generate a code challenge from the code verifier
-  const codeVerifier =
-    process.env.NEXT_PUBLIC_MERCADO_LIBRE_CHALLENGE.toString("hex");
-  const codeChallengeSha256 = createHash("sha256")
-    .update(codeVerifier)
-    .digest("hex");
-
-  return codeChallengeSha256;
-};
-
 export function removeUndefinedAndPageKeys(obj) {
   // Iterate through each key in the object
   for (const key in obj) {

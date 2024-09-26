@@ -126,8 +126,8 @@ export async function POST(req: any) {
         const action = "CONFIRMAR EMAIL";
         const bestRegards = "Gracias por unirte a nuestro equipo de afiliados.";
         const recipient_email = email;
-        const sender_email = "ofertazosmx@gmail.com.mx";
-        const fromName = "OFERTAZOSMX";
+        const sender_email = "yunuencompany01@gmail.com";
+        const fromName = "yunuencompany";
 
         var transporter = nodemailer.createTransport({
           service: "gmail",

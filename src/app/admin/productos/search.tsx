@@ -12,8 +12,8 @@ const SearchProducts = ({ search }: { search: any }) => {
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
   const router = useRouter();
   const initialRender = useRef(true);

@@ -4,7 +4,7 @@ import { getAllPOSProduct } from "@/app/_actions";
 import { removeUndefinedAndPageKeys } from "@/backend/helpers";
 
 export const metadata = {
-  title: "Tienda OFERTAZOSMX",
+  title: "Tienda yunuencompany",
   description:
     "Ven y explora nuestra tienda en linea y descubre modelos exclusivos de marcas de alta gama.",
 };

@@ -50,8 +50,8 @@ const EditVariationProduct = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
   const searchParams = useSearchParams();
   const searchValue = searchParams.get("callback");
@@ -77,8 +77,8 @@ const EditVariationProduct = ({
   const [branchAvailability, setBranchAvailability] = useState(
     product?.availability?.branch
   );
-  const [instagramAvailability, setInstagramAvailability] = useState(
-    product?.availability?.instagram
+  const [socialsAvailability, setSocialsAvailability] = useState(
+    product?.availability?.socials
   );
   const [onlineAvailability, setOnlineAvailability] = useState(
     product?.availability?.online
@@ -105,8 +105,6 @@ const EditVariationProduct = ({
         i !== index && variation.size === size && variation.color === color
     );
   };
-
-  console.log("gender", gender);
 
   const addVariation = () => {
     setVariations(
@@ -447,7 +445,7 @@ const EditVariationProduct = ({
     formData.append("category", category);
     formData.append("featured", featured);
     formData.append("branchAvailability", branchAvailability);
-    formData.append("instagramAvailability", instagramAvailability);
+    formData.append("socialsAvailability", socialsAvailability);
     formData.append("onlineAvailability", onlineAvailability);
     formData.append("brand", brand);
     formData.append("gender", gender);
@@ -566,6 +564,7 @@ const EditVariationProduct = ({
     ) {
       setSizeSelection(sizes_prendas);
     }
+    //eslint-disable-next-line
   }, []);
 
   return (
@@ -586,8 +585,8 @@ const EditVariationProduct = ({
                 />
                 <ToggleSwitch
                   label="MercadoLibre"
-                  enabled={instagramAvailability}
-                  setEnabled={setInstagramAvailability}
+                  enabled={socialsAvailability}
+                  setEnabled={setSocialsAvailability}
                 />
                 <ToggleSwitch
                   label="Sucursal"

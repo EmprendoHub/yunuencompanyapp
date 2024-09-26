@@ -67,8 +67,8 @@ const QRScanIdComponent: React.FC = () => {
         router.push(`/admin/pos/scanid/${scanResult}`);
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/scanid/${scanResult}`);
-      } else if (pathname.includes("instagram")) {
-        router.push(`/instagram/scanid/${scanResult}`);
+      } else if (pathname.includes("socials")) {
+        router.push(`/socials/scanid/${scanResult}`);
       }
     }
 
@@ -81,10 +81,11 @@ const QRScanIdComponent: React.FC = () => {
         router.push(`/admin/pos/scanid/${id_part}`);
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/scanid/${id_part}`);
-      } else if (pathname.includes("instagram")) {
-        router.push(`/instagram/scanid/${id_part}`);
+      } else if (pathname.includes("socials")) {
+        router.push(`/socials/scanid/${id_part}`);
       }
     }
+    //eslint-disable-next-line
   }, [scanResult, query]);
 
   return (

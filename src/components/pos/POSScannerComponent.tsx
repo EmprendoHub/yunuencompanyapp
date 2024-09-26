@@ -42,8 +42,8 @@ const POSScannerComponent = ({
               router.push("/admin/pos/carrito");
             } else if (pathname.includes("puntodeventa")) {
               router.push("/puntodeventa/carrito");
-            } else if (pathname.includes("instagram")) {
-              router.push("/instagram/carrito");
+            } else if (pathname.includes("socials")) {
+              router.push("/socials/carrito");
             }
           }
         });
@@ -53,8 +53,8 @@ const POSScannerComponent = ({
           router.push("/admin/pos/carrito");
         } else if (pathname.includes("puntodeventa")) {
           router.push("/puntodeventa/carrito");
-        } else if (pathname.includes("instagram")) {
-          router.push("/instagram/carrito");
+        } else if (pathname.includes("socials")) {
+          router.push("/socials/carrito");
         }
       }
     } else {
@@ -64,8 +64,8 @@ const POSScannerComponent = ({
           router.push("/admin/pos/carrito");
         } else if (pathname.includes("puntodeventa")) {
           router.push("/puntodeventa/carrito");
-        } else if (pathname.includes("instagram")) {
-          router.push("/instagram/carrito");
+        } else if (pathname.includes("socials")) {
+          router.push("/socials/carrito");
         }
       } else {
         Swal.fire({
@@ -80,13 +80,14 @@ const POSScannerComponent = ({
               router.push("/admin/pos/qr/scanner");
             } else if (pathname.includes("puntodeventa")) {
               router.push("/puntodeventa/qr/scanner");
-            } else if (pathname.includes("instagram")) {
-              router.push("/instagram/qr/scanner");
+            } else if (pathname.includes("socials")) {
+              router.push("/socials/qr/scanner");
             }
           }
         });
       }
     }
+    //eslint-disable-next-line
   }, [product]);
 
   return (

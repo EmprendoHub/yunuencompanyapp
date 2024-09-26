@@ -26,12 +26,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/SessionProvider.js",
-    "src/components/bulkmailer/template/index.js",
-    "src/context/AuthContext.js",
-    "src/backend/data/constants.js",
-    "src/app/api/minio/route.js",
-    "src/app/api/get-marketplace-token/route.js"
+    "src/context/AuthContext.js"
   ],
   "exclude": ["node_modules"]
 }

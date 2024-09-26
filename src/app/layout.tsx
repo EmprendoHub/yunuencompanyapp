@@ -12,8 +12,8 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
-  title: "OFERTAZOSMX",
-  description: "Ropa y accesorios de marca",
+  title: "Yunuen Company",
+  description: "Ofertas de liquidación en ropa, accesorios",
 };
 
 export default async function RootLayout({ children }: { children: any }) {
@@ -29,13 +29,13 @@ export default async function RootLayout({ children }: { children: any }) {
         <CustomSessionProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
-            <HeaderComponent cookie={cookie} />
+            {/* <HeaderComponent cookie={cookie} /> */}
             {children}
-            <FooterComponent />
+            {/* <FooterComponent /> */}
           </ThemeProvider>
         </CustomSessionProvider>
         <CookieConsentComp />

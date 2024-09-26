@@ -5,8 +5,8 @@ const LogoComponent = ({ className }: { className: string }) => {
     <Image
       width={250}
       height={250}
-      src={"/images/horizontal_logo.png"}
-      alt="OfertazosMX"
+      src={"/logos/yunuen_logo_Horixontal.webp"}
+      alt="Yunuen Company"
       className={`main-logo-class ${className}`}
     />
   );

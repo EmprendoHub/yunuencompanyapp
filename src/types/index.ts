@@ -85,7 +85,7 @@ export type Product = {
     }
   ];
   availability: {
-    instagram: Boolean;
+    socials: Boolean;
     branch: Boolean;
     online: Boolean;
   };

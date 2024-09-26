@@ -13,7 +13,7 @@ export default function NavBar() {
           <Link href="/bulkemail">Bulk Email</Link>
         </div>
         <div className="navbar_components">Bulk SMS</div>
-        <div className="navbar_components">Instagram Followers</div>
+        <div className="navbar_components">Socials Followers</div>
       </div>
     </>
   );

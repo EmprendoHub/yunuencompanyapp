@@ -23,8 +23,8 @@ const BranchUserOrders = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
 
   const [showModal, setShowModal] = useState(false);

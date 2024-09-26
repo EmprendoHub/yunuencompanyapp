@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import Image from "next/image";
 import { toast } from "sonner";
+import SquareLogo from "../logos/SquareLogo";
 
 const LoginComponent = ({ cookie }: { cookie: any }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -82,7 +83,7 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
       {loginAttempts > 30 ? (
         <div>Excediste el limite de inicios de session</div>
       ) : (
-        <div className="flex items-center justify-center bg-foreground h-screen w-full">
+        <div className="flex items-center justify-center bg-primary h-screen w-full">
           <div className="w-full flex items-center justify-center maxmdsm:hidden">
             <Image
               src={"/images/Marc_jacobs_example.webp"}
@@ -93,15 +94,9 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
             />
           </div>
           <div className="w-full bg-background h-screen p-20 maxsm:p-8 shadow-xl text-center text-primary mx-auto flex flex-col items-center justify-center">
-            <WhiteLogoComponent
-              className={"ml-5 mt-4 w-[200px] maxsm:w-[120px]"}
-            />
-            <h2 className="flex justify-center py-5 text-foreground">
-              Iniciar Session
-            </h2>
-
+            <SquareLogo className={"ml-5 my-4 w-[200px] maxsm:w-[120px]"} />
             <button
-              className="w-full hover:text-foreground hover:bg-slate-300 duration-500 ease-in-out text-foreground text-xs bg-black mb-4 flex flex-row gap-4 items-center py-4 justify-center"
+              className="w-full text-white hover:text-foreground hover:bg-slate-300 duration-500 ease-in-out text-foreground text-xs bg-black mb-4 flex flex-row gap-4 items-center py-4 justify-center"
               onClick={() => {
                 signIn("google");
               }}

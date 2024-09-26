@@ -56,7 +56,7 @@ export async function PUT(req: any, res: any) {
 
         return response;
       }
-      image = `https://minio.salvawebpro.com:9000/ofertazosmx/avatars/${file?.file.name}`;
+      image = `https://minio.salvawebpro.com:9000/yunuencompany/avatars/${file?.file.name}`;
       // Create a new Product in the database
 
       // Save the Product to the database
@@ -71,7 +71,7 @@ export async function PUT(req: any, res: any) {
       await writeFile(path, buffer);
       const fileName = "/avatars/" + String(image.i_file);
 
-      await uploadToBucket("ofertazosmx", fileName, path);
+      await uploadToBucket("yunuencompany", fileName, path);
       const response = NextResponse.json({
         message: "Usuario actualizado exitosamente",
         success: true,

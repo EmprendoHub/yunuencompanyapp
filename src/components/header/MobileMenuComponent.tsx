@@ -143,7 +143,7 @@ const MobileMenuComponent = () => {
                 <motion.a
                   whileHover={{ scale: 1.3 }}
                   whileTap={{ scale: 0.9 }}
-                  href="https://www.instagram.com/ofertazosmx/"
+                  href="https://www.instagram.com/yunuencompany/"
                   target="_blank"
                 >
                   <span className="socialLink">
@@ -153,7 +153,7 @@ const MobileMenuComponent = () => {
                 <motion.a
                   whileHover={{ scale: 1.3 }}
                   whileTap={{ scale: 0.9 }}
-                  href="https://www.facebook.com/ofertazosmx/"
+                  href="https://www.facebook.com/yunuencompany/"
                   target="_blank"
                 >
                   <span className="socialLink">

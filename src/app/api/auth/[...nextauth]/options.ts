@@ -111,6 +111,8 @@ export const options = {
             email: user.email,
           }).select("+password");
 
+          console.log(user, "user login try");
+
           if (!existinguser) {
             // Generate a random 64-byte token
             const verificationToken = crypto.randomBytes(64).toString("hex");

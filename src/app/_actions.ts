@@ -250,7 +250,7 @@ export async function payPOSDrawer(data: any) {
           phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
       } else {
         console.log("if sucursal");
-        customerEmail = "ofertazosmx@gmail.com";
+        customerEmail = "yunuencompany01@gmail.com";
       }
     }
 
@@ -405,21 +405,21 @@ export async function payPOSDrawer(data: any) {
     // send email after order is confirmed
     if (
       customerEmail.includes("@noemail.com") ||
-      customerEmail === "ofertazosmx@gmail.com"
+      customerEmail === "yunuencompany01@gmail.com"
     ) {
       console.log("did not send email");
     } else {
       try {
         const subject = "¡Gracias por tu compra!";
-        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido OFERTAZOSMX para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
+        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido yunuencompany para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
         const bodyTwo = `Tu apoyo significa mucho para nosotros y nos comprometemos a brindarte la mejor experiencia posible. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en ponerte en contacto con nuestro equipo de atención al cliente. Estamos aquí para ayudarte en cualquier momento.`;
         const title = "Recibo de compra";
         const greeting = `Estimado/a ${customer?.name}`;
-        const senderName = "www.ofertazosmx.xyz";
+        const senderName = "www.yunuencompany.com";
         const bestRegards = "¡Que tengas un excelente día!";
         const recipient_email = customer?.email;
-        const sender_email = "ofertazosmx@gmail.com.mx";
-        const fromName = "OFERTAZOSMX";
+        const sender_email = "yunuencompany01@gmail.com";
+        const fromName = "yunuencompany";
 
         var transporter = nodemailer.createTransport({
           service: "gmail",
@@ -568,7 +568,7 @@ export async function payPOSDrawer(data: any) {
   }
 }
 
-export async function payPOSInstagramDrawer(data: any) {
+export async function payPOSSocialsDrawer(data: any) {
   try {
     let {
       items,
@@ -596,14 +596,14 @@ export async function payPOSInstagramDrawer(data: any) {
           phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
       } else {
         console.log("if sucursal");
-        customerEmail = "ofertazosmx@gmail.com";
+        customerEmail = "yunuencompany01@gmail.com";
       }
     }
 
     if (name.length > 3) {
       customerName = name;
     } else {
-      customerName = "INSTAGRAM";
+      customerName = "SOCIALS";
     }
 
     const query = { $or: [{ email: customerEmail }, { phone: customerPhone }] };
@@ -629,10 +629,10 @@ export async function payPOSInstagramDrawer(data: any) {
       customer = customerExists;
     }
     items = JSON.parse(items);
-    const branchInfo = "Instagram";
+    const branchInfo = "Socials";
     const ship_cost = 0;
     const date = cstDateTime();
-    console.log("Instagram Drawer new payment date", date);
+    console.log("Socials Drawer new payment date", date);
 
     let paymentInfo;
     let layAwayIntent;
@@ -751,21 +751,21 @@ export async function payPOSInstagramDrawer(data: any) {
     // send email after order is confirmed
     if (
       customerEmail.includes("@noemail.com") ||
-      customerEmail === "ofertazosmx@gmail.com"
+      customerEmail === "yunuencompany01@gmail.com"
     ) {
       console.log("did not send email");
     } else {
       try {
         const subject = "¡Gracias por tu compra!";
-        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido OFERTAZOSMX para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
+        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido yunuencompany para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
         const bodyTwo = `Tu apoyo significa mucho para nosotros y nos comprometemos a brindarte la mejor experiencia posible. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en ponerte en contacto con nuestro equipo de atención al cliente. Estamos aquí para ayudarte en cualquier momento.`;
         const title = "Recibo de compra";
         const greeting = `Estimado/a ${customer?.name}`;
-        const senderName = "www.ofertazosmx.xyz";
+        const senderName = "www.yunuencompany.com";
         const bestRegards = "¡Que tengas un excelente día!";
         const recipient_email = customer?.email;
-        const sender_email = "ofertazosmx@gmail.com.mx";
-        const fromName = "OFERTAZOSMX";
+        const sender_email = "yunuencompany01@gmail.com";
+        const fromName = "yunuencompany";
 
         var transporter = nodemailer.createTransport({
           service: "gmail",
@@ -1564,7 +1564,7 @@ export async function getPOSDashboard() {
           .sort({ createdAt: -1 }) // Sort in descending order of creation date
           .limit(5);
       }
-      if (session?.user?.role === "instagram") {
+      if (session?.user?.role === "socials") {
         orders = await Order.find({ orderStatus: { $ne: "Cancelado" } })
           .sort({ createdAt: -1 }) // Sort in descending order of creation date
           .limit(5);
@@ -1709,7 +1709,7 @@ export async function getPOSDashboard() {
   }
 }
 
-export async function getInstagramDashboard() {
+export async function getSocialsDashboard() {
   try {
     await dbConnect();
     const session = await getServerSession(options);
@@ -2224,7 +2224,7 @@ export async function updateOneOrder(data: any) {
   }
 }
 
-export async function updateOneInstagramOrder(data: any) {
+export async function updateOneSocialsOrder(data: any) {
   try {
     let { transactionNo, paidOn, note, amount, orderId } =
       Object.fromEntries(data);
@@ -2265,7 +2265,7 @@ export async function updateOneInstagramOrder(data: any) {
     const lastOrder = await Order.findById(orderId);
 
     let paymentTransactionData = {
-      type: "instagram",
+      type: "socials",
       paymentIntent: "",
       amount: amount,
       comment: note,
@@ -2307,8 +2307,8 @@ export async function changeOrderNoteStatus(data: any) {
         updatedAt: date,
       }
     );
-    revalidatePath(`/instagram/pedidos`);
-    revalidatePath(`/instagram/pedido/${orderId}`);
+    revalidatePath(`/socials/pedidos`);
+    revalidatePath(`/socials/pedido/${orderId}`);
     return {
       ok: true,
     };
@@ -2359,14 +2359,14 @@ export async function getAllPOSOrder(searchQuery: any) {
   }
 }
 
-export async function getAllPOSInstagramOrder(searchQuery: any) {
+export async function getAllPOSSocialsOrder(searchQuery: any) {
   try {
     await dbConnect();
     const session = await getServerSession(options);
     let orderQuery: any;
-    if (session?.user?.role === "instagram") {
+    if (session?.user?.role === "socials") {
       orderQuery = Order.find({
-        $and: [{ branch: "Instagram" }, { orderStatus: { $ne: "Cancelado" } }],
+        $and: [{ branch: "socials" }, { orderStatus: { $ne: "Cancelado" } }],
       }).populate("user");
     }
 
@@ -2528,10 +2528,10 @@ export async function changeProductAvailability(productId: any, location: any) {
     // Find the product that contains the variation with the specified variation ID
     let product = await Product.findOne({ _id: productId });
     if (location === "MercadoLibre") {
-      if (product.availability.instagram === true) {
-        product.availability.instagram = false; // Remove from physical branch
+      if (product.availability.socials === true) {
+        product.availability.socials = false; // Remove from physical branch
       } else {
-        product.availability.instagram = true; // Add to physical branch
+        product.availability.socials = true; // Add to physical branch
       }
     } else if (location === "Branch") {
       if (product.availability.branch === true) {
@@ -2712,10 +2712,10 @@ export async function getAllPOSMercadoLibreProduct(searchQuery: any) {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     // let productQuery = Product.find({
-    //   $and: [{ stock: { $gt: 0 } }, { "availability.instagram": true }],
+    //   $and: [{ stock: { $gt: 0 } }, { "availability.socials": true }],
     // });
     let productQuery = Product.find({
-      $and: [{ "availability.instagram": true }],
+      $and: [{ "availability.socials": true }],
     });
     const searchParams = new URLSearchParams(searchQuery);
     const resPerPage = Number(searchParams.get("perpage")) || 20;
@@ -2776,7 +2776,7 @@ export async function getAllPOSMercadoLibreProductNoFilter() {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     let productsData = await Product.find({
-      $and: [{ stock: { $gt: 0 } }, { "availability.instagram": true }],
+      $and: [{ stock: { $gt: 0 } }, { "availability.socials": true }],
     });
 
     const filteredProductsCount = productsData.length;
@@ -2801,7 +2801,7 @@ export async function getAllProduct(searchQuery: any) {
     let productQuery: any;
     if (
       session &&
-      ["manager", "sucursal", "instagram"].includes(session?.user?.role)
+      ["manager", "sucursal", "socials"].includes(session?.user?.role)
     ) {
       productQuery = Product.find();
     } else {
@@ -3530,7 +3530,7 @@ export async function addVariationProduct(data: any) {
     tags,
     featured,
     branchAvailability,
-    instagramAvailability,
+    socialsAvailability,
     onlineAvailability,
     mainImage,
     brand,
@@ -3607,7 +3607,7 @@ export async function addVariationProduct(data: any) {
     };
   }
   const availability = {
-    instagram: instagramAvailability,
+    socials: socialsAvailability,
     branch: branchAvailability,
     online: onlineAvailability,
   };
@@ -3649,7 +3649,7 @@ export async function updateVariationProduct(data: any) {
     tags,
     featured,
     branchAvailability,
-    instagramAvailability,
+    socialsAvailability,
     onlineAvailability,
     mainImage,
     brand,
@@ -3727,7 +3727,7 @@ export async function updateVariationProduct(data: any) {
     };
   }
   const availability = {
-    instagram: instagramAvailability,
+    socials: socialsAvailability,
     branch: branchAvailability,
     online: onlineAvailability,
   };
@@ -3907,8 +3907,8 @@ export async function resendEmail(data: any) {
           const action = "CONFIRMAR EMAIL";
           const bestRegards = "Gracias por unirte a nuestro sitio.";
           const recipient_email = email;
-          const sender_email = "ofertazosmx@gmail.com.mx";
-          const fromName = "OFERTAZOSMX";
+          const sender_email = "yunuencompany01@gmail.com";
+          const fromName = "yunuencompany";
 
           const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
@@ -4017,16 +4017,16 @@ export async function resetAccountEmail(data: any) {
       }
       if (user?._id) {
         try {
-          const subject = "Desbloquear Cuenta OFERTAZOSMX";
+          const subject = "Desbloquear Cuenta yunuencompany";
           const body = `Por favor da click en desbloquear para reactivar tu cuenta`;
           const title = "Desbloquear Cuenta";
           const btnAction = "DESBLOQUEAR";
           const greeting = `Saludos ${user?.name}`;
           const bestRegards =
-            "¿Problemas? Ponte en contacto ofertazosmx@gmail.com.mx";
+            "¿Problemas? Ponte en contacto yunuencompany01@gmail.com";
           const recipient_email = email;
-          const sender_email = "ofertazosmx@gmail.com.mx";
-          const fromName = "OFERTAZOSMX";
+          const sender_email = "yunuencompany01@gmail.com";
+          const fromName = "yunuencompany";
 
           const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",

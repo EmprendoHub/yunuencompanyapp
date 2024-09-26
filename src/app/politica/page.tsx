@@ -1,8 +1,8 @@
 import React from "react";
 
 export const metadata = {
-  title: "Política de privacidad de OFERTAZOSMX",
-  description: "Explora la Política de privacidad de OFERTAZOSMX",
+  title: "Política de privacidad de yunuencompany",
+  description: "Explora la Política de privacidad de yunuencompany",
 };
 
 const PoliticaPage = () => {
@@ -11,7 +11,7 @@ const PoliticaPage = () => {
       <section className="hero bg-gray-100 text-center py-20 border border-slate-400 drop-shadow-md mb-10">
         <div className="container mx-auto">
           <h1 className="text-4xl font-extrabold font-EB_Garamond text-foreground">
-            Política de privacidad de OFERTAZOSMX
+            Política de privacidad de yunuencompany
           </h1>
           <p className="text-lg mt-4 font-raleway font-semibold">
             Los compradores aceptan que el pedido se puede utilizar en el
@@ -337,8 +337,8 @@ const PoliticaPage = () => {
             Para obtener más información sobre nuestras prácticas de privacidad,
             si tiene preguntas o si desea presentar una queja, comuníquese con
             nosotros por correo electrónico a
-            <a href="mailto:ofertazosmx@gmail.com.mx">
-              ofertazosmx@gmail.com.mx
+            <a href="mailto:yunuencompany01@gmail.com">
+              yunuencompany01@gmail.com
             </a>
           </p>
 

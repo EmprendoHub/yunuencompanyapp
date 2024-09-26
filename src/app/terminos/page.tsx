@@ -1,8 +1,8 @@
 import React from "react";
 
 export const metadata = {
-  title: "Términos de servicio de OFERTAZOSMX",
-  description: "Explora los Términos de servicio de OFERTAZOSMX",
+  title: "Términos de servicio de yunuencompany",
+  description: "Explora los Términos de servicio de yunuencompany",
 };
 
 const TerminosPage = () => {
@@ -12,9 +12,9 @@ const TerminosPage = () => {
         <div className="container mx-auto">
           <h1 className="text-4xl font-extrabold ">Términos de servicio</h1>
           <p className="text-sm  mt-4 font-raleway  ">
-            Este sitio web es operado por OFERTAZOSMX. En todo el sitio, los
-            términos (nosotros), (nos) y (nuestro) se refieren a OFERTAZOSMX.
-            OFERTAZOSMX ofrece este sitio web, incluida toda la información,
+            Este sitio web es operado por yunuencompany. En todo el sitio, los
+            términos (nosotros), (nos) y (nuestro) se refieren a yunuencompany.
+            yunuencompany ofrece este sitio web, incluida toda la información,
             herramientas y servicios disponibles en este sitio para usted, el
             usuario, condicionado a la aceptación de todos los términos,
             condiciones, políticas y avisos aquí establecidos.
@@ -438,7 +438,7 @@ const TerminosPage = () => {
           </p>
 
           <p className="mt-2 font-raleway ">
-            En ningún caso OFERTAZOSMX, nuestros directores, funcionarios,
+            En ningún caso yunuencompany, nuestros directores, funcionarios,
             empleados, afiliados, agentes, contratistas, pasantes, proveedores,
             prestadores de servicios o licenciantes serán responsables de
             cualquier lesión, pérdida, reclamo o cualquier daño directo,
@@ -468,7 +468,7 @@ const TerminosPage = () => {
           </h2>
           <p className="mt-2 font-raleway ">
             Usted acepta indemnizar, defender y eximir de responsabilidad a
-            OFERTAZOSMX y a nuestra matriz, subsidiarias, afiliados, socios,
+            yunuencompany y a nuestra matriz, subsidiarias, afiliados, socios,
             funcionarios, directores, agentes, contratistas, licenciantes,
             proveedores de servicios, subcontratistas, proveedores, pasantes y
             empleados, indemnes de cualquier reclamo o demanda, incluyendo
@@ -588,7 +588,7 @@ const TerminosPage = () => {
           </h2>
           <p className="mt-2 font-raleway font-semibold">
             Preguntas sobre los Términos de Servicio deben enviarnos a
-            ofertazosmx@gmail.com.mx
+            yunuencompany01@gmail.com
           </p>
         </section>
       </div>

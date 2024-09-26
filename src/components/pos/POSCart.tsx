@@ -28,10 +28,11 @@ const POSCart = () => {
       } else if (pathname.includes("puntodeventa")) {
         router.push("/puntodeventa/qr/scanner");
       }
-      if (pathname.includes("instagram")) {
-        router.push("/instagram/qr/scanner");
+      if (pathname.includes("socials")) {
+        router.push("/socials/qr/scanner");
       }
     }
+    //eslint-disable-next-line
   }, [productsPOS]);
 
   return (

@@ -16,7 +16,7 @@ const AboutUsComponent = () => {
         <div className="container mx-auto flex justify-center items-center text-center p-5 sm:py-20 text-white dark:text-background z-10">
           <HeroColTextComponent
             pretitle={"CONOCE A"}
-            title={"OFERTAZOSMX"}
+            title={"yunuencompany"}
             subtitle={
               "Tu principal destino para muebles minimalistas de diseño excepcional imagen de producto"
             }
@@ -29,7 +29,7 @@ const AboutUsComponent = () => {
           <InnerSectionTextComponent
             title={"Experiencia Personalizada"}
             paraOne={
-              "En OFERTAZOSMX, nos especializamos en crear sillas, bancos y mesas que personifican la elegancia minimalista, combinando funcionalidad pura con un estilo sofisticado. Cada pieza es una obra de arte, diseñada para enriquecer tu espacio con líneas limpias y una estética atemporal."
+              "En yunuencompany, nos especializamos en crear sillas, bancos y mesas que personifican la elegancia minimalista, combinando funcionalidad pura con un estilo sofisticado. Cada pieza es una obra de arte, diseñada para enriquecer tu espacio con líneas limpias y una estética atemporal."
             }
             paraTwo={""}
             btnText={""}
@@ -40,10 +40,10 @@ const AboutUsComponent = () => {
       <section className=" text-center py-12 mb-20 mx-auto">
         <div className="container mx-auto">
           <h3 className="text-4xl maxmd:text-2xl font-semibold font-raleway  mb-5">
-            {"¿Por Qué Elegir OFERTAZOSMX?"}
+            {"¿Por Qué Elegir yunuencompany?"}
           </h3>
           <p className="text-gray-500 font-raleway ">
-            {"En OFERTAZOSMX nos dedicamos a brindar:"}
+            {"En yunuencompany nos dedicamos a brindar:"}
           </p>
 
           <div className="flex maxmd:flex-col items-center justify-center gap-4 mt-5">
@@ -59,7 +59,7 @@ const AboutUsComponent = () => {
               <CardTextComponent
                 title={"Diseño Minimalista"}
                 paraOne={
-                  "Nuestros productos están diseñados con un enfoque minimalista, asegurando que cada pieza no solo sea funcional sino también estéticamente agradable. Con OFERTAZOSMX, menos es definitivamente más."
+                  "Nuestros productos están diseñados con un enfoque minimalista, asegurando que cada pieza no solo sea funcional sino también estéticamente agradable. Con yunuencompany, menos es definitivamente más."
                 }
                 paraTwo={""}
                 btnText={""}
@@ -118,7 +118,7 @@ const AboutUsComponent = () => {
             <SectionTextComponent
               title={"Nuestra Misión"}
               paraOne={
-                "Nuestra misión en OFERTAZOSMX es simple: transformar espacios con muebles minimistas que inspiren serenidad y belleza."
+                "Nuestra misión en yunuencompany es simple: transformar espacios con muebles minimistas que inspiren serenidad y belleza."
               }
               paraTwo={
                 "Creemos en el poder del diseño minimalista para crear ambientes que reflejen tranquilidad y simplicidad elegante."
@@ -142,7 +142,7 @@ const AboutUsComponent = () => {
                 src={"/icons/Coach_purser_example.webp"}
                 width={1080}
                 height={1080}
-                alt="OFERTAZOSMX"
+                alt="yunuencompany"
                 className="mx-auto mb-4 w-full h-full"
               />
             </div>
@@ -155,7 +155,7 @@ const AboutUsComponent = () => {
           <HeroTextComponent
             title={"Una Experiencia de Compra Excepcional"}
             subtitle={
-              "En OFERTAZOSMX, valoramos la importancia de una experiencia de compra sin complicaciones."
+              "En yunuencompany, valoramos la importancia de una experiencia de compra sin complicaciones."
             }
             btnText={"Visitar Tienda"}
             btnUrl={`/tienda`}

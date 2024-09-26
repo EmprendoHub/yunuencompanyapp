@@ -33,7 +33,7 @@ const NewVariationOptimized = ({
   const [isSending, setIsSending] = useState(false);
   const [brand, setBrand] = useState("");
   const [branchAvailability, setBranchAvailability] = useState(true);
-  const [instagramAvailability, setInstagramAvailability] = useState(false);
+  const [socialsAvailability, setSocialsAvailability] = useState(false);
   const [onlineAvailability, setOnlineAvailability] = useState(false);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Moda");
@@ -494,10 +494,8 @@ const NewVariationOptimized = ({
       branchAvailability !== undefined ? branchAvailability.toString() : ""
     );
     formData.append(
-      "instagramAvailability",
-      instagramAvailability !== undefined
-        ? instagramAvailability.toString()
-        : ""
+      "socialsAvailability",
+      socialsAvailability !== undefined ? socialsAvailability.toString() : ""
     );
     formData.append(
       "onlineAvailability",
@@ -542,8 +540,8 @@ const NewVariationOptimized = ({
       setValidationError(null);
 
       await updateRevalidateProduct();
-      if (pathname.includes("instagram")) {
-        router.push("/instagram/productos");
+      if (pathname.includes("socials")) {
+        router.push("/socials/productos");
       } else if (pathname.includes("admin")) {
         router.push("/admin/productos");
       }
@@ -556,7 +554,7 @@ const NewVariationOptimized = ({
         <div className="flex flex-col items-start gap-5 justify-start w-full">
           <section className={`w-full ${!isSending ? "" : "grayscale"}`}>
             <h1 className="w-full text-xl font-semibold text-foreground mb-8 font-EB_Garamond">
-              Nuevo Producto Con Variaciones
+              Nuevo Producto
             </h1>
             <div className="flex flex-row maxmd:flex-col items-start gap-2 justify-between w-full">
               <div className="flex flex-col items-start justify-center">
@@ -570,8 +568,8 @@ const NewVariationOptimized = ({
                     />
                     <ToggleSwitch
                       label="MercadoLibre"
-                      enabled={instagramAvailability}
-                      setEnabled={setInstagramAvailability}
+                      enabled={socialsAvailability}
+                      setEnabled={setSocialsAvailability}
                     />
                     <ToggleSwitch
                       label="Sucursal"

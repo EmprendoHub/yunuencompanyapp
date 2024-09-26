@@ -26,7 +26,7 @@ const FooterMenu = () => {
             <motion.a
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 0.9 }}
-              href="https://www.tiktok.com/ofertazosmx"
+              href="https://www.tiktok.com/yunuencompany"
               target="_blank"
             >
               <span className="socialLink">
@@ -37,7 +37,7 @@ const FooterMenu = () => {
             <motion.a
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 0.9 }}
-              href="https://www.instagram.com/ofertazosmx"
+              href="https://www.instagram.com/yunuencompany"
               target="_blank"
             >
               <span className="socialLink">
@@ -47,7 +47,7 @@ const FooterMenu = () => {
             <motion.a
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 0.9 }}
-              href="https://www.facebook.com/ofertazosmx"
+              href="https://www.facebook.com/yunuencompany"
               target="_blank"
             >
               <span className="socialLink">

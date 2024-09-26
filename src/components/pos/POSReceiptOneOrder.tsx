@@ -84,7 +84,7 @@ const POSReceiptOneOrder = ({
       <div className="flex flex-row justify-between items-center">
         <div className="relative flex flex-col items-center justify-center max-w-fit">
           <h1 className="flex font-black font-EB_Garamond text-[1.5rem] maxmd:text-[1rem] leading-none">
-            OFERTAZOSMX
+            yunuencompany
           </h1>
         </div>
 
@@ -183,7 +183,7 @@ const POSReceiptOneOrder = ({
                 {formatSpanishDate(order?.createdAt)}
               </p>
               <p>Gracias por tu compra</p>
-              <p>Para descuentos y especiales visita www.ofertazosmx.xyz</p>
+              <p>Para descuentos y especiales visita www.yunuencompany.com</p>
             </div>
           </div>
         </div>

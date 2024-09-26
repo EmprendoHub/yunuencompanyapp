@@ -60,14 +60,15 @@ const POSModalScannerComponent = ({
                 router.push("/admin/pos/qr/idscanner");
               } else if (pathname.includes("puntodeventa")) {
                 router.push("/puntodeventa/qr/idscanner");
-              } else if (pathname.includes("instagram")) {
-                router.push("/instagram/qr/idscanner");
+              } else if (pathname.includes("socials")) {
+                router.push("/socials/qr/idscanner");
               }
             }
           });
         }
       }
     }
+    //eslint-disable-next-line
   }, [product]);
 
   return (

@@ -22,8 +22,8 @@ const PayCartComp = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
   const dispatch = useDispatch();
   const router = useRouter();
@@ -108,9 +108,9 @@ const PayCartComp = ({
     } else if (pathname.includes("puntodeventa")) {
       formData.append("pathname", "Sucursal");
       // result = await payPOSDrawer(formData);
-    } else if (pathname.includes("instagram")) {
-      formData.append("pathname", "Instagram");
-      // result = await payPOSInstagramDrawer(formData);
+    } else if (pathname.includes("socials")) {
+      formData.append("pathname", "socials");
+      // result = await payPOSSocialsDrawer(formData);
     }
     const result: any = await fetch(`/api/payment`, {
       method: "POST",

@@ -22,7 +22,7 @@ const ListPOSProducts = ({
         <h2 className="text-2xl flex items-center">
           {" "}
           Productos {pageName}{" "}
-          {pageName === "Instagram" ? <FaInstagram /> : <FaStore />}
+          {pageName === "Socials" ? <FaInstagram /> : <FaStore />}
         </h2>
         <POSSearch pageName={pageName} />
       </div>

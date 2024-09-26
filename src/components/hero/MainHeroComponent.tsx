@@ -14,7 +14,7 @@ const MainHeroComponent = () => {
         <TextOpacityMotion
           title={"Alta Moda"}
           subtitle={
-            "¡Bienvenido a OFERTAZOSMX, tu destino exclusivo para el lujo y la moda de clase mundial!"
+            "¡Bienvenido a yunuencompany, tu destino exclusivo para el lujo y la moda de clase mundial!"
           }
           className={""}
         />

@@ -5,8 +5,8 @@ import ListPOSProducts from "@/components/products/ListPOSProducts";
 import { getAllPOSProduct } from "@/app/_actions";
 
 export const metadata = {
-  title: "POS OFERTAZOSMX",
-  description: "Punto de Venta OFERTAZOSMX",
+  title: "POS yunuencompany",
+  description: "Punto de Venta yunuencompany",
 };
 
 const TiendaPage = async ({ searchParams }: { searchParams: any }) => {

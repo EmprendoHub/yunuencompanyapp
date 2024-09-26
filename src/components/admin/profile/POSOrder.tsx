@@ -30,8 +30,8 @@ const POSOrder = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
   const { updateOrder } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
@@ -118,7 +118,7 @@ const POSOrder = ({
             <h2 className="text-3xl font-bold text-slate-700">
               {order?.customerName}{" "}
               <span className="text-sm text-red-800">
-                {order?.email === "ofertazosmx@gmail.com"
+                {order?.email === "yunuencompany01@gmail.com"
                   ? "(Sucursal)"
                   : "Cliente"}
               </span>
@@ -149,7 +149,7 @@ const POSOrder = ({
             </h2>
           )}
         </div>
-        {order?.branch !== "Sucursal" && order?.branch !== "Instagram" ? (
+        {order?.branch !== "Sucursal" && order?.branch !== "socials" ? (
           <table className="w-full text-sm text-left flex flex-col maxsm:flex-row">
             <thead className="text-l text-gray-700 uppercase">
               <tr className="flex flex-row maxsm:flex-col">

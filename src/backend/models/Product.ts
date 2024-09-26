@@ -153,7 +153,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
     },
     availability: {
-      instagram: {
+      socials: {
         type: Boolean,
         default: false,
       },

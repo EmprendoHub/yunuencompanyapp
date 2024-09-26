@@ -61,8 +61,8 @@ const POSProductDetails = ({ product }: { product: any }) => {
     pathname = "admin/pos";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("instagram")) {
-    pathname = "instagram";
+  } else if (getPathname.includes("socials")) {
+    pathname = "socials";
   }
 
   const dispatch = useDispatch();

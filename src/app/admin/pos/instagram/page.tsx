@@ -4,7 +4,7 @@ import { getAllPOSMercadoLibreProduct } from "@/app/_actions";
 import { removeUndefinedAndPageKeys } from "@/backend/helpers";
 
 export const metadata = {
-  title: "Tienda OFERTAZOSMX",
+  title: "Tienda yunuencompany",
   description:
     "Ven y explora nuestra tienda en linea y descubre modelos exclusivos de marcas de alta gama.",
 };
@@ -44,7 +44,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   return (
     <div className="flex flex-col items-center justify-center gap-5">
       <ListPOSProducts
-        pageName={"Instagram"}
+        pageName={"Socials"}
         products={products}
         filteredProductsCount={filteredProductsCount}
       />
