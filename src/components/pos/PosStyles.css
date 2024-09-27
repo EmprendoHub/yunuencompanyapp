@@ -7,7 +7,7 @@
 @media print {
   html,
   body {
-    height: initial !important;
+    height: auto !important;
     overflow: initial !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
@@ -34,7 +34,7 @@
 @media print {
   .main-receipt {
     overflow: visible;
-    height: 100%;
+    height: auto;
   }
 }
 
