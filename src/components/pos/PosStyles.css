@@ -9,6 +9,7 @@
   body {
     height: initial !important;
     overflow: initial !important;
+    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
     padding: 0px;
   }
@@ -23,7 +24,7 @@
 @media print {
   .main-receipt {
     overflow: visible;
-    height: fit-content;
+    height: 100%;
   }
 }
 
@@ -36,6 +37,6 @@
 }
 
 @page {
-  size: '58mm';
+  size: "58mm";
   margin: 1mm;
 }

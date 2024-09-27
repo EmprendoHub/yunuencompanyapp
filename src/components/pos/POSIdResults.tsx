@@ -49,7 +49,7 @@ const POSIdResults = () => {
                         index: React.Key | null | undefined
                       ) => (
                         <div key={index}>
-                          <div className="flex flex-row maxmd:flex-wrap gap-5  mb-4 items-center">
+                          <div className="flex flex-row maxmd:flex-wrap gap-5  mb-1 items-center">
                             <div className="w-full">
                               <figure className="flex gap-3 leading-5">
                                 <div>

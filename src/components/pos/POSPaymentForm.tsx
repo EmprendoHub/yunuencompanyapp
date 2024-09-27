@@ -79,12 +79,12 @@ const POSPaymentForm = () => {
         </ul>
 
         <div className="flex flex-row flex-wrap items-center gap-3">
-          <button
+          {/* <button
             onClick={() => handleCheckout("layaway")}
             className="text-4xl text-slate-100 bg-violet-950 mt-4 py-5 px-6 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer w-full uppercase rounded-md"
           >
             Apartar
-          </button>
+          </button> */}
           <button
             onClick={() => handleCheckout("total")}
             className="bg-black w-full text-slate-100 mt-4 py-5 uppercase text-4xl px-12 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer  rounded-md"

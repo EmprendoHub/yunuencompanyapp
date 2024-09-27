@@ -257,7 +257,7 @@ export async function payPOSDrawer(data: any) {
     if (name.length > 3) {
       customerName = name;
     } else {
-      customerName = "SUCURSAL";
+      customerName = "PUBLICO GENERAL";
     }
 
     const query = { $or: [{ email: customerEmail }, { phone: customerPhone }] };

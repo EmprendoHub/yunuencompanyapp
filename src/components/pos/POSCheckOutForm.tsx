@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { AiOutlineUser } from "react-icons/ai";
 import { useSession } from "next-auth/react";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { usePathname } from "next/navigation";
+import POSModal from "../modals/POSModal";
 
 const POSCheckOutForm = () => {
   const { data: session } = useSession();
@@ -18,6 +19,9 @@ const POSCheckOutForm = () => {
   );
   const getPathname = usePathname();
   let pathname;
+  const [showModal, setShowModal] = useState(false);
+  const [payType, setPayType] = useState("");
+
   if (getPathname.includes("admin")) {
     pathname = "/admin/pos";
   } else if (getPathname.includes("puntodeventa")) {
@@ -27,11 +31,19 @@ const POSCheckOutForm = () => {
   }
   const shipAmount = 0;
   const layawayAmount = Number(amountTotal) * 0.3;
-
+  const handleCheckout = async (payType: React.SetStateAction<string>) => {
+    setPayType(payType);
+    setShowModal(true);
+  };
   const totalAmountCalc = Number(amountTotal) + Number(shipAmount);
 
   return (
     <section className="max-w-full p-2 maxsm:py-7 bg-gray-100">
+      <POSModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        payType={payType}
+      />
       <div className=" mx-auto bg-background flex flex-col justify-between p-2">
         <h2>Totales</h2>
         <ul className="mb-5">
@@ -65,58 +77,18 @@ const POSCheckOutForm = () => {
           </li>
         </ul>
 
-        {isLoggedIn ? (
+        {isLoggedIn && (
           <div className="flex flex-col items-center gap-1">
             <div className="flex gap-5 w-full">
-              <Link
-                href={`${pathname}/caja`}
-                className="text-slate-100 text-center bg-emerald-700 border mt-4 py-3 px-6  hover:bg-slate-200 hover:border-slate-400 hover:border hover:text-foreground duration-300 ease-in-out cursor-pointer min-w-full"
+              <button
+                onClick={() => handleCheckout("total")}
+                className="bg-black w-full text-slate-100 mt-4 py-5 uppercase text-4xl px-12 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer  rounded-md"
               >
-                Continuar
-              </Link>
+                Pagar
+              </button>
             </div>
-
-            <Link
-              href={`${pathname}/qr/scanner`}
-              className="px-4 mt-3 py-3 inline-block text-lg w-full text-center font-medium bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 text-white hover:text-foreground font-EB_Garamond duration-300 ease-in-out"
-            >
-              Escanear mas Productos
-            </Link>
-          </div>
-        ) : (
-          <div>
-            {/** Login/Register */}
-            {!session && (
-              <>
-                <Link href={"/iniciar"}>
-                  <div className=" w-full bg-black text-slate-100 mt-4 py-3 px-6 hover:bg-green-600 duration-500 cursor-pointer">
-                    <div className="flex flex-row justify-center items-center gap-x-3 ">
-                      <AiOutlineUser className="text-ld" />
-                      <p className="text-sm font-base">Iniciar/Registro</p>
-                    </div>
-                  </div>
-                </Link>
-                <Link
-                  href={`${pathname}/qr/scanner`}
-                  className="px-4 py-3 inline-block text-lg w-full text-center font-medium bg-background shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 text-foreground font-EB_Garamond"
-                >
-                  Escanear mas Productos
-                </Link>
-              </>
-            )}
-            <p className="text-sm mt-1 text-red-600 py-2">
-              Por favor inicie sesión para continuar
-            </p>
           </div>
         )}
-        <div className="trustfactor-class">
-          <Image
-            src={"/images/stripe-badge-transparente.webp"}
-            width={500}
-            height={200}
-            alt="Stripe Payment"
-          />
-        </div>
       </div>
     </section>
   );

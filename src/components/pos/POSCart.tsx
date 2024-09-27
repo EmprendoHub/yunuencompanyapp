@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import {
   decreasePOSQuantity,
@@ -17,42 +17,23 @@ const POSCart = () => {
   const router = useRouter();
   const { productsPOS } = useSelector((state: any) => state?.compras);
   const dispatch = useDispatch();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (productsPOS?.length > 0) {
-      console.log("all good");
-    } else {
-      if (pathname.includes("admin")) {
-        router.push("/admin/pos/qr/scanner");
-      } else if (pathname.includes("puntodeventa")) {
-        router.push("/puntodeventa/qr/scanner");
-      }
-      if (pathname.includes("socials")) {
-        router.push("/socials/qr/scanner");
-      }
-    }
-    //eslint-disable-next-line
-  }, [productsPOS]);
 
   return (
-    <div className="w-full">
-      <section className="mt-5  bg-gray-100">
-        <div className=" mx-auto px-4">
-          <h2 className="text-3xl font-semibold mb-2 font-EB_Garamond">
-            {productsPOS?.length || 0} Artículos(s) Escaneados
-          </h2>
-        </div>
-      </section>
-
+    <div className="w-1/3">
       {productsPOS?.length > 0 && (
         <section className="pb-10 bg-gray-100">
-          <div className="container  mx-auto bg-background p-5">
-            <div className="flex flex-col md:flex-row gap-4">
+          <div className=" mx-auto bg-background ">
+            <div className="flex flex-col gap-4">
+              <section className=" bg-gray-100">
+                <div className=" mx-auto px-4">
+                  <h2 className="text-xl font-semibold mb-2 font-EB_Garamond">
+                    {productsPOS?.length || 0} Artículos(s) en carrito
+                  </h2>
+                </div>
+              </section>
               <main className="w-full">
-                <article className="border border-gray-200  shadow-sm rounded p-3 lg:p-5"></article>
                 {/* Items */}
-                <article className="border border-gray-200 shadow-sm rounded mb-5 p-3 lg:p-5">
+                <article className="border border-gray-200 shadow-sm rounded mb-1 px-4">
                   {productsPOS?.length > 0 &&
                     productsPOS?.map(
                       (
@@ -69,11 +50,11 @@ const POSCart = () => {
                         index: React.Key | null | undefined
                       ) => (
                         <div key={index}>
-                          <div className="flex flex-row maxmd:flex-wrap gap-5  mb-4 items-center">
+                          <div className="flex flex-row maxmd:flex-wrap gap-5  mb-1 items-center">
                             <div className="w-full">
-                              <figure className="flex gap-3 leading-5">
+                              <figure className="flex gap-1 leading-5">
                                 <div>
-                                  <div className="block w-16 h-16 rounded border border-gray-200 overflow-hidden">
+                                  <div className="block w-16 h-16 rounded border border-gray-300 overflow-hidden">
                                     <Image
                                       src={cartItem?.image}
                                       alt="Title"
@@ -82,25 +63,17 @@ const POSCart = () => {
                                     />
                                   </div>
                                 </div>
-                                <figcaption className="ml-3">
-                                  <p>{cartItem?.title}</p>
-                                  <p className="mt-1 text-gray-400">
-                                    Marca: {cartItem?.brand}
-                                  </p>
-                                </figcaption>
-                                <div>{cartItem.color}</div>
-                                <div>{cartItem.size}</div>
                               </figure>
                             </div>
-                            <div className="w-24">
-                              <div className="flex items-center text-lg text-foreground  w-20 justify-between">
+                            <div className="w-full">
+                              <div className="flex items-center text-lg text-foreground  justify-between">
                                 <span
                                   onClick={() =>
                                     dispatch(decreasePOSQuantity(cartItem))
                                   }
                                   className="cursor-pointer"
                                 >
-                                  <FiChevronLeft />
+                                  <FiChevronLeft size={40} />
                                 </span>
                                 <span>{cartItem?.quantity || 1}</span>
                                 <span
@@ -109,11 +82,11 @@ const POSCart = () => {
                                   }
                                   className="cursor-pointer"
                                 >
-                                  <FiChevronRight />
+                                  <FiChevronRight size={40} />
                                 </span>
                               </div>
                             </div>
-                            <div>
+                            <div className="w-full">
                               <div className="leading-5">
                                 <p className="font-semibold not-italic">
                                   $
@@ -132,15 +105,15 @@ const POSCart = () => {
                                   onClick={() =>
                                     dispatch(deletePOSProduct(cartItem?._id))
                                   }
-                                  className="text.lg hover:text-red-600 cursor-pointer duration-300"
+                                  className="text-red-400 hover:text-red-600 cursor-pointer duration-300"
                                 >
-                                  <AiOutlineClose />
+                                  <AiOutlineClose size={30} />
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          <hr className="my-4" />
+                          <hr className="my-1" />
                         </div>
                       )
                     )}

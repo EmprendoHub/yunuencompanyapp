@@ -11,6 +11,7 @@ import { LiaCashRegisterSolid, LiaStoreAltSolid } from "react-icons/lia";
 import { GiClothes } from "react-icons/gi";
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
+import Link from "next/link";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -152,6 +153,13 @@ export default function UserLayout({ children }: { children: any }) {
           />
         </AdminSidebar>
         <div className="relative w-full mb-5 p-4 ">{children}</div>
+
+        <Link
+          className="absolute right-3 bottom-3 z-50 text-4xl text-blue-500 bg-black px-7 py-5 flex items-center justify-center rounded-full hover:scale-110 duration-300 ease-in-out"
+          href={`${pathname.includes("admin") ? "/admin/pos/tienda" : ""}`}
+        >
+          +
+        </Link>
       </div>
     </div>
   );

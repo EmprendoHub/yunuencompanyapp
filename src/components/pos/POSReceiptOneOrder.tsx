@@ -97,31 +97,31 @@ const POSReceiptOneOrder = ({
 
       <div className="relative overflow-x-hidden border-b-2 border-slate-300">
         <table className="w-full text-left">
-          <thead className="text-xs text-foreground uppercase">
+          <thead className="text-[12px] text-foreground uppercase">
             <tr className="flex flex-row items-center justify-between">
-              <th scope="col" className="px-2 maxsm:px-0 py-1">
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
                 #
               </th>
-              <th scope="col" className="px-2 maxsm:px-0 py-1">
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
                 Producto
               </th>
-              <th scope="col" className="px-2 maxsm:px-0 py-1">
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
                 Precio
               </th>
             </tr>
           </thead>
-          <tbody className="text-sm overscroll-x-none overflow-hidden">
+          <tbody className="text-xs overscroll-x-none overflow-hidden">
             {order?.orderItems?.map(
               (item: OrderItem, index: Key | null | undefined) => (
                 <tr
                   key={index}
                   className="flex flex-row items-center justify-between"
                 >
-                  <td className="px-2 maxsm:px-0 pb-1">{item.quantity}</td>
-                  <td className="px-2 maxsm:px-0 pb-1 text-clip">
+                  <td className="px-2 maxsm:px-0 pb-0.5">{item.quantity}</td>
+                  <td className="px-2 maxsm:px-0 pb-0.5 text-clip">
                     {item.name.substring(0, 10)}
                   </td>
-                  <td className="px-2 maxsm:px-0 pb-1">
+                  <td className="px-2 maxsm:px-0 pb-0.5">
                     <FormattedPrice amount={item.price || 0} />
                   </td>
                 </tr>
@@ -166,7 +166,7 @@ const POSReceiptOneOrder = ({
                   </span>
                 </span>
               </li>
-              <li className="text-lg font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+              {/* <li className="text-lg font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
                 <span>Pendiente:</span>
                 <span>
                   <FormattedPrice
@@ -176,14 +176,16 @@ const POSReceiptOneOrder = ({
                     }
                   />
                 </span>
-              </li>
+              </li> */}
             </ul>
-            <div className="text-xs text-foreground tracking-wide text-center border-t-2 border-slate-300 ">
-              <p className="text-xs my-2 w-full text-center">
+            <div className="text-[10px] text-foreground tracking-wide text-center border-t-2 border-slate-300 ">
+              <p className="text-[10px] my-0.5 w-full text-center">
                 {formatSpanishDate(order?.createdAt)}
               </p>
               <p>Gracias por tu compra</p>
-              <p>Para descuentos y especiales visita www.yunuencompany.com</p>
+              <p>
+                Para descuentos y especiales síguenos en redes @yunuencompany
+              </p>
             </div>
           </div>
         </div>
@@ -208,6 +210,7 @@ const POSReceiptOneOrder = ({
           }
         }}
       >
+        <FaPrint />
         Imprimir Recibo
       </Button>
     </div>

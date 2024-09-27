@@ -431,27 +431,7 @@ const NewVariationOptimized = ({
       setValidationError(noTitleError);
       return;
     }
-    if (!description) {
-      const noDescriptionError = {
-        description: { _errors: ["Se requiere descripción "] },
-      };
-      setValidationError(noDescriptionError);
-      return;
-    }
-    if (!brand) {
-      const noBrandError = {
-        brand: { _errors: ["Se requiere un Marca "] },
-      };
-      setValidationError(noBrandError);
-      return;
-    }
-    if (!tags) {
-      const noTagsError = {
-        tags: { _errors: ["Se requiere mínimo una etiqueta "] },
-      };
-      setValidationError(noTagsError);
-      return;
-    }
+
     if (!variations[0].cost) {
       const noCostError = {
         cost: { _errors: ["Se requiere un costo de producto "] },

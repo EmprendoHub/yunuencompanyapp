@@ -2,6 +2,7 @@ import ServerPagination from "@/components/pagination/ServerPagination";
 import ListPOSProducts from "@/components/products/ListPOSProducts";
 import { getAllPOSProduct } from "@/app/_actions";
 import { removeUndefinedAndPageKeys } from "@/backend/helpers";
+import POSCart from "@/components/pos/POSCart";
 
 export const metadata = {
   title: "Tienda yunuencompany",
@@ -42,13 +43,13 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5">
+    <div className="flex  items-start justify-center gap-5">
       <ListPOSProducts
         pageName={"Sucursal"}
         products={products}
         filteredProductsCount={filteredProductsCount}
       />
-      <ServerPagination
+      {/* <ServerPagination
         isPageOutOfRange={isPageOutOfRange}
         page={page}
         pageNumbers={pageNumbers}
@@ -56,7 +57,8 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
         nextPage={nextPage}
         totalPages={totalPages}
         searchParams={keywordQuery}
-      />
+      /> */}
+      <POSCart />
     </div>
   );
 };
