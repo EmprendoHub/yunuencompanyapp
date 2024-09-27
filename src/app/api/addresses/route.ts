@@ -12,8 +12,6 @@ export async function GET(request: any) {
   const { device } = userAgent(request);
   const viewport = device.type === "mobile" ? "mobile" : "desktop";
   const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-  console.log(ip, "userip");
-  console.log(viewport, "viewport");
 
   if (!session) {
     // Not Signed in

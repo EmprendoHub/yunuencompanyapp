@@ -27,7 +27,7 @@ const BranchSidebar = ({ children }: { children: any }) => {
         <div className="p-4 maxmd:p-2 pb-2 flex justify-between maxmd:justify-center items-center">
           <Image
             alt="image"
-            src={"/images/horizontal_logo.png"}
+            src={"/logos/yunuen_logo_Horixontal.webp"}
             width={500}
             height={500}
             className={`overflow-hidden transition-all ease-in-out ${

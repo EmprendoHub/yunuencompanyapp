@@ -1,30 +1,39 @@
-import { getPOSDashboard } from "../_actions";
-import POSDashComponent from "@/components/pos/POSDashComponent";
+import ListPOSProducts from "@/components/products/ListPOSProducts";
+import { getAllPOSProduct } from "@/app/_actions";
+import POSCart from "@/components/pos/POSCart";
 
-const POSPage = async () => {
-  const data = await getPOSDashboard();
+export const metadata = {
+  title: "POS yunuencompany",
+  description: "Punto de Venta yunuencompany",
+};
+
+const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
+  const data = await getAllPOSProduct(searchParams);
+  //pagination
+  let page = parseInt(searchParams.page, 20);
+  page = !page || page < 1 ? 1 : page;
+  const perPage = 20;
+  const totalPages = Math.ceil(data.filteredProductsCount / perPage);
+  const pageNumbers = [];
+  const offsetNumber = 3;
   const products = JSON.parse(data?.products);
-  const orders = JSON.parse(data?.orders);
-  const thisWeeksOrder = JSON.parse(data?.thisWeeksOrder);
-  const orderCountPreviousMonth = data?.orderCountPreviousMonth;
-  const totalOrderCount = data?.totalOrderCount;
-  const totalProductCount = data?.totalProductCount;
-  const thisWeekOrderTotals = data?.thisWeekOrderTotals;
-  const dailyOrdersTotals = data?.dailyOrdersTotals;
+  const filteredProductsCount = data?.filteredProductsCount;
+  for (let i = page - offsetNumber; i <= page + offsetNumber; i++) {
+    if (i >= 1 && i <= totalPages) {
+      pageNumbers.push(i);
+    }
+  }
+
   return (
-    <>
-      <POSDashComponent
-        orders={orders}
+    <div className="flex  items-start justify-center gap-5">
+      <ListPOSProducts
+        pageName={"Sucursal"}
         products={products}
-        orderCountPreviousMonth={orderCountPreviousMonth}
-        totalOrderCount={totalOrderCount}
-        totalProductCount={totalProductCount}
-        thisWeeksOrder={thisWeeksOrder}
-        thisWeekOrderTotals={thisWeekOrderTotals}
-        dailyOrdersTotals={dailyOrdersTotals}
+        filteredProductsCount={filteredProductsCount}
       />
-    </>
+      <POSCart />
+    </div>
   );
 };
 
-export default POSPage;
+export default TiendaPage;

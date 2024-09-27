@@ -13,11 +13,21 @@
     -webkit-print-color-adjust: exact;
     padding: 0px;
   }
-  .main-receipt {
-    width: 100%;
-  }
+
   .print-btn {
     display: none;
+  }
+  .main-receipt-item {
+    font-size: 12px;
+    line-height: 95%;
+  }
+  .main-receipt-desglose {
+    font-size: 12px;
+    line-height: normal;
+  }
+  .main-receipt-totals {
+    font-size: 16px;
+    line-height: 95%;
   }
 }
 

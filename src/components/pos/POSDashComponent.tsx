@@ -52,9 +52,9 @@ const POSDashComponent = ({
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
           <div className="flex flex-col w-full shadow-md p-5 rounded-md dark:bg-slate-300">
             <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Pedidos recientes</h1>
+              <h1>Ventas recientes</h1>
               <button>
-                <Link href={"/admin/pedidos"}>Ver todos</Link>
+                <Link href={"/admin/pedidos"}>Ver todas</Link>
               </button>
             </div>
             <table>

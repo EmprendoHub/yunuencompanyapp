@@ -51,7 +51,7 @@ const POSOrders = ({
       <div className="relative overflow-x-auto shadow-md rounded-lg">
         <div className=" flex flex-row maxsm:flex-col maxsm:items-start items-center justify-between">
           <h1 className="text-3xl w-full maxsm:text-xl my-5 maxsm:my-1 ml-4 maxsm:ml-0 font-bold font-EB_Garamond">
-            {`${filteredOrdersCount} Pedidos `}
+            {`${filteredOrdersCount} Ventas `}
           </h1>
           <AdminOrderSearch />
         </div>
@@ -64,18 +64,11 @@ const POSOrders = ({
               <th scope="col" className="px-2 py-3 maxmd:hidden">
                 Cliente
               </th>
-              <th scope="col" className="px-2 py-3 maxmd:hidden">
-                Tel
-              </th>
+
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Recibió
               </th>
-              <th scope="col" className="px-6 maxsm:px-0 py-3">
-                Estado
-              </th>
-              <th scope="col" className="px-4 maxsm:px-0 py-3">
-                Ubic.
-              </th>
+
               <th scope="col" className="px-6 py-3 maxsm:hidden">
                 Fecha
               </th>
@@ -95,37 +88,12 @@ const POSOrders = ({
                 <td className="px-2 py-2 maxmd:hidden">
                   {order?.customerName}
                 </td>
-                <td className="px-2 py-2 maxmd:hidden">{order?.phone}</td>
                 <td className="px-6 maxsm:px-0 py-2 ">
                   <b>
                     <FormattedPrice amount={order?.paymentInfo?.amountPaid} />
                   </b>
                 </td>
-                <td
-                  className={`px-6 maxsm:px-0 py-2 font-bold ${
-                    order.orderStatus === "Apartado"
-                      ? "text-amber-700"
-                      : order.orderStatus === "En Camino"
-                      ? "text-blue-700"
-                      : order.orderStatus === "Entregado"
-                      ? "text-green-700"
-                      : order.orderStatus === "Pagado"
-                      ? "text-green-800"
-                      : "text-slate-600"
-                  }`}
-                >
-                  {order.orderStatus}
-                </td>
-                <td
-                  className={`px-4 maxsm:px-0 py-2 font-bold ${
-                    order.branch === "Sucursal"
-                      ? "text-amber-700"
-                      : "text-slate-600"
-                  }`}
-                >
-                  {order.branch}
-                </td>
-                <td className="px-2 py-2 maxsm:hidden">
+                <td className="px-2 py-2 maxsm:hidden text-xs">
                   {order?.createdAt && formatSpanishDate(order?.createdAt)}
                 </td>
                 <td className="px-1 py-2">

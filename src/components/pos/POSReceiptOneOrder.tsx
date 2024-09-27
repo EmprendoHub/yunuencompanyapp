@@ -81,16 +81,16 @@ const POSReceiptOneOrder = ({
       ref={ref}
       className="main-receipt w-[300px] maxmd:w-full min-h-full mx-auto relative bg-background px-2"
     >
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-col justify-between items-center">
         <div className="relative flex flex-col items-center justify-center max-w-fit">
-          <h1 className="flex font-black font-EB_Garamond text-[1.5rem] maxmd:text-[1rem] leading-none">
-            yunuencompany
+          <h1 className="main-receipt-header flex font-black font-EB_Garamond text-[1.5rem] maxmd:text-[1rem] leading-none">
+            Yunuen Company
           </h1>
         </div>
 
         <div className="flex flex-col items-end justify-end gap-x-1 overflow-hidden">
           <h2 className="text-md font-bold text-foreground items-center">
-            #{order?.orderId}
+            {order?.orderId}
           </h2>
         </div>
       </div>
@@ -115,7 +115,7 @@ const POSReceiptOneOrder = ({
               (item: OrderItem, index: Key | null | undefined) => (
                 <tr
                   key={index}
-                  className="flex flex-row items-center justify-between"
+                  className="main-receipt-item flex flex-row items-center justify-between"
                 >
                   <td className="px-2 maxsm:px-0 pb-0.5">{item.quantity}</td>
                   <td className="px-2 maxsm:px-0 pb-0.5 text-clip">
@@ -134,31 +134,35 @@ const POSReceiptOneOrder = ({
         <div className="w-full">
           <div className="container mx-auto flex flex-col p-2">
             <ul className="mb-2 ">
-              <li className="flex justify-between gap-x-5 text-gray-950">
-                <span className="text-xs">Sub-Total:</span>
-                <span className="text-xs">
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="main-receipt-desglose text-xs">
+                  Sub-Total:
+                </span>
+                <span className="main-receipt-desglose text-xs">
                   <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
                 </span>
               </li>
-              <li className="flex justify-between gap-x-5 text-gray-950">
-                <span className="text-xs">Total de Artículos:</span>
-                <span className="text-foreground text-xs">
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="main-receipt-desglose text-xs">
+                  Total de Artículos:
+                </span>
+                <span className="main-receipt-desglose text-foreground text-xs">
                   {getQuantities(order?.orderItems)} (Artículos)
                 </span>
               </li>
-              <li className="flex justify-between gap-x-5 text-gray-950">
-                <span className="text-xs">IVA:</span>
-                <span className="text-xs">
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="text-xs main-receipt-desglose">IVA:</span>
+                <span className="text-xs main-receipt-desglose">
                   <FormattedPrice amount={order?.ship_cost || 0} />
                 </span>
               </li>
-              <li className="text-base font-semibold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+              <li className="main-receipt-totals text-base font-semibold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
                 <span>Total:</span>
                 <span>
                   <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
                 </span>
               </li>
-              <li className="text-base font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+              <li className="main-receipt-totals text-base font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
                 <span>Pago:</span>
                 <span>
                   <span>

@@ -79,14 +79,12 @@ export async function POST(req: any, res: any) {
     let customerName;
 
     if (email.length > 3) {
-      console.log("if  email", email);
       customerEmail = email;
     } else {
       if (phone.length > 3 || name.length > 3) {
         customerEmail =
           phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
       } else {
-        console.log("if sucursal");
         customerEmail = "yunuencompany01@gmail.com";
       }
     }
@@ -123,7 +121,6 @@ export async function POST(req: any, res: any) {
     const branchInfo = pathname;
     const ship_cost = 0;
     const date = newCSTDate();
-    console.log("POS Drawer new payment date", date);
 
     let paymentInfo;
     let layAwayIntent;
@@ -177,7 +174,6 @@ export async function POST(req: any, res: any) {
         );
         // Check if there is enough stock
         if (variation.stock < item.quantity) {
-          console.log("Este producto no cuenta con existencias");
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
@@ -389,7 +385,6 @@ export async function POST(req: any, res: any) {
         };
 
         await transporter.sendMail(mailOption);
-        console.log(`Email sent successfully to ${recipient_email}`);
       } catch (error) {
         console.log(error);
         return NextResponse.json(

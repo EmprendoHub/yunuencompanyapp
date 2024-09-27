@@ -63,10 +63,10 @@ const POSProductCard = ({ product }: { product: any }) => {
       initial={{ y: 30, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.0 }}
-      className="border-[1px] rounded-sm max-w-[350px] maxmd:max-w-[100%] overflow-hidden relative cursor-pointer"
+      className="border-[1px] rounded-sm max-w-[300px] maxmd:max-w-[100%] overflow-hidden relative cursor-pointer"
       onClick={handleClick}
     >
-      <div className="w-[200px] h-[200px] group overflow-hidden relative">
+      <div className="w-[180px] h-[180px] group overflow-hidden relative">
         <Image
           src={product?.images[0].url}
           alt="product image"

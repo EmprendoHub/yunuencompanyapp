@@ -14,8 +14,19 @@ export const GET = async (request: any, res: any) => {
   try {
     await dbConnect();
     // Get today's date at midnight
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    let startOfDay;
+    const currentDate = new Date();
+    if (process.env.NODE_ENV === "development") {
+      // Adjust the date object to the Central Standard Time (CST) time zone
+      const cstOffset = -7 * 60 * 60 * 1000; // CST is UTC-6
+      startOfDay = new Date(currentDate.getTime() + cstOffset);
+    }
+
+    if (process.env.NODE_ENV === "production") {
+      startOfDay?.setHours(0, 0, 0, 0);
+    }
+
+    console.log("time", startOfDay);
 
     // Get tomorrow's date at midnight
     const endOfDay = new Date();

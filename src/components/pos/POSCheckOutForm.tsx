@@ -45,7 +45,7 @@ const POSCheckOutForm = () => {
         payType={payType}
       />
       <div className=" mx-auto bg-background flex flex-col justify-between p-2">
-        <h2>Totales</h2>
+        <h2 className="font-bold">Totales</h2>
         <ul className="mb-5">
           <li className="flex justify-between text-gray-600  mb-1">
             <span>Sub-Total:</span>
@@ -53,7 +53,7 @@ const POSCheckOutForm = () => {
               <FormattedPrice amount={amountTotal} />
             </span>
           </li>
-          <li className="flex justify-between text-gray-600  mb-1">
+          <li className="text-sm flex justify-between text-gray-600  mb-1">
             <span>Total de Artículos:</span>
             <span className="text-blue-500">
               {productsPOS?.reduce(
@@ -63,13 +63,13 @@ const POSCheckOutForm = () => {
               (Artículos)
             </span>
           </li>
-          <li className="flex justify-between text-gray-600  mb-1">
+          <li className="text-sm flex justify-between text-gray-600  mb-1">
             <span>Envió:</span>
             <span>
               <FormattedPrice amount={shipAmount} />
             </span>
           </li>
-          <li className="text-lg font-bold border-t flex justify-between mt-3 pt-3">
+          <li className="text-lg font-bold border-t flex justify-between mt-3 ">
             <span>Total:</span>
             <span>
               <FormattedPrice amount={totalAmountCalc} />
@@ -77,12 +77,12 @@ const POSCheckOutForm = () => {
           </li>
         </ul>
 
-        {isLoggedIn && (
+        {isLoggedIn && productsPOS?.length > 0 && (
           <div className="flex flex-col items-center gap-1">
             <div className="flex gap-5 w-full">
               <button
                 onClick={() => handleCheckout("total")}
-                className="bg-black w-full text-slate-100 mt-4 py-5 uppercase text-4xl px-12 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer  rounded-md"
+                className="bg-black w-full text-slate-100 py-3 uppercase text-xl px-12 hover:bg-emerald-700 hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
               >
                 Pagar
               </button>

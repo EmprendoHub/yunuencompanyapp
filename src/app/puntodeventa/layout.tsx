@@ -1,12 +1,9 @@
 "use client";
 import BranchSidebar, { SideBarItem } from "@/components/pos/BranchSidebar";
 import { usePathname } from "next/navigation";
-import { TbDeviceIpadDollar, TbScanEye } from "react-icons/tb";
-import { TfiDashboard } from "react-icons/tfi";
-import { LuReceipt } from "react-icons/lu";
+import { TbDeviceIpadDollar } from "react-icons/tb";
 import { LiaCashRegisterSolid, LiaReceiptSolid } from "react-icons/lia";
-import { MdOutlineFactCheck } from "react-icons/md";
-import { BsQrCodeScan } from "react-icons/bs";
+import Link from "next/link";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -16,37 +13,21 @@ export default function UserLayout({ children }: { children: any }) {
       <div className="flex items-start w-full ">
         <BranchSidebar>
           <SideBarItem
-            icon={<TfiDashboard size={20} />}
-            text={"Tablero"}
-            active={pathname === "/puntodeventa" ?? true}
-            url={"/puntodeventa"}
-          />
-          <SideBarItem
-            icon={<TbDeviceIpadDollar size={20} />}
-            text={"Pedidos"}
-            active={pathname === "/puntodeventa/pedidos" ?? true}
-            url={"/puntodeventa/pedidos"}
-          />
-
-          <SideBarItem
-            icon={<LuReceipt size={20} />}
-            text={"POS"}
+            icon={<LiaCashRegisterSolid size={20} />}
+            text={"Caja"}
             active={
               pathname === "/puntodeventa/tienda" ||
               (pathname === "/puntodeventa/tienda" && true)
             }
             url={"/puntodeventa/tienda"}
           />
-
           <SideBarItem
-            icon={<LiaCashRegisterSolid size={20} />}
-            text={"Caja"}
-            active={
-              pathname === "/puntodeventa/carrito" ||
-              (pathname === "/puntodeventa/carrito" && true)
-            }
-            url={"/puntodeventa/carrito"}
+            icon={<TbDeviceIpadDollar size={20} />}
+            text={"Ventas"}
+            active={pathname === "/puntodeventa/pedidos" ?? true}
+            url={"/puntodeventa/pedidos"}
           />
+
           <SideBarItem
             icon={<LiaReceiptSolid size={20} />}
             text={"Corte"}
@@ -56,35 +37,20 @@ export default function UserLayout({ children }: { children: any }) {
             }
             url={"/puntodeventa/corte"}
           />
-          <SideBarItem
-            icon={<BsQrCodeScan size={20} />}
-            text={"Scanner"}
-            active={
-              pathname === "/puntodeventa/qr/scanner" ||
-              (pathname === "/puntodeventa/qr/scanner" && true)
-            }
-            url={"/puntodeventa/qr/scanner"}
-          />
-          <SideBarItem
-            icon={<TbScanEye size={20} />}
-            text={"Revisa-Precio"}
-            active={
-              pathname === "/puntodeventa/qr/idscanner" ||
-              (pathname === "/puntodeventa/qr/idscanner" && true)
-            }
-            url={"/puntodeventa/qr/idscanner"}
-          />
-          <SideBarItem
-            icon={<MdOutlineFactCheck size={20} />}
-            text={"Generar QRs"}
-            active={
-              pathname === "/puntodeventa/seleccionar" ||
-              (pathname === "/puntodeventa/seleccionar" && true)
-            }
-            url={"/puntodeventa/seleccionar"}
-          />
         </BranchSidebar>
         <div className="relative w-full mb-5 ">{children}</div>
+        {!pathname.includes("tienda") && !pathname.includes("pedidos") ? (
+          <Link
+            className="absolute right-3 bottom-3 z-50 text-4xl text-blue-500 bg-black px-7 py-5 flex items-center justify-center rounded-full hover:scale-110 duration-300 ease-in-out"
+            href={`${
+              pathname.includes("puntodeventa") ? "/puntodeventa/tienda" : ""
+            }`}
+          >
+            +
+          </Link>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -242,14 +242,12 @@ export async function payPOSDrawer(data: any) {
     let customerName;
 
     if (email.length > 3) {
-      console.log("if  email", email);
       customerEmail = email;
     } else {
       if (phone.length > 3 || name.length > 3) {
         customerEmail =
           phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
       } else {
-        console.log("if sucursal");
         customerEmail = "yunuencompany01@gmail.com";
       }
     }
@@ -286,7 +284,6 @@ export async function payPOSDrawer(data: any) {
     const branchInfo = "Sucursal";
     const ship_cost = 0;
     const date = cstDateTime();
-    console.log("POS Drawer new payment date", date);
 
     let paymentInfo;
     let layAwayIntent;
@@ -340,7 +337,6 @@ export async function payPOSDrawer(data: any) {
         );
         // Check if there is enough stock
         if (variation.stock < item.quantity) {
-          console.log("Este producto no cuenta con existencias");
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
@@ -552,7 +548,6 @@ export async function payPOSDrawer(data: any) {
         };
 
         await transporter.sendMail(mailOption);
-        console.log(`Email sent successfully to ${recipient_email}`);
       } catch (error: any) {
         console.log(error);
         throw Error(error);
@@ -588,14 +583,12 @@ export async function payPOSSocialsDrawer(data: any) {
     let customerName;
 
     if (email.length > 3) {
-      console.log("if  email", email);
       customerEmail = email;
     } else {
       if (phone.length > 3 || name.length > 3) {
         customerEmail =
           phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
       } else {
-        console.log("if sucursal");
         customerEmail = "yunuencompany01@gmail.com";
       }
     }
@@ -632,7 +625,6 @@ export async function payPOSSocialsDrawer(data: any) {
     const branchInfo = "Socials";
     const ship_cost = 0;
     const date = cstDateTime();
-    console.log("Socials Drawer new payment date", date);
 
     let paymentInfo;
     let layAwayIntent;
@@ -686,7 +678,6 @@ export async function payPOSSocialsDrawer(data: any) {
         );
         // Check if there is enough stock
         if (variation.stock < item.quantity) {
-          console.log("Este producto no cuenta con existencias");
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
@@ -898,7 +889,6 @@ export async function payPOSSocialsDrawer(data: any) {
         };
 
         await transporter.sendMail(mailOption);
-        console.log(`Email sent successfully to ${recipient_email}`);
       } catch (error: any) {
         console.log(error);
         throw Error(error);
