@@ -7,6 +7,7 @@ import "./PosStyles.css";
 import { formatSpanishDate } from "@/backend/helpers";
 import { Button } from "../ui/button";
 
+// Define types for order and deliveryAddress if not already defined
 interface OrderItem {
   quantity: string | number;
   name: string;
@@ -36,19 +37,21 @@ const POSReceiptOneOrder = ({
 }: POSReceiptOneOrderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const printTriggerRef = useRef<HTMLButtonElement>(null);
+  const printTriggerRef = useRef<HTMLButtonElement>(null); // Referencing the print trigger button
 
   useEffect(() => {
     setTimeout(() => {
+      // Assume component is ready to print
       setLoaded(true);
       if (printTriggerRef.current) {
         printTriggerRef.current.click(); // Automatically trigger print
       }
-    }, 1000);
+    }, 1000); // Adjust the delay as needed or immediately trigger if data is already present
   }, []);
 
   function getQuantities(orderItems: OrderItem[]): number {
-    return orderItems?.reduce(
+    // Use reduce to sum up the 'quantity' fields
+    const totalQuantity = orderItems?.reduce(
       (sum, obj) =>
         sum +
         (typeof obj.quantity === "number"
@@ -56,17 +59,21 @@ const POSReceiptOneOrder = ({
           : parseFloat(obj.quantity)),
       0
     );
+    return totalQuantity;
   }
 
   function getTotal(orderItems: OrderItem[]): number {
-    return orderItems?.reduce(
-      (acc, cartItem: any) => acc + cartItem.quantity * cartItem.price,
+    // Use reduce to sum up the 'total' field
+    const totalAmount = orderItems?.reduce(
+      (acc: any, cartItem: any) => acc + cartItem.quantity * cartItem.price,
       0
     );
+    return totalAmount;
   }
 
   function subtotal(): number {
-    return order?.paymentInfo?.amountPaid - order?.ship_cost;
+    let sub = order?.paymentInfo?.amountPaid - order?.ship_cost;
+    return sub;
   }
 
   return (
@@ -75,80 +82,124 @@ const POSReceiptOneOrder = ({
       className="main-receipt w-[300px] maxmd:w-full min-h-full mx-auto relative bg-white px-2"
     >
       <div className="flex flex-col justify-between items-center">
-        <h1 className="main-receipt-header flex font-black font-EB_Garamond text-[1.5rem] maxmd:text-[1rem] leading-none">
-          Yunuen Company
-        </h1>
-        <h2 className="text-md font-bold text-foreground items-center">
-          {order?.orderId}
-        </h2>
+        <div className="relative flex flex-col items-center justify-center max-w-fit">
+          <h1 className="main-receipt-header flex font-black font-EB_Garamond text-[1.5rem] maxmd:text-[1rem] leading-none">
+            Yunuen Company
+          </h1>
+        </div>
+
+        <div className="flex flex-col items-end justify-end gap-x-1 overflow-hidden">
+          <h2 className="text-md font-bold text-foreground items-center">
+            {order?.orderId}
+          </h2>
+        </div>
       </div>
 
-      <div className="border-b-2 border-slate-300">
+      <div className="relative overflow-x-hidden border-b-2 border-slate-300">
         <table className="w-full text-left">
           <thead className="text-[12px] text-foreground uppercase">
             <tr className="flex flex-row items-center justify-between">
-              <th>#</th>
-              <th>Producto</th>
-              <th>Precio</th>
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
+                #
+              </th>
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
+                Producto
+              </th>
+              <th scope="col" className="px-2 maxsm:px-0 py-0.5">
+                Precio
+              </th>
             </tr>
           </thead>
-          <tbody className="text-xs">
-            {order?.orderItems?.map((item: OrderItem, index: Key) => (
-              <tr
-                key={index}
-                className="main-receipt-item flex flex-row items-center justify-between"
-              >
-                <td>{item.quantity}</td>
-                <td>{item.name.substring(0, 10)}</td>
-                <td>
-                  <FormattedPrice amount={item.price || 0} />
-                </td>
-              </tr>
-            ))}
+          <tbody className="text-xs overscroll-x-none overflow-hidden">
+            {order?.orderItems?.map(
+              (item: OrderItem, index: Key | null | undefined) => (
+                <tr
+                  key={index}
+                  className="main-receipt-item flex flex-row items-center justify-between"
+                >
+                  <td className="px-2 maxsm:px-0 pb-0.5">{item.quantity}</td>
+                  <td className="px-2 maxsm:px-0 pb-0.5 text-clip">
+                    {item.name.substring(0, 10)}
+                  </td>
+                  <td className="px-2 maxsm:px-0 pb-0.5">
+                    <FormattedPrice amount={item.price || 0} />
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
-
-      <div className="flex flex-col p-2">
-        <ul>
-          <li className="flex justify-between">
-            <span>Sub-Total:</span>
-            <span>
-              <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
-            </span>
-          </li>
-          <li className="flex justify-between">
-            <span>Total de Artículos:</span>
-            <span>{getQuantities(order?.orderItems)} (Artículos)</span>
-          </li>
-          <li className="flex justify-between">
-            <span>IVA:</span>
-            <span>
-              <FormattedPrice amount={order?.ship_cost || 0} />
-            </span>
-          </li>
-          <li className="main-receipt-totals flex justify-between pt-1">
-            <span>Total:</span>
-            <span>
-              <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
-            </span>
-          </li>
-          <li className="main-receipt-totals flex justify-between pt-1">
-            <span>Pago:</span>
-            <span>
-              -<FormattedPrice amount={subtotal() || 0} />
-            </span>
-          </li>
-        </ul>
-        <div className="text-center border-t-2">
-          <p>{formatSpanishDate(order?.createdAt)}</p>
-          <p>Gracias por tu compra</p>
-          <p>Para descuentos y especiales síguenos en redes @yunuencompany</p>
+      <div className="relative flex flex-row maxmd:flex-col items-center justify-start overflow-x-hidden gap-2 ">
+        <div className="w-full">
+          <div className="container mx-auto flex flex-col p-2">
+            <ul className="mb-2 ">
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="main-receipt-desglose text-xs">
+                  Sub-Total:
+                </span>
+                <span className="main-receipt-desglose text-xs">
+                  <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
+                </span>
+              </li>
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="main-receipt-desglose text-xs">
+                  Total de Artículos:
+                </span>
+                <span className="main-receipt-desglose text-foreground text-xs">
+                  {getQuantities(order?.orderItems)} (Artículos)
+                </span>
+              </li>
+              <li className=" flex justify-between gap-x-5 text-gray-950">
+                <span className="text-xs main-receipt-desglose">IVA:</span>
+                <span className="text-xs main-receipt-desglose">
+                  <FormattedPrice amount={order?.ship_cost || 0} />
+                </span>
+              </li>
+              <li className="main-receipt-totals text-base font-semibold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+                <span>Total:</span>
+                <span>
+                  <FormattedPrice amount={getTotal(order?.orderItems) || 0} />
+                </span>
+              </li>
+              <li className="main-receipt-totals text-base font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+                <span>Pago:</span>
+                <span>
+                  <span>
+                    -<FormattedPrice amount={subtotal() || 0} />
+                  </span>
+                </span>
+              </li>
+              {/* <li className="text-lg font-bold border-t-1 border-slate-300 flex justify-between gap-x-1 pt-1">
+                <span>Pendiente:</span>
+                <span>
+                  <FormattedPrice
+                    amount={
+                      getTotal(order?.orderItems) -
+                        order?.paymentInfo?.amountPaid || 0
+                    }
+                  />
+                </span>
+              </li> */}
+            </ul>
+            <div className="text-[10px] text-foreground tracking-wide text-center border-t-2 border-slate-300 ">
+              <p className="text-[10px] my-0.5 w-full text-center">
+                {formatSpanishDate(order?.createdAt)}
+              </p>
+              <p>Gracias por tu compra</p>
+              <p>
+                Para descuentos y especiales síguenos en redes @yunuencompany
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <ReactToPrint
-        content={() => ref.current as HTMLDivElement}
+        bodyClass="print-agreement"
+        pageStyle="{ size: 2.5in 4in }"
+        documentTitle={`#${order?.orderId}`}
+        content={() => ref.current as HTMLDivElement} // Ensure ref.current is properly cast
         trigger={() => (
           <Button ref={printTriggerRef} style={{ display: "none" }}>
             Print
