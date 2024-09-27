@@ -9,6 +9,7 @@ import Customer from "@/backend/models/Customer";
 
 export async function POST(request: any) {
   const cookie = await request.headers.get("cookie");
+
   if (!cookie) {
     // Not Signed in
     const notAuthorized = "You are not authorized no no no";
@@ -26,6 +27,7 @@ export async function POST(request: any) {
       recaptcha,
       honeypot,
     } = await request.json();
+
     if (honeypot) {
       console.log("no bots thank you!");
       throw new Error("hubo un error al iniciar session");
@@ -80,61 +82,61 @@ export async function POST(request: any) {
 
       const res = await newUser.save();
 
-      if (res?._id) {
-        await newCustomer.save();
-        try {
-          const subject = "Confirmar email";
-          const body = `Por favor da click en confirmar email para verificar tu cuenta.`;
-          const title = "Completar registro";
-          const greeting = `Saludos ${name}`;
-          const action = "CONFIRMAR EMAIL";
-          const bestRegards = "Gracias por unirte a nuestro sitio.";
-          const recipient_email = email;
-          const sender_email = "yunuencompany01@gmail.com";
-          const fromName = "yunuencompany";
+      // if (res?._id) {
+      //   await newCustomer.save();
+      //   try {
+      //     const subject = "Confirmar email";
+      //     const body = `Por favor da click en confirmar email para verificar tu cuenta.`;
+      //     const title = "Completar registro";
+      //     const greeting = `Saludos ${name}`;
+      //     const action = "CONFIRMAR EMAIL";
+      //     const bestRegards = "Gracias por unirte a nuestro sitio.";
+      //     const recipient_email = email;
+      //     const sender_email = "yunuencompany01@gmail.com";
+      //     const fromName = "yunuencompany";
 
-          var transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.GOOGLE_MAIL,
-              pass: process.env.GOOGLE_MAIL_PASS,
-            },
-          });
+      //     var transporter = nodemailer.createTransport({
+      //       service: "gmail",
+      //       auth: {
+      //         user: process.env.GOOGLE_MAIL,
+      //         pass: process.env.GOOGLE_MAIL_PASS,
+      //       },
+      //     });
 
-          const mailOption = {
-            from: `"${fromName}" ${sender_email}`,
-            to: recipient_email,
-            subject,
-            html: `
-            <!DOCTYPE html>
-            <html lang="es">
-            <body>
-            <p>${greeting}</p>
-            <p>${title}</p>
-            <div>${body}</div>
-            <a href="${process.env.NEXTAUTH_URL}/exito?token=${verificationToken}">${action}</a>
-            <p>${bestRegards}</p>
-            </body>
-            
-            </html>
-            
-            `,
-          };
+      //     const mailOption = {
+      //       from: `"${fromName}" ${sender_email}`,
+      //       to: recipient_email,
+      //       subject,
+      //       html: `
+      //       <!DOCTYPE html>
+      //       <html lang="es">
+      //       <body>
+      //       <p>${greeting}</p>
+      //       <p>${title}</p>
+      //       <div>${body}</div>
+      //       <a href="${process.env.NEXTAUTH_URL}/exito?token=${verificationToken}">${action}</a>
+      //       <p>${bestRegards}</p>
+      //       </body>
 
-          await transporter.sendMail(mailOption);
+      //       </html>
 
-          return NextResponse.json(
-            { message: "Email sent successfully" },
-            { status: 200 }
-          );
-        } catch (error) {
-          console.log(error);
-          return NextResponse.json(
-            { message: "Failed to send email" },
-            { status: 500 }
-          );
-        }
-      }
+      //       `,
+      //     };
+
+      //     await transporter.sendMail(mailOption);
+
+      //     return NextResponse.json(
+      //       { message: "Email sent successfully" },
+      //       { status: 200 }
+      //     );
+      //   } catch (error) {
+      //     console.log(error);
+      //     return NextResponse.json(
+      //       { message: "Failed to send email" },
+      //       { status: 500 }
+      //     );
+      //   }
+      // }
       //return new Response('New user registered', { status: 200 });
       console.log("response.data?.score:", response.data?.score);
 
