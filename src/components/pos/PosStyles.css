@@ -29,16 +29,12 @@
     font-size: 16px;
     line-height: 95%;
   }
-}
 
-@media print {
   .main-receipt {
     overflow: visible;
-    height: auto;
+    height: auto; /* Ensure height adapts to content */
   }
-}
 
-@media print {
   .page-break {
     margin-top: 1rem;
     display: block;
@@ -47,6 +43,5 @@
 }
 
 @page {
-  size: "58mm";
-  margin: 1mm;
+  margin: 0; /* Remove fixed margin for auto sizing */
 }
