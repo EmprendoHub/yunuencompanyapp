@@ -7,20 +7,21 @@
 @media print {
   html,
   body {
-    height: auto !important;
-    overflow: initial !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-    padding: 0px;
+    height: auto !important; /* Allow height to adjust */
+    overflow: hidden; /* Prevent overflow */
+    margin: 0; /* Remove margins */
+    padding: 0; /* Remove padding */
   }
 
-  .print-btn {
-    display: none;
-  }
-  .main-receipt-item {
+  .main-receipt {
+    width: 80mm; /* Set receipt width */
+    height: auto; /* Allow height to adjust */
+    overflow: visible; /* Ensure visibility of all content */
+    page-break-inside: avoid; /* Prevent breaking inside receipt */
     font-size: 12px;
     line-height: 95%;
   }
+
   .main-receipt-desglose {
     font-size: 12px;
     line-height: normal;
@@ -28,6 +29,10 @@
   .main-receipt-totals {
     font-size: 16px;
     line-height: 95%;
+  }
+
+  .print-btn {
+    display: none; /* Hide print button */
   }
 }
 
@@ -47,6 +52,6 @@
 }
 
 @page {
-  margin: 1mm;
-  height: fit-content;
+  size: 80mm auto; /* Set width to 80mm and let height be auto */
+  margin: 0; /* Remove margins to eliminate extra space */
 }
