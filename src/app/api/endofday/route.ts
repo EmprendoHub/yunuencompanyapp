@@ -14,24 +14,43 @@ export const GET = async (request: any, res: any) => {
   try {
     await dbConnect();
     // Get today's date at midnight
-    let startOfDay;
+    let startOfDay, endOfDay;
     const currentDate = new Date();
+
     if (process.env.NODE_ENV === "development") {
-      // Adjust the date object to the Central Standard Time (CST) time zone
-      const cstOffset = -7 * 60 * 60 * 1000; // CST is UTC-6
-      startOfDay = new Date(currentDate.getTime() + cstOffset);
+      // Development: Use UTC for the start of the day
+      startOfDay = new Date(
+        Date.UTC(
+          currentDate.getUTCFullYear(),
+          currentDate.getUTCMonth(),
+          currentDate.getUTCDate()
+        )
+      );
+
+      // Development: End of the day in UTC (23:59:59.999)
+      endOfDay = new Date(
+        Date.UTC(
+          currentDate.getUTCFullYear(),
+          currentDate.getUTCMonth(),
+          currentDate.getUTCDate(),
+          23,
+          59,
+          59,
+          999
+        )
+      );
+    } else if (process.env.NODE_ENV === "production") {
+      // Production: Use local time for start of the day
+      startOfDay = new Date(currentDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      // Production: End of the day in local time (23:59:59.999)
+      endOfDay = new Date(currentDate);
+      endOfDay.setHours(23, 59, 59, 999);
     }
 
-    if (process.env.NODE_ENV === "production") {
-      startOfDay?.setHours(0, 0, 0, 0);
-    }
-
-    console.log("time", startOfDay);
-
-    // Get tomorrow's date at midnight
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-
+    console.log("Start of the day:", startOfDay?.toISOString());
+    console.log("End of the day:", endOfDay?.toISOString());
     // // Get yesterday's date at midnight
     // const startOfDay = new Date();
     // startOfDay.setDate(startOfDay.getDate() - 1);
@@ -58,6 +77,7 @@ export const GET = async (request: any, res: any) => {
       {
         $match: {
           "orderDetails.branch": "Sucursal", // Match documents where the branch is 'Sucursal'
+          "orderDetails.paymentInfo.paymentIntent": "paid",
           pay_date: { $gte: startOfDay, $lte: endOfDay }, // Date range filter
         },
       },

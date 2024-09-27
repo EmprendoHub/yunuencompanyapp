@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "@/context/AuthContext";
 import { useState } from "react";
 import { TotalUsageContext } from "./(context)/TotalUsageContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const CustomSessionProvider = ({ children }: { children: any }) => {
   const [totalUsage, setTotalUsage] = useState(0);
@@ -14,7 +15,10 @@ const CustomSessionProvider = ({ children }: { children: any }) => {
       <AuthProvider>
         <TotalUsageContext.Provider value={{ totalUsage, setTotalUsage }}>
           <PersistGate persistor={persistor}>
-            <SessionProvider>{children}</SessionProvider>
+            <SessionProvider>
+              {children}
+              <Toaster />
+            </SessionProvider>
           </PersistGate>
         </TotalUsageContext.Provider>
       </AuthProvider>

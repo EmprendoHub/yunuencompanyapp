@@ -86,9 +86,6 @@ const BranchSidebar = ({ children }: { children: any }) => {
                   </div>
                 </div>
               </div>
-              <span className="text-xs text-gray-600">
-                {user?.email.substring(0, 15)}...
-              </span>
             </div>
           </div>
         </div>

@@ -120,16 +120,14 @@ const POSOrder = ({
               <span className="text-sm text-red-800">
                 {order?.email === "yunuencompany01@gmail.com"
                   ? "(Sucursal)"
-                  : "Cliente"}
+                  : "(Cliente)"}
               </span>
             </h2>
           </Link>
-          <p className="text-gray-600">{order?.email}</p>
-          <p className="text-gray-600">{order?.phone}</p>
         </div>
         <div className="flex flex-row maxsm:flex-col items-start justify-start gap-x-5">
           <h2 className="text-3xl mb-8 ml-4 font-bold ">
-            Pedido #{order?.orderId}
+            Venta #{order?.orderId}
           </h2>
           {order?.orderStatus === "Apartado" ? (
             <h2
@@ -140,12 +138,14 @@ const POSOrder = ({
           ) : (
             <h2
               className={`text-3xl mb-8 ml-4 font-bold uppercase ${
-                order?.paymentInfo?.status === "paid" ? "text-green-700" : ""
+                order?.paymentInfo?.status === "paid"
+                  ? "text-green-700"
+                  : order?.paymentInfo?.status === "cancelada"
+                  ? "text-red-700"
+                  : ""
               }`}
             >
-              {order?.paymentInfo?.amountPaid >= getTotal(order?.orderItems)
-                ? "PAGADO"
-                : "PENDIENTE"}
+              {order?.paymentInfo?.paymentIntent}
             </h2>
           )}
         </div>
@@ -217,12 +217,7 @@ const POSOrder = ({
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Img
               </th>
-              <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Tamaño
-              </th>
-              <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Color
-              </th>
+
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Cant.
               </th>
@@ -235,7 +230,7 @@ const POSOrder = ({
             {order?.orderItems?.map((item: any, index: number) => (
               <tr className="bg-background" key={index}>
                 <td className="px-2 maxsm:px-0 py-2">
-                  {item.name.substring(0, 13)}...
+                  {item.name.substring(0, 13)}
                 </td>
                 <td className="px-2 maxsm:px-0 py-2">
                   <Image
@@ -245,8 +240,6 @@ const POSOrder = ({
                     height={50}
                   />
                 </td>
-                <td className="px-2 maxsm:px-0 py-2">{item.size}</td>
-                <td className="px-2 maxsm:px-0 py-2">{item.color}</td>
                 <td className="px-2 maxsm:px-0 py-2">{item.quantity}</td>
                 <td className="px-2 maxsm:px-0 py-2">
                   <FormattedPrice amount={item.price || 0} />
@@ -256,15 +249,15 @@ const POSOrder = ({
           </tbody>
         </table>
       </div>
-      <div className="relative flex flex-row maxmd:flex-col-reverse items-start justify-start overflow-x-auto shadow-md sm:rounded-lg p-5 gap-12">
+      <div className="relative flex flex-row maxmd:flex-col-reverse items-start justify-start overflow-x-auto shadow-md rounded-lg p-5 gap-3">
         <div className="w-1/3 maxmd:w-full">
           <div className=" max-w-screen-xl mx-auto bg-background flex flex-col p-2">
             <h2 className="text-2xl">Totales</h2>
             {order?.orderStatus === "Apartado" ? (
-              <ul className="mb-5">
+              <ul className="mb-5 text-[10px]">
                 <li className="flex justify-between gap-x-5 text-gray-600  mb-1">
                   <span>Total de Artículos:</span>
-                  <span className="text-green-700">
+                  <span className="text-green-700 text-[10px]">
                     {getQuantities(order?.orderItems)} (Artículos)
                   </span>
                 </li>
@@ -303,7 +296,7 @@ const POSOrder = ({
                 </li>
               </ul>
             ) : (
-              <ul className="mb-5">
+              <ul className="mb-5 text-xs">
                 <li className="flex justify-between gap-x-5 text-gray-600  mb-1">
                   <span>Sub-Total:</span>
                   <span>
@@ -322,7 +315,7 @@ const POSOrder = ({
                     <FormattedPrice amount={order?.ship_cost || 0} />
                   </span>
                 </li>
-                <li className="text-3xl font-bold border-t flex justify-between gap-x-5 mt-3 pt-3">
+                <li className="text-xl font-bold border-t flex justify-between gap-x-5 mt-3 pt-3">
                   <span>Total:</span>
                   <span>
                     <FormattedPrice
@@ -336,10 +329,13 @@ const POSOrder = ({
         </div>
         <div className="flex flex-col w-full ">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-3 w-full">
-            <h2 className="text-2xl">Pagos</h2>
-            <table className="w-full text-sm text-left">
+            <h2 className="text-xl">Pagos</h2>
+            <table className="w-full text-xs text-left">
               <thead className="text-l text-gray-700 uppercase">
                 <tr className="flex flex-row justify-between ">
+                  <th scope="col" className="px-2 maxsm:px-0 py-3  w-full">
+                    Estado
+                  </th>
                   <th scope="col" className="px-2 maxsm:px-0 py-3  w-full">
                     Fecha
                   </th>
@@ -366,6 +362,9 @@ const POSOrder = ({
                     className="bg-background flex flex-row justify-between "
                     key={payment?._id}
                   >
+                    <td className="px-2 maxsm:px-0 py-2  w-full uppercase text-[10px]">
+                      {payment?.paymentIntent}
+                    </td>
                     <td className="px-2 maxsm:px-0 py-2 w-full">
                       {formatDate(payment?.pay_date)}
                       {formatTime(payment?.pay_date)}

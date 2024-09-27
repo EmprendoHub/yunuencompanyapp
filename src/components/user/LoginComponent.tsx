@@ -83,20 +83,27 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
       {loginAttempts > 30 ? (
         <div>Excediste el limite de inicios de session</div>
       ) : (
-        <div className="flex items-center justify-center bg-primary h-screen w-full">
-          <div className="w-full flex items-center justify-center maxmdsm:hidden">
+        <div className="flex maxlg:flex-col items-center justify-center bg-primary h-screen w-full">
+          <div className="w-full flex flex-col items-center justify-center">
             <Image
-              src={"/images/Marc_jacobs_example.webp"}
-              alt="producto"
-              width={1000}
-              height={1000}
-              className="w-[500px] h-[500px]"
+              src={"/logos/yunuen_logo_Horixontal.webp"}
+              alt="Yunuen Company"
+              width={500}
+              height={500}
+              className="w-[200px] maxmd:w-[150px] h-auto"
+            />
+            <Image
+              src={"/logos/login_pic.png"}
+              alt="Yunuen Company"
+              width={500}
+              height={500}
+              className="w-[400px] maxmd:w-[300px] h-auto"
             />
           </div>
-          <div className="w-full bg-background h-screen p-20 maxsm:p-8 shadow-xl text-center text-primary mx-auto flex flex-col items-center justify-center">
-            <SquareLogo className={"ml-5 my-4 w-[200px] maxsm:w-[120px]"} />
+          <div className="w-1/2 maxlg:w-[70%] bg-background h-screen maxlg:h-auto p-20 maxlg:p-5 shadow-xl text-center text-primary mx-auto flex flex-col items-center justify-center">
+            <SquareLogo className={"ml-5 my-4 w-[120px] maxlg:hidden"} />
             <button
-              className="w-full text-white hover:text-foreground hover:bg-slate-300 duration-500 ease-in-out text-foreground text-xs bg-black mb-4 flex flex-row gap-4 items-center py-4 justify-center"
+              className="w-auto px-5 text-white hover:text-foreground hover:bg-slate-300 duration-500 ease-in-out text-foreground text-xs bg-black flex flex-row gap-4 items-center py-4 justify-center"
               onClick={() => {
                 signIn("google");
               }}
@@ -104,9 +111,9 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
               <IoLogoGoogle />
               Iniciar con Google
             </button>
-            <div className="text-center text-slate-900 my-4 ">- O -</div>
+            <div className="text-center text-slate-900 my-1 ">- O -</div>
             <form
-              className="flex flex-col justify-center items-center text-center gap-y-4"
+              className="flex flex-col justify-center items-center text-center text-xs gap-y-2"
               onSubmit={handleSubmit}
             >
               <input
@@ -132,12 +139,6 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
                 Iniciar
               </button>
             </form>
-            <Link
-              className="text-[12px] text-center mt-3 text-foreground"
-              href={`/registro`}
-            >
-              ¿Aun no tienes cuenta? <br /> Registrar aquí.
-            </Link>
           </div>
         </div>
       )}

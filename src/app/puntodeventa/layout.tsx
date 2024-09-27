@@ -39,7 +39,9 @@ export default function UserLayout({ children }: { children: any }) {
           />
         </BranchSidebar>
         <div className="relative w-full mb-5 ">{children}</div>
-        {!pathname.includes("tienda") && !pathname.includes("pedidos") ? (
+        {!pathname.includes("tienda") &&
+        !pathname.includes("pedidos") &&
+        !pathname.includes("pedido") ? (
           <Link
             className="absolute right-3 bottom-3 z-50 text-4xl text-blue-500 bg-black px-7 py-5 flex items-center justify-center rounded-full hover:scale-110 duration-300 ease-in-out"
             href={`${

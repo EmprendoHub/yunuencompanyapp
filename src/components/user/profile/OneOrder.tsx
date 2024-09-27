@@ -183,10 +183,10 @@ const OneOrder = ({
           <div className="w-1/3 maxmd:w-full">
             <div className=" max-w-screen-xl mx-auto bg-background flex flex-col p-2">
               <h2 className="text-2xl">Totales</h2>
-              <ul className="mb-5">
+              <ul className="mb-5 text-xs">
                 <li className="flex justify-between gap-x-5 text-gray-600  mb-1">
                   <span>Total de Artículos:</span>
-                  <span className="text-green-700">
+                  <span className="text-green-700 text-[10px]">
                     {getOrderItemsQuantities(order?.orderItems)} (Artículos)
                   </span>
                 </li>
@@ -254,7 +254,7 @@ const OneOrder = ({
         <div className="relative flex fle-row maxmd:flex-col overflow-x-auto shadow-md sm:rounded-lg p-5">
           <div className="w-1/3 maxmd:w-full">
             <div className="container max-w-screen-xl mx-auto bg-background flex flex-col  p-2">
-              <ul className="mb-5">
+              <ul className="mb-5 text-xs">
                 <li className="flex justify-between gap-x-5 text-gray-600  mb-1">
                   <span>Sub-Total:</span>
                   <FormattedPrice amount={subtotal() || 0} />

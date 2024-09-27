@@ -2,6 +2,8 @@
 import { changeOrderNoteStatus, updateOneOrder } from "@/app/_actions";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "../ui/use-toast";
+import { title } from "process";
 
 const UpdateOrderComp = ({
   setShowModal,
@@ -18,6 +20,14 @@ const UpdateOrderComp = ({
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    if (note === "" || note.length < 5) {
+      toast({
+        title:
+          "Por favor agregar una razón detallada de cancelación para continuar.",
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.set("orderStatus", orderStatus);

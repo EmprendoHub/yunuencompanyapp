@@ -1,15 +1,15 @@
 "use client";
 import Link from "next/link";
 import { FaPrint } from "react-icons/fa";
-import { formatDate, formatSpanishDate, formatTime } from "@/backend/helpers";
+import { formatSpanishDate } from "@/backend/helpers";
 import { getTotalFromItems } from "@/backend/helpers";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import AdminOrderSearch from "@/components/layout/AdminOrderSearch";
-import { TfiMoney } from "react-icons/tfi";
 import { useState } from "react";
-import Modal from "../modals/Modal";
 import { FaEye } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
+import { TbDeselect } from "react-icons/tb";
+import ModalCancelSale from "../modals/ModalCancelSale";
 
 const POSOrders = ({
   orders,
@@ -40,7 +40,7 @@ const POSOrders = ({
   };
   return (
     <>
-      <Modal
+      <ModalCancelSale
         showModal={showModal}
         setShowModal={setShowModal}
         orderId={usedOrderId}
@@ -68,7 +68,9 @@ const POSOrders = ({
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Recibió
               </th>
-
+              <th scope="col" className="px-2 maxsm:px-0 py-3">
+                Estado
+              </th>
               <th scope="col" className="px-6 py-3 maxsm:hidden">
                 Fecha
               </th>
@@ -79,7 +81,12 @@ const POSOrders = ({
           </thead>
           <tbody>
             {orders?.map((order: any, index: number) => (
-              <tr className="bg-background" key={index}>
+              <tr
+                className={`bg-background ${
+                  order?.orderStatus === "cancelada" && "text-muted"
+                }`}
+                key={index}
+              >
                 <td className="px-6 maxsm:px-2 py-2">
                   <Link key={index} href={`/${pathname}/pedido/${order._id}`}>
                     {order.orderId}
@@ -94,6 +101,9 @@ const POSOrders = ({
                   </b>
                 </td>
                 <td className="px-2 py-2 maxsm:hidden text-xs">
+                  {order?.orderStatus}
+                </td>
+                <td className="px-2 py-2 maxsm:hidden text-xs">
                   {order?.createdAt && formatSpanishDate(order?.createdAt)}
                 </td>
                 <td className="px-1 py-2">
@@ -104,35 +114,27 @@ const POSOrders = ({
                     >
                       <FaEye className="" />
                     </Link>
-                    <Link
-                      href={`/${pathname}/recibo/${order._id}`}
-                      className="px-2 py-2 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
-                    >
-                      <FaPrint className="" />
-                    </Link>
-                    {order?.paymentInfo?.amountPaid >=
-                      getTotalFromItems(order.orderItems) ===
-                    true ? (
-                      ""
+                    {order?.orderStatus !== "cancelada" ? (
+                      <Link
+                        href={`/${pathname}/recibo/${order._id}`}
+                        className="px-2 py-2 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
+                      >
+                        <FaPrint className="" />
+                      </Link>
                     ) : (
+                      ""
+                    )}
+
+                    {order?.orderStatus !== "cancelada" ? (
                       <button
                         onClick={() => updateOrderStatus(order)}
-                        className={`px-2 py-2 inline-block text-foreground hover:text-foreground ${
-                          order?.paymentInfo?.amountPaid >=
-                            getTotalFromItems(order.orderItems) ===
-                          true
-                            ? ""
-                            : "bg-emerald-700"
-                        }  shadow-sm border border-gray-200 rounded-md hover:scale-110 cursor-pointer mr-2 duration-200 ease-in-out`}
+                        className={`px-2 py-2 inline-block text-foreground hover:text-foreground bg-red-700
+                       shadow-sm border border-gray-200 rounded-md hover:scale-110 cursor-pointer mr-2 duration-200 ease-in-out`}
                       >
-                        {order?.paymentInfo?.amountPaid >=
-                          getTotalFromItems(order.orderItems) ===
-                        true ? (
-                          ""
-                        ) : (
-                          <TfiMoney className="text-white" />
-                        )}
+                        <TbDeselect className="text-white" />
                       </button>
+                    ) : (
+                      ""
                     )}
                   </div>
                 </td>

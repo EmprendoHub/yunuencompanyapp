@@ -66,7 +66,7 @@ const POSProductCard = ({ product }: { product: any }) => {
       className="border-[1px] rounded-sm max-w-[300px] maxmd:max-w-[100%] overflow-hidden relative cursor-pointer"
       onClick={handleClick}
     >
-      <div className="w-[180px] h-[180px] group overflow-hidden relative">
+      <div className="w-[180px] h-[180px] maxsm:w-[100px] maxsm:h-[100px] group overflow-hidden relative">
         <Image
           src={product?.images[0].url}
           alt="product image"

@@ -139,15 +139,15 @@ export async function DELETE(request: any) {
 
   try {
     await dbConnect();
-    const urlData = await request.url.split("?");
-    const id = urlData[1];
-    const soonToDeleteOrder = await Order.findById(id);
+    const payload = await request.formData();
+    let { note, orderId } = Object.fromEntries(payload);
+    const soonToDeleteOrder = await Order.findById(orderId);
 
     if (!soonToDeleteOrder) {
       const notFoundResponse = "Order not found";
       return new Response(JSON.stringify(notFoundResponse), { status: 404 });
     }
-
+    const payment = await Payment.findOne({ order: orderId });
     // Iterate through order items and update Product quantities
     for (const orderItem of soonToDeleteOrder.orderItems) {
       const productId = orderItem.product.toString();
@@ -161,9 +161,31 @@ export async function DELETE(request: any) {
         );
       }
     }
-    const deleteOrder = await Order.findByIdAndDelete(id);
+    const date = newCSTDate();
+    const cancelOrder = await Order.findByIdAndUpdate(orderId, {
+      orderStatus: "cancelada",
+      comment: note,
+      updatedAt: date,
+      paymentInfo: {
+        id: "cancelada",
+        status: "cancelada",
+        taxPaid: 0,
+        amountPaid: 0,
+        paymentIntent: "cancelada",
+      },
+    });
 
-    return new Response(JSON.stringify(deleteOrder), { status: 201 });
+    await Payment.findByIdAndUpdate(payment._id, {
+      paymentIntent: "cancelado",
+      comment: note,
+    });
+
+    revalidatePath(`/admin/pedidos`);
+    revalidatePath(`/admin/pedido/${orderId}`);
+    revalidatePath(`/puntodeventa/pedidos`);
+    revalidatePath(`/puntodeventa/pedido/${orderId}`);
+
+    return new Response(JSON.stringify(cancelOrder), { status: 201 });
   } catch (error: any) {
     return new Response(JSON.stringify(error.message), { status: 500 });
   }

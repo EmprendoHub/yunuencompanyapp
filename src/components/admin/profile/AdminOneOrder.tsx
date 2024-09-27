@@ -258,10 +258,10 @@ const AdminOneOrder = ({
           <div className=" max-w-screen-xl mx-auto bg-background flex flex-col p-2">
             <h2 className="text-2xl">Totales</h2>
             {order?.orderStatus === "Apartado" ? (
-              <ul className="mb-5">
+              <ul className="mb-5 text-xs">
                 <li className="flex justify-between gap-x-5 text-gray-600  mb-1">
                   <span>Total de Artículos:</span>
-                  <span className="text-green-700">
+                  <span className="text-green-700 text-[10px]">
                     {getQuantities(order?.orderItems)} (Artículos)
                   </span>
                 </li>

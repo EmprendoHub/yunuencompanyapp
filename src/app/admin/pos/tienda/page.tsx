@@ -43,7 +43,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   }
 
   return (
-    <div className="flex  items-start justify-center gap-5">
+    <div className="flex maxsm:flex-col items-start justify-center gap-5">
       <ListPOSProducts
         pageName={"Sucursal"}
         products={products}

@@ -151,8 +151,8 @@ const PayCartComp = ({
   };
 
   return (
-    <div className="flex flex-col w-full h-full items-center justify-center">
-      <div className="w-1/2 maxmd:w-5/6 bg-background pl-4">
+    <div className="flex flex-col  w-full h-full items-center justify-center">
+      <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg">
         <section className=" p-6 w-full">
           <h1 className="text-2xl maxmd:text-5xl font-semibold text-foreground mb-4 font-EB_Garamond text-center uppercase">
             {payType === "layaway" ? "Apartar" : "Pagar"}
@@ -174,46 +174,11 @@ const PayCartComp = ({
                 name="transactionNo"
               />
             </div>
+
             <div className="mb-4 text-center">
               <input
                 type="text"
-                className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
-                placeholder="Nombre de Cliente"
-                onChange={(e) => setName(e.target.value)}
-                name="name"
-              />
-            </div>
-            <div className="mb-4 text-center">
-              <input
-                type="text"
-                value={phone}
-                className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
-                placeholder="353 123 4512"
-                onChange={handlePhoneChange}
-                name="phone"
-              />
-            </div>
-            <div className="mb-4 text-center">
-              <input
-                type="text"
-                className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
-                placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
-                name="email"
-              />
-            </div>
-            <div className="mb-4 text-center">
-              <input
-                type="text"
-                className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
-                placeholder="Nota"
-                onChange={(e) => setNote(e.target.value)}
-                name="note"
-              />
-            </div>
-            <div className="mb-4 text-center">
-              <input
-                type="text"
+                disabled
                 placeholder="$0.00"
                 value={amountReceived}
                 onChange={(e) => handleAmountReceived(e.target.value)}

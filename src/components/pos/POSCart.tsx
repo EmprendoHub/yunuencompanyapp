@@ -19,20 +19,20 @@ const POSCart = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="">
+    <div className="mt-4 mr-2">
       <section className="pb-10 bg-gray-100">
         <div className=" mx-auto bg-background ">
-          <div className="flex flex-col gap-2">
-            <section className=" bg-gray-100">
-              <div className=" mx-auto px-4">
-                <h2 className="text-lg font-semibold mt-2 font-EB_Garamond">
+          <div className="flex flex-col gap-1">
+            <section className=" bg-background">
+              <div className=" mx-auto px-4 ">
+                <h2 className="text-base font-semibold font-EB_Garamond ">
                   {productsPOS?.length || 0} Artículos(s) en carrito
                 </h2>
               </div>
             </section>
             <main className="w-full">
               {/* Items */}
-              <article className="border border-gray-200 shadow-sm rounded mb-1 px-4">
+              <article className="border border-gray-200 shadow-sm rounded mb-1 p-2 bg-gray-100">
                 {productsPOS?.length > 0 &&
                   productsPOS?.map(
                     (
@@ -49,7 +49,7 @@ const POSCart = () => {
                       index: React.Key | null | undefined
                     ) => (
                       <div key={index}>
-                        <div className="flex flex-row maxmd:flex-wrap gap-5  mb-1 items-center">
+                        <div className="flex flex-row gap-2  items-center">
                           <div className="w-full">
                             <figure className="flex gap-1 leading-5">
                               <div>

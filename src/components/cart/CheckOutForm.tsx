@@ -80,7 +80,7 @@ const CheckOutForm = () => {
                 <Link href={"/iniciar"}>
                   <div className=" w-full bg-emerald-800 text-slate-100 mb-3 rounded-lg py-3 px-6 hover:bg-emerald-900 duration-500 cursor-pointer">
                     <div className="flex flex-row justify-center items-center gap-x-3 ">
-                      <p className="text-xs font-base">Iniciar/Registro</p>
+                      <p className="text-xs font-base">Iniciar</p>
                     </div>
                   </div>
                 </Link>
