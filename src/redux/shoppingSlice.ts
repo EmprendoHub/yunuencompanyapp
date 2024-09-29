@@ -7,6 +7,7 @@ interface Variation {
   color: string;
   colorHex: string;
   price: number;
+  discountRate?: number; // Optional discountRate
   stock: number;
   image: string;
   product?: string;
@@ -47,6 +48,17 @@ export const shoppingSlice = createSlice({
   reducers: {
     increaseLoginAttempts: (state, action) => {
       state.loginAttempts += action.payload.count;
+    },
+    applyDiscount: (
+      state,
+      action: PayloadAction<{ productId: string; discountRate: number }>
+    ) => {
+      const existingProduct: any = state.productsData.find(
+        (item: any) => item._id === action.payload.productId
+      );
+      if (existingProduct) {
+        existingProduct.discountRate = action.payload.discountRate;
+      }
     },
     addToPOSCart: (state: any, action: any) => {
       const existingProduct: any = state.productsPOS.find(
@@ -217,6 +229,7 @@ export const shoppingSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   addToCart,
+  applyDiscount,
   increaseQuantity,
   decreaseQuantity,
   deleteProduct,

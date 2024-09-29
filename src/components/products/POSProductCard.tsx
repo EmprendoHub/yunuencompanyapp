@@ -6,7 +6,7 @@ import Link from "next/link";
 import { calculatePercentage } from "@/backend/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addToPOSCart } from "@/redux/shoppingSlice";
+import { addToPOSCart, applyDiscount } from "@/redux/shoppingSlice";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -23,6 +23,7 @@ interface ProductVariation {
 
 const POSProductCard = ({ product }: { product: any }) => {
   const getPathname = usePathname();
+  const [discountRate, setDiscountRate] = useState<number>(0); // State for discount percentage
   const router = useRouter();
   let pathname: string;
   const [variation, setVariation] = useState<ProductVariation>({
@@ -54,6 +55,14 @@ const POSProductCard = ({ product }: { product: any }) => {
       quantity: 1,
       brand: product.brand,
     };
+    // Apply entered discount percentage
+    if (discountRate > 0) {
+      const discountedPrice =
+        variation.price - (variation.price * discountRate) / 100;
+      updatedVariation.price = discountedPrice;
+      dispatch(applyDiscount({ productId: product._id, discountRate }));
+    }
+    setDiscountRate(0);
     dispatch(addToPOSCart(updatedVariation));
     toast(`${product?.title.substring(0, 15)}... se agregó al carrito`);
   };
@@ -64,9 +73,11 @@ const POSProductCard = ({ product }: { product: any }) => {
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.0 }}
       className="border-[1px] rounded-sm max-w-[300px] maxmd:max-w-[100%] overflow-hidden relative cursor-pointer"
-      onClick={handleClick}
     >
-      <div className="w-[180px] h-[180px] maxsm:w-[100px] maxsm:h-[100px] group overflow-hidden relative">
+      <div
+        className="w-[180px] h-[180px] maxsm:w-[100px] maxsm:h-[100px] group overflow-hidden relative"
+        onClick={handleClick}
+      >
         <Image
           src={product?.images[0].url}
           alt="product image"
@@ -100,6 +111,15 @@ const POSProductCard = ({ product }: { product: any }) => {
         ) : (
           ""
         )}
+      </div>
+      <div className="p-4">
+        <input
+          type="number"
+          placeholder="Discount %"
+          value={discountRate}
+          onChange={(e) => setDiscountRate(Number(e.target.value))}
+          className="border rounded p-1"
+        />
       </div>
     </motion.div>
   );
