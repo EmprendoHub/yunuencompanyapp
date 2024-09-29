@@ -113,6 +113,7 @@ const POSProductCard = ({ product }: { product: any }) => {
         )}
       </div>
       <div className="p-4">
+        <p>Descuento %</p>
         <input
           type="number"
           placeholder="Discount %"
