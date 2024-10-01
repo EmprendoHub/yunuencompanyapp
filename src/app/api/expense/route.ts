@@ -3,6 +3,7 @@ import Expense from "@/backend/models/Expense";
 import Payment from "@/backend/models/Payment";
 import dbConnect from "@/lib/db";
 import { getToken } from "next-auth/jwt";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: any, res: any) {
@@ -39,6 +40,7 @@ export async function POST(request: any, res: any) {
       reference,
       pay_date,
       method,
+      expense: newExpense._id,
       user,
     };
     const newPaymentTransaction = await new Payment(paymentTransactionData);
@@ -53,5 +55,51 @@ export async function POST(request: any, res: any) {
       success: false,
       message: JSON.stringify(error.message),
     });
+  }
+}
+
+export async function DELETE(request: any) {
+  const token = await request.headers.get("cookie");
+
+  if (!token) {
+    // Not Signed in
+    const notAuthorized = "You are not authorized no no no";
+    return new Response(JSON.stringify(notAuthorized), {
+      status: 400,
+    });
+  }
+
+  try {
+    await dbConnect();
+    const payload = await request.formData();
+    let { note, expenseId } = Object.fromEntries(payload);
+    const soonToDeleteExpense = await Expense.findById(expenseId);
+
+    if (!soonToDeleteExpense) {
+      const notFoundResponse = "Expense not found";
+      return new Response(JSON.stringify(notFoundResponse), { status: 404 });
+    }
+    const payment = await Payment.findOne({ expense: expenseId });
+    // Iterate through order items and update Product quantities
+
+    const date = newCSTDate();
+    const cancelExpense = await Expense.findByIdAndUpdate(expenseId, {
+      expenseIntent: "cancelada",
+      comment: note,
+    });
+
+    await Payment.findByIdAndUpdate(payment._id, {
+      paymentIntent: "cancelado",
+      comment: note,
+    });
+
+    revalidatePath(`/admin/gastos`);
+    revalidatePath(`/admin/gastos/gasto/${expenseId}`);
+    revalidatePath(`/puntodeventa/gastos`);
+    revalidatePath(`/puntodeventa/gastos/gasto/${expenseId}`);
+
+    return new Response(JSON.stringify(cancelExpense), { status: 201 });
+  } catch (error: any) {
+    return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }

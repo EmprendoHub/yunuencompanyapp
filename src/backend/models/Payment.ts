@@ -28,6 +28,10 @@ const PaymentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Order",
   },
+  expense: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Expense",
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

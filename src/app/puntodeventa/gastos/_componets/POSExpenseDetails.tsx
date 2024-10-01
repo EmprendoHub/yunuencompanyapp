@@ -12,7 +12,16 @@ interface Expense {
 }
 
 const POSExpenseDetails = ({ expense }: { expense: Expense }) => {
-  return <div>POSExpenseDetails</div>;
+  return (
+    <div className="flex h-screen flex-col items-center justify-center">
+      <p>{expense.type}</p>
+      <p>{expense.amount}</p>
+      <p>{expense.reference}</p>
+      <p>{expense.expenseIntent}</p>
+      <p>{expense.method}</p>
+      <p>{expense.comment}</p>
+    </div>
+  );
 };
 
 export default POSExpenseDetails;

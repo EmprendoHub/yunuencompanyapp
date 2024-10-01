@@ -23,14 +23,12 @@ const ModalCancelExpense = ({
   setShowModal,
   expenseId,
   isPaid,
-  pendingTotal,
 }: {
   pathname: string;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   expenseId: string;
   isPaid: boolean;
-  pendingTotal: number;
 }) => {
   return (
     <AnimatePresence mode="wait">
@@ -46,7 +44,6 @@ const ModalCancelExpense = ({
             expenseId={expenseId}
             isPaid={isPaid}
             pathname={pathname}
-            pendingTotal={pendingTotal}
           />
         </motion.div>
       )}

@@ -9,13 +9,11 @@ const CancelExpenseComp = ({
   setShowModal,
   expenseId,
   isPaid,
-  pendingTotal,
 }: {
   pathname: string;
   setShowModal: any;
   expenseId: string;
   isPaid: boolean;
-  pendingTotal: number;
 }) => {
   const [note, setNote] = useState("");
   const [isSending, setIsSending] = useState(false);

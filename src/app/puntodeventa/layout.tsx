@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { TbDeviceIpadDollar } from "react-icons/tb";
 import {
   LiaCashRegisterSolid,
+  LiaMonero,
   LiaMoneyBillAlt,
   LiaReceiptSolid,
 } from "react-icons/lia";
@@ -39,6 +40,15 @@ export default function UserLayout({ children }: { children: any }) {
               (pathname === "/puntodeventa/gastos/nuevo" && true)
             }
             url={"/puntodeventa/gastos/nuevo"}
+          />
+          <SideBarItem
+            icon={<LiaMonero size={20} />}
+            text={"Gastos"}
+            active={
+              pathname === "/puntodeventa/gastos" ||
+              (pathname === "/puntodeventa/gastos" && true)
+            }
+            url={"/puntodeventa/gastos"}
           />
           <SideBarItem
             icon={<LiaReceiptSolid size={20} />}

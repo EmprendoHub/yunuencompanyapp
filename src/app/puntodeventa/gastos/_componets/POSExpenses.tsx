@@ -32,11 +32,7 @@ const POSExpenses = ({
   const [pendingTotal, setPendingTotal] = useState(0);
 
   const updateExpenseStatus = async (expense: any) => {
-    const calcPending =
-      getTotalFromItems(expense.expenseItems) -
-      expense?.paymentInfo?.amountPaid;
-    setPendingTotal(calcPending);
-    setUsedExpenseId(expense._id);
+    setUsedExpenseId(expense._id.toString());
     setShowModal(true);
   };
   return (
@@ -46,15 +42,14 @@ const POSExpenses = ({
         setShowModal={setShowModal}
         expenseId={usedExpenseId}
         pathname={pathname}
-        pendingTotal={pendingTotal}
         isPaid={false}
       />
       <div className="relative overflow-x-auto shadow-md rounded-lg">
         <div className=" flex flex-row maxsm:flex-col maxsm:items-start items-center justify-between">
           <h1 className="text-3xl w-full maxsm:text-xl my-5 maxsm:my-1 ml-4 maxsm:ml-0 font-bold font-EB_Garamond">
-            {`${filteredExpensesCount} Ventas `}
+            {`${filteredExpensesCount} Gastos `}
           </h1>
-          <AdminOrderSearch />
+          {/* <AdminOrderSearch /> */}
         </div>
         <table className="w-full text-sm maxsm:xs text-left">
           <thead className=" text-gray-700 uppercase">
@@ -88,7 +83,10 @@ const POSExpenses = ({
                 key={index}
               >
                 <td className="px-6 maxsm:px-2 py-2">
-                  <Link key={index} href={`/${pathname}/pedido/${expense._id}`}>
+                  <Link
+                    key={index}
+                    href={`/${pathname}/gastos/gasto/${expense._id}`}
+                  >
                     {expense._id}
                   </Link>
                 </td>
@@ -107,23 +105,13 @@ const POSExpenses = ({
                 <td className="px-1 py-2">
                   <div className="flex items-center ">
                     <Link
-                      href={`/${pathname}/pedido/${expense._id}`}
+                      href={`/${pathname}/gastos/gasto/${expense._id}`}
                       className="px-2 py-2 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
                     >
                       <FaEye className="" />
                     </Link>
-                    {expense?.expenseStatus !== "cancelada" ? (
-                      <Link
-                        href={`/${pathname}/recibo/${expense._id}`}
-                        className="px-2 py-2 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
-                      >
-                        <FaPrint className="" />
-                      </Link>
-                    ) : (
-                      ""
-                    )}
 
-                    {expense?.expenseStatus !== "cancelada" ? (
+                    {expense?.expenseIntent !== "cancelada" ? (
                       <button
                         onClick={() => updateExpenseStatus(expense)}
                         className={`px-2 py-2 inline-block text-foreground hover:text-foreground bg-red-700
