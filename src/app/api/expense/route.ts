@@ -33,6 +33,8 @@ export async function POST(request: any, res: any) {
 
     // Save the Product to the database
     await newExpense.save();
+    const expenseId = newExpense._id;
+    console.log(expenseId);
     let paymentTransactionData = {
       type: type,
       paymentIntent: "pagado",
@@ -40,11 +42,13 @@ export async function POST(request: any, res: any) {
       reference,
       pay_date,
       method,
-      expense: newExpense._id,
+      expense: expenseId,
       user,
     };
     const newPaymentTransaction = await new Payment(paymentTransactionData);
     await newPaymentTransaction.save();
+
+    console.log(newExpense, newPaymentTransaction);
 
     return NextResponse.json(
       { message: "Nuevo gasto agregado" },
@@ -100,6 +104,8 @@ export async function DELETE(request: any) {
 
     return new Response(JSON.stringify(cancelExpense), { status: 201 });
   } catch (error: any) {
+    console.log(error);
+
     return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }
