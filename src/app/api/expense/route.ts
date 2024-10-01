@@ -34,7 +34,6 @@ export async function POST(request: any, res: any) {
     // Save the Product to the database
     await newExpense.save();
     const expenseId = newExpense._id;
-    console.log(expenseId);
     let paymentTransactionData = {
       type: type,
       paymentIntent: "pagado",
@@ -47,8 +46,6 @@ export async function POST(request: any, res: any) {
     };
     const newPaymentTransaction = await new Payment(paymentTransactionData);
     await newPaymentTransaction.save();
-
-    console.log(newExpense, newPaymentTransaction);
 
     return NextResponse.json(
       { message: "Nuevo gasto agregado" },
