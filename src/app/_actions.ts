@@ -41,6 +41,8 @@ import Payment from "@/backend/models/Payment";
 import Customer from "@/backend/models/Customer";
 import { getToken } from "next-auth/jwt";
 import TestUser from "@/backend/models/TestUser";
+import Expense from "@/backend/models/Expense";
+import APIExpenseFilters from "@/lib/APIExpensesFilters";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -2349,6 +2351,49 @@ export async function getAllPOSOrder(searchQuery: any) {
   }
 }
 
+export async function getAllPOSOExpenses(searchQuery: any) {
+  try {
+    await dbConnect();
+    const session = await getServerSession(options);
+    let expenseQuery: any;
+    if (session?.user?.role === "sucursal") {
+      expenseQuery = Expense.find({}).populate("user");
+    }
+
+    const searchParams = new URLSearchParams(searchQuery);
+
+    const resPerPage = Number(searchParams.get("perpage")) || 10;
+    // Extract page and per_page from request URL
+    const page = Number(searchParams.get("page")) || 1;
+    // Apply descending expense based on a specific field (e.g., createdAt)
+    expenseQuery = expenseQuery.sort({ createdAt: -1 });
+
+    // Apply search Filters including expense_id and expenseStatus
+    const apiExpenseFilters: any = new APIExpenseFilters(
+      expenseQuery,
+      searchParams
+    )
+      .searchAllFields()
+      .filter();
+    let expensesData = await apiExpenseFilters.query;
+
+    const itemCount = expensesData.length;
+
+    apiExpenseFilters.pagination(resPerPage, page);
+    expensesData = await apiExpenseFilters.query.clone();
+    let expenses = JSON.stringify(expensesData);
+
+    return {
+      expenses: expenses,
+      itemCount: itemCount,
+      resPerPage: resPerPage,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
 export async function getAllPOSSocialsOrder(searchQuery: any) {
   try {
     await dbConnect();
@@ -2404,6 +2449,21 @@ export async function getOneProduct(slug: any, id: any = "") {
     // convert to string
     product = JSON.stringify(product);
     return { product: product };
+    // return { product };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getOneExpense(id: any = "") {
+  try {
+    await dbConnect();
+    let expense = await Expense.findOne({ _id: id });
+
+    // convert to string
+    expense = JSON.stringify(expense);
+    return { expense: expense };
     // return { product };
   } catch (error: any) {
     console.log(error);

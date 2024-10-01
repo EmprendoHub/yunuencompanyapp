@@ -2,7 +2,11 @@
 import BranchSidebar, { SideBarItem } from "@/components/pos/BranchSidebar";
 import { usePathname } from "next/navigation";
 import { TbDeviceIpadDollar } from "react-icons/tb";
-import { LiaCashRegisterSolid, LiaReceiptSolid } from "react-icons/lia";
+import {
+  LiaCashRegisterSolid,
+  LiaMoneyBillAlt,
+  LiaReceiptSolid,
+} from "react-icons/lia";
 import Link from "next/link";
 
 export default function UserLayout({ children }: { children: any }) {
@@ -27,7 +31,15 @@ export default function UserLayout({ children }: { children: any }) {
             active={pathname === "/puntodeventa/pedidos" ?? true}
             url={"/puntodeventa/pedidos"}
           />
-
+          <SideBarItem
+            icon={<LiaMoneyBillAlt size={20} />}
+            text={"Gasto"}
+            active={
+              pathname === "/puntodeventa/gastos/nuevo" ||
+              (pathname === "/puntodeventa/gastos/nuevo" && true)
+            }
+            url={"/puntodeventa/gastos/nuevo"}
+          />
           <SideBarItem
             icon={<LiaReceiptSolid size={20} />}
             text={"Corte"}
