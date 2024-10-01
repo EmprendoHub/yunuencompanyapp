@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
-import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { calculatePercentage } from "@/backend/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addToPOSCart, applyDiscount } from "@/redux/shoppingSlice";
@@ -23,7 +20,7 @@ interface ProductVariation {
 
 const POSProductCard = ({ product }: { product: any }) => {
   const getPathname = usePathname();
-  const [discountRate, setDiscountRate] = useState<number>(0); // State for discount percentage
+  const [discountRate, setDiscountRate] = useState<string>(""); // State for discount percentage
   const router = useRouter();
   let pathname: string;
   const [variation, setVariation] = useState<ProductVariation>({
@@ -56,15 +53,25 @@ const POSProductCard = ({ product }: { product: any }) => {
       brand: product.brand,
     };
     // Apply entered discount percentage
-    if (discountRate > 0) {
+    if (discountRate !== "") {
       const discountedPrice =
-        variation.price - (variation.price * discountRate) / 100;
+        variation.price - (variation.price * Number(discountRate)) / 100;
       updatedVariation.price = discountedPrice;
-      dispatch(applyDiscount({ productId: product._id, discountRate }));
+      dispatch(
+        applyDiscount({
+          productId: product._id,
+          discountRate: Number(discountRate),
+        })
+      );
     }
-    setDiscountRate(0);
+    setDiscountRate("");
     dispatch(addToPOSCart(updatedVariation));
     toast(`${product?.title.substring(0, 15)}... se agregó al carrito`);
+  };
+
+  const handleDiscountChange = (e: any) => {
+    const inputAmount = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    setDiscountRate(inputAmount);
   };
 
   return (
@@ -72,10 +79,10 @@ const POSProductCard = ({ product }: { product: any }) => {
       initial={{ y: 30, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.0 }}
-      className="border-[1px] rounded-sm max-w-[300px] maxmd:max-w-[100%] overflow-hidden relative cursor-pointer"
+      className="border-[1px] rounded-sm max-w-[150px] overflow-hidden relative "
     >
       <div
-        className="w-[180px] h-[180px] maxsm:w-[100px] maxsm:h-[100px] group overflow-hidden relative"
+        className="w-full h-full group overflow-hidden relative cursor-pointer"
         onClick={handleClick}
       >
         <Image
@@ -85,41 +92,14 @@ const POSProductCard = ({ product }: { product: any }) => {
           width={350}
           height={350}
         />
-
-        {product?.sale_price && (
-          <span className="absolute top-2 right-2  border-[1px] border-black font-medium text-xs py-1 px-3 rounded-sm bg-black text-slate-100 group-hover:bg-slate-100 group-hover:text-foreground duration-200">
-            Oferta
-          </span>
-        )}
-        {product?.stock <= 0 && (
-          <span className="absolute rotate-12 top-1/2 right-1/4  border-[1px] border-black font-medium text-xl py-1 px-3 rounded-sm bg-black text-slate-100 group-hover:bg-slate-100 group-hover:text-foreground duration-200">
-            SOLD OUT
-          </span>
-        )}
-        {product?.sale_price ? (
-          <div>
-            <div className="absolute top-2 left-2  border-[1px] border-black w-fit py-1 px-4 rounded-sm text-xs bg-black text-slate-100 group-hover:bg-slate-100 group-hover:text-foreground duration-200">
-              <p>
-                {calculatePercentage(
-                  product?.variations[0].price,
-                  product?.sale_price
-                )}
-                % menos
-              </p>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
       </div>
-      <div className="p-4">
-        <p>Descuento %</p>
+      <div className="pt-3">
         <input
-          type="number"
-          placeholder="Discount %"
+          className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 text-xs w-full text-center"
+          type="text"
+          placeholder="Descuento %"
           value={discountRate}
-          onChange={(e) => setDiscountRate(Number(e.target.value))}
-          className="border rounded p-1"
+          onChange={handleDiscountChange}
         />
       </div>
     </motion.div>

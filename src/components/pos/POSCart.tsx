@@ -19,18 +19,18 @@ const POSCart = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="mt-4 mr-2">
-      <section className="pb-10 bg-gray-100">
+    <div className="mt-4 mr-2 fixed top-5 right-2 maxsm:w-[80%] maxsm:top-0">
+      <section className=" bg-gray-100">
         <div className=" mx-auto bg-background ">
           <div className="flex flex-col gap-1">
-            <section className=" bg-background">
+            <section className=" bg-background maxsm:hidden">
               <div className=" mx-auto px-4 ">
-                <h2 className="text-base font-semibold font-EB_Garamond ">
+                <h2 className="text-base ] font-semibold font-EB_Garamond ">
                   {productsPOS?.length || 0} Artículos(s) en carrito
                 </h2>
               </div>
             </section>
-            <main className="w-full">
+            <main className="w-full maxsm:h-40 h-80 overflow-y-scroll">
               {/* Items */}
               <article className="border border-gray-200 shadow-sm rounded mb-1 p-2 bg-gray-100">
                 {productsPOS?.length > 0 &&
@@ -50,8 +50,8 @@ const POSCart = () => {
                     ) => (
                       <div key={index}>
                         <div className="flex flex-row gap-2  items-center">
-                          <div className="w-full">
-                            <figure className="flex gap-1 leading-5">
+                          <div className="w-full maxsm:hidden">
+                            <figure className="flex gap-1 leading-5 ">
                               <div>
                                 <div className="block w-12 h-12 rounded border border-gray-300 overflow-hidden">
                                   <Image
@@ -72,28 +72,30 @@ const POSCart = () => {
                                 }
                                 className="cursor-pointer"
                               >
-                                <FiChevronLeft size={40} />
+                                <FiChevronLeft className="w-8 h-8 maxsm:w-4 maxsm:h-4" />
                               </span>
-                              <span>{cartItem?.quantity || 1}</span>
+                              <span className="text-base maxsm:text-[12px]">
+                                {cartItem?.quantity || 1}
+                              </span>
                               <span
                                 onClick={() =>
                                   dispatch(increasePOSQuantity(cartItem))
                                 }
                                 className="cursor-pointer"
                               >
-                                <FiChevronRight size={40} />
+                                <FiChevronRight className="w-8 h-8 maxsm:w-4 maxsm:h-4" />
                               </span>
                             </div>
                           </div>
                           <div className="w-full">
                             <div className="leading-5">
-                              <p className="font-semibold not-italic">
+                              <p className="font-semibold not-italic maxsm:text-xs">
                                 $
                                 {(
                                   cartItem?.price * cartItem?.quantity || 1
                                 ).toFixed(2)}
                               </p>
-                              <p className="text-gray-400 text-[12px] leading-tight">
+                              <p className="text-gray-400 text-[12px] maxsm:hidden leading-tight">
                                 ${cartItem?.price} x articulo
                               </p>
                             </div>
@@ -106,7 +108,7 @@ const POSCart = () => {
                                 }
                                 className="text-red-400 hover:text-red-600 cursor-pointer duration-300"
                               >
-                                <AiOutlineClose size={30} />
+                                <AiOutlineClose className="w-6 h-6 maxsm:w-4 maxsm:h-4" />
                               </span>
                             </div>
                           </div>

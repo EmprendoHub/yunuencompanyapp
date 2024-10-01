@@ -10,9 +10,9 @@ import { FaPrint } from "react-icons/fa6";
 import ReactToPrint from "react-to-print";
 
 const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
-  console.log(data);
-  const payments = data.payments.payments;
-  const paymentTotals = data.paymentTotals;
+  const payments = data.payments;
+  const expenses = data.expenses;
+  const paymentTotals = data.totalAmount;
   const ref = useRef<HTMLDivElement | null>(null);
 
   // Get today's date at midnight
@@ -53,6 +53,9 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 Cantidad
               </th>
               <th scope="col" className="px-2 maxsm:px-0 py-3">
+                Venta/Gasto
+              </th>
+              <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Fecha
               </th>
             </tr>
@@ -68,7 +71,29 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                   </b>
                 </td>
                 <td className="px-2 maxsm:px-0 py-2 ">
+                  <b>{payment?.orderDetails.orderId}</b>
+                </td>
+
+                <td className="px-2 maxsm:px-0 py-2 ">
                   {formatSimpleDate(payment?.pay_date)}
+                </td>
+              </tr>
+            ))}
+            {expenses?.map((expense: any, index: number) => (
+              <tr className="bg-background" key={index}>
+                <td className="px-2 maxsm:px-2 py-2">{expense.method}</td>
+
+                <td className="px-2 maxsm:px-0 py-2 text-red-500">
+                  <b>
+                    -<FormattedPrice amount={expense?.amount} />
+                  </b>
+                </td>
+                <td className="px-2 maxsm:px-0 py-2 ">
+                  <b>{expense?._id.substring(0, 5)}...</b>
+                </td>
+
+                <td className="px-2 maxsm:px-0 py-2 ">
+                  {formatSimpleDate(expense?.pay_date)}
                 </td>
               </tr>
             ))}

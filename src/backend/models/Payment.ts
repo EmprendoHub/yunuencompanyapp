@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const PaymentSchema = new mongoose.Schema({
   type: {
@@ -26,18 +26,17 @@ const PaymentSchema = new mongoose.Schema({
   },
   order: {
     type: mongoose.Schema.Types.ObjectId,
-    require: true,
-    ref: 'Order',
+    ref: "Order",
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
   customer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
+    ref: "Customer",
   },
 });
 
 export default mongoose?.models?.Payment ||
-  mongoose.model('Payment', PaymentSchema);
+  mongoose.model("Payment", PaymentSchema);

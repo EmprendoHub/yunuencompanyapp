@@ -38,24 +38,26 @@ const POSCheckOutForm = () => {
   const totalAmountCalc = Number(amountTotal) + Number(shipAmount);
 
   return (
-    <section className="max-w-full p-2 maxsm:py-7 bg-gray-100">
+    <section className="max-w-full p-2 bg-gray-100">
       <POSModal
         showModal={showModal}
         setShowModal={setShowModal}
         payType={payType}
       />
       <div className=" mx-auto bg-background flex flex-col justify-between p-2">
-        <h2 className="font-bold">Totales</h2>
-        <ul className="mb-5">
-          <li className="flex justify-between text-gray-600  mb-1">
-            <span>Sub-Total:</span>
-            <span>
+        <h2 className="font-bold maxsm:hidden">Totales</h2>
+        <ul className="mb-5 maxsm:mb-1">
+          <li className="flex justify-between text-gray-600  mb-1 maxsm:hidden">
+            <span className="text-sm maxsm:text-[12px]">Sub-Total:</span>
+            <span className="text-sm maxsm:text-[12px]">
               <FormattedPrice amount={amountTotal} />
             </span>
           </li>
-          <li className="text-sm flex justify-between text-gray-600  mb-1">
-            <span>Total de Artículos:</span>
-            <span className="text-blue-500">
+          <li className="text-sm flex justify-between text-gray-600 mb-1 maxsm:mb-0">
+            <span className="text-base maxsm:text-[12px]">
+              Total de Artículos:
+            </span>
+            <span className="text-blue-500 text-base maxsm:text-[12px]">
               {productsPOS?.reduce(
                 (acc: any, cartItem: any) => acc + cartItem.quantity,
                 0
@@ -63,15 +65,15 @@ const POSCheckOutForm = () => {
               (Artículos)
             </span>
           </li>
-          <li className="text-sm flex justify-between text-gray-600  mb-1">
+          {/* <li className="text-sm flex justify-between text-gray-600  mb-1">
             <span>Envió:</span>
             <span>
               <FormattedPrice amount={shipAmount} />
             </span>
-          </li>
-          <li className="text-lg font-bold border-t flex justify-between mt-3 ">
-            <span>Total:</span>
-            <span>
+          </li> */}
+          <li className="text-lg font-bold border-t flex justify-between mt-3 maxsm:mt-1 ">
+            <span className="text-base maxsm:text-[14px]">Total:</span>
+            <span className="text-base maxsm:text-[14px]">
               <FormattedPrice amount={totalAmountCalc} />
             </span>
           </li>
@@ -82,7 +84,7 @@ const POSCheckOutForm = () => {
             <div className="flex gap-5 w-full">
               <button
                 onClick={() => handleCheckout("total")}
-                className="bg-black w-full text-slate-100 py-3 uppercase text-xl px-12 hover:bg-emerald-700 hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
+                className="bg-black w-full text-slate-100 py-3 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-emerald-700 hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
               >
                 Pagar
               </button>

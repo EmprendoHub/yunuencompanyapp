@@ -1,5 +1,6 @@
 import { newCSTDate } from "@/backend/helpers";
 import Expense from "@/backend/models/Expense";
+import Payment from "@/backend/models/Payment";
 import dbConnect from "@/lib/db";
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
@@ -18,8 +19,6 @@ export async function POST(request: any, res: any) {
     const pay_date = newCSTDate();
     const expenseIntent = "pagado";
 
-    console.log(pay_date);
-
     const newExpense = new Expense({
       type,
       amount,
@@ -33,7 +32,18 @@ export async function POST(request: any, res: any) {
 
     // Save the Product to the database
     await newExpense.save();
-    console.log(newExpense);
+    let paymentTransactionData = {
+      type: type,
+      paymentIntent: "pagado",
+      amount: -Math.abs(amount), // Ensure the amount is negative,
+      reference,
+      pay_date,
+      method,
+      user,
+    };
+    const newPaymentTransaction = await new Payment(paymentTransactionData);
+    await newPaymentTransaction.save();
+
     return NextResponse.json(
       { message: "Nuevo gasto agregado" },
       { status: 200 }

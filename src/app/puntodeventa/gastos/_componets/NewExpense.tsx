@@ -107,14 +107,14 @@ const NewExpense = () => {
           <input
             className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 "
             type="text"
-            placeholder="amount"
+            placeholder="Cantidad"
             value={amount}
             onChange={handleAmountChange}
           />
           <textarea
             cols={30}
             rows={3}
-            placeholder="Mensaje"
+            placeholder="Nota"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="p-2 border-black border-b font-playfair-display bg-white bg-opacity-0"
