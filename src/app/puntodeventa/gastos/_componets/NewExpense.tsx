@@ -2,8 +2,11 @@
 import React from "react";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const NewExpense = () => {
+  const router = useRouter();
   const [notification, setNotification] = useState("");
 
   const [type, setType] = useState("");
@@ -74,7 +77,7 @@ const NewExpense = () => {
           title: "El gasto se creo exitosamente",
         });
 
-        return;
+        router.push("/puntodeventa/tienda");
       }
     } catch (error) {
       console.log(error);

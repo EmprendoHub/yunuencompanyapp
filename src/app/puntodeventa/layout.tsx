@@ -9,6 +9,7 @@ import {
   LiaReceiptSolid,
 } from "react-icons/lia";
 import Link from "next/link";
+import { LucideTicketPlus } from "lucide-react";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -33,7 +34,7 @@ export default function UserLayout({ children }: { children: any }) {
             url={"/puntodeventa/pedidos"}
           />
           <SideBarItem
-            icon={<LiaMoneyBillAlt size={20} />}
+            icon={<LucideTicketPlus size={20} />}
             text={"Gasto"}
             active={
               pathname === "/puntodeventa/gastos/nuevo" ||
@@ -42,7 +43,7 @@ export default function UserLayout({ children }: { children: any }) {
             url={"/puntodeventa/gastos/nuevo"}
           />
           <SideBarItem
-            icon={<LiaMonero size={20} />}
+            icon={<LiaMoneyBillAlt size={20} />}
             text={"Gastos"}
             active={
               pathname === "/puntodeventa/gastos" ||

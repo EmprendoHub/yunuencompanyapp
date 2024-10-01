@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const TiendaPage = () => {
   const router = useRouter();
   useEffect(() => {
-    router.push("/tienda");
+    router.push("/puntodeventa/tienda");
   }, []);
 
   return <></>;
