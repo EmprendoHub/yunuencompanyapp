@@ -197,7 +197,7 @@ const POSReceiptOneOrder = ({
 
       <ReactToPrint
         bodyClass="print-agreement"
-        pageStyle="@page { size: 2.5in 4in }"
+        pageStyle="@page { size: 2.5in auto }"
         documentTitle={`#${order?.orderId}`}
         content={() => ref.current as HTMLDivElement} // Ensure ref.current is properly cast
         trigger={() => (
