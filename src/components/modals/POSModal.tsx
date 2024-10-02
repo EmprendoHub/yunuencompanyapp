@@ -12,11 +12,13 @@ const POSModal = ({
   setShowModal,
   isPaid,
   payType,
+  userId,
 }: {
   showModal: any;
   setShowModal: any;
   payType: any;
   isPaid?: any;
+  userId: string;
 }) => {
   return (
     <AnimatePresence mode="wait">
@@ -32,6 +34,7 @@ const POSModal = ({
             setShowModal={setShowModal}
             isPaid={isPaid}
             payType={payType}
+            userId={userId}
           />
         </motion.div>
       )}

@@ -9,7 +9,7 @@ import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { usePathname } from "next/navigation";
 import POSModal from "../modals/POSModal";
 
-const POSCheckOutForm = () => {
+const POSCheckOutForm = ({ userId }: { userId: string }) => {
   const { data: session } = useSession();
   const isLoggedIn = Boolean(session?.user);
   const { productsPOS } = useSelector((state: any) => state.compras);
@@ -43,6 +43,7 @@ const POSCheckOutForm = () => {
         showModal={showModal}
         setShowModal={setShowModal}
         payType={payType}
+        userId={userId}
       />
       <div className=" mx-auto bg-background flex flex-col justify-between p-2">
         <h2 className="font-bold maxsm:hidden">Totales</h2>

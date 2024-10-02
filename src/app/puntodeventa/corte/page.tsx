@@ -46,7 +46,8 @@ const CortePage = async ({ searchParams }: { searchParams: any }) => {
 
   const searchQuery = new URLSearchParams(filteredUrlParams).toString();
   //const data = await getAllPayments(searchQuery, currentCookies);
-  const data = await getEndOfDayReport(searchQuery);
+  const dataString = await getEndOfDayReport(searchQuery);
+  const data = JSON.parse(dataString);
 
   const itemCount = data?.itemCount;
   return (

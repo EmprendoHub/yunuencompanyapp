@@ -1,6 +1,8 @@
 import ListPOSProducts from "@/components/products/ListPOSProducts";
 import { getAllPOSProduct } from "@/app/_actions";
 import POSCart from "@/components/pos/POSCart";
+import { getServerSession } from "next-auth";
+import { options } from "../../api/auth/[...nextauth]/options";
 
 export const metadata = {
   title: "POS yunuencompany",
@@ -8,6 +10,8 @@ export const metadata = {
 };
 
 const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
+  const session = await getServerSession(options);
+  const userId = session.user._id;
   const data = await getAllPOSProduct(searchParams);
   //pagination
   let page = parseInt(searchParams.page, 20);
@@ -31,7 +35,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
         products={products}
         filteredProductsCount={filteredProductsCount}
       />
-      <POSCart />
+      <POSCart userId={userId} />
     </div>
   );
 };

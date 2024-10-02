@@ -11,10 +11,12 @@ const PayCartComp = ({
   setShowModal,
   payType,
   isPaid,
+  userId,
 }: {
   setShowModal: any;
   payType: any;
   isPaid: any;
+  userId: string;
 }) => {
   const getPathname = usePathname();
   let pathname: any;
@@ -102,16 +104,8 @@ const PayCartComp = ({
     formData.append("amountReceived", amountReceived.toString());
     formData.append("payType", payType);
 
-    if (pathname.includes("admin")) {
-      formData.append("pathname", "Sucursal");
-      // result = await payPOSDrawer(formData);
-    } else if (pathname.includes("puntodeventa")) {
-      formData.append("pathname", "Sucursal");
-      // result = await payPOSDrawer(formData);
-    } else if (pathname.includes("socials")) {
-      formData.append("pathname", "socials");
-      // result = await payPOSSocialsDrawer(formData);
-    }
+    formData.append("pathname", userId);
+
     const result: any = await fetch(`/api/payment`, {
       method: "POST",
       body: formData,

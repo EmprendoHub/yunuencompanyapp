@@ -13,7 +13,7 @@ import POSCheckOutForm from "./POSCheckOutForm";
 import { usePathname, useRouter } from "next/navigation";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
-const POSCart = () => {
+const POSCart = ({ userId }: { userId: string }) => {
   const router = useRouter();
   const { productsPOS } = useSelector((state: any) => state?.compras);
   const dispatch = useDispatch();
@@ -121,7 +121,7 @@ const POSCart = () => {
               </article>
             </main>
             <aside className="max-w-full">
-              <POSCheckOutForm />
+              <POSCheckOutForm userId={userId} />
             </aside>
           </div>
         </div>

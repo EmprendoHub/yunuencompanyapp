@@ -39,10 +39,11 @@ import APIAffiliateFilters from "@/lib/APIAffiliateFilters";
 import Page from "@/backend/models/Page";
 import Payment from "@/backend/models/Payment";
 import Customer from "@/backend/models/Customer";
-import { getToken } from "next-auth/jwt";
 import TestUser from "@/backend/models/TestUser";
 import Expense from "@/backend/models/Expense";
 import APIExpenseFilters from "@/lib/APIExpensesFilters";
+import { DateTime } from "luxon";
+import mongoose from "mongoose";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -242,7 +243,8 @@ export async function payPOSDrawer(data: any) {
     let customerEmail;
     let customerPhone;
     let customerName;
-
+    const session = await getServerSession(options);
+    const userId = session.user._id.toString();
     if (email.length > 3) {
       customerEmail = email;
     } else {
@@ -283,7 +285,7 @@ export async function payPOSDrawer(data: any) {
       customer = customerExists;
     }
     items = JSON.parse(items);
-    const branchInfo = "Sucursal";
+    const branchInfo = userId;
     const ship_cost = 0;
     const date = cstDateTime();
 
@@ -2358,41 +2360,90 @@ export async function getEndOfDayReport(searchQuery: any) {
   try {
     await dbConnect();
     const session = await getServerSession(options);
-    let orderQuery: any;
-    if (session?.user?.role === "sucursal") {
-      orderQuery = Order.find({
-        $and: [
-          { branch: session?.user?._id.toString() },
-          { orderStatus: { $ne: "Cancelado" } },
-        ],
-      }).populate("user");
+    const currentDate = DateTime.now().setZone("America/Mexico_City");
+    const userId = session?.user?._id.toString();
+    let startOfDay, endOfDay;
+    if (
+      process.env.NODE_ENV === "development" ||
+      process.env.NODE_ENV === "production"
+    ) {
+      // Get the start of the day in local time and convert it to UTC
+      startOfDay = currentDate
+        .startOf("day")
+        .toUTC()
+        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .toJSDate();
+      // Get the end of the day in local time and convert it to UTC
+      endOfDay = currentDate
+        .startOf("day")
+        .toUTC()
+        .set({ hour: 23, minute: 59, second: 59, millisecond: 999 })
+        .toJSDate();
     }
 
-    const searchParams = new URLSearchParams(searchQuery);
+    // To see it properly in the log:
+    console.log(userId, startOfDay, endOfDay);
+    // Aggregate payments with orders and expenses
+    const paymentQuery = await Payment.aggregate([
+      {
+        $lookup: {
+          from: "orders",
+          localField: "order",
+          foreignField: "_id",
+          as: "orderDetails",
+        },
+      },
+      {
+        $unwind: "$orderDetails",
+      },
+      {
+        $match: {
+          "orderDetails.branch": userId,
+          "orderDetails.paymentInfo.paymentIntent": "paid",
+          pay_date: { $gte: startOfDay, $lte: endOfDay },
+        },
+      },
+      {
+        $sort: { pay_date: -1 },
+      },
+    ]);
+    console.log({ _id: session?.user?._id });
+    // Aggregate expenses with paymentIntent "pagado"
+    const expenseQuery = await Expense.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(session?.user?._id), // Convert string ID to ObjectId
+          expenseIntent: "pagado", // Match documents where paymentIntent is 'pagado'
+          pay_date: { $gte: startOfDay, $lte: endOfDay }, // Date range filter
+        },
+      },
+      {
+        $sort: { pay_date: -1 }, // Sort by expense date in descending order
+      },
+    ]);
+    console.log(expenseQuery);
+    // Calculate totals for payments and expenses
+    const paymentTotals = paymentQuery.reduce(
+      (total, payment) => total + payment.amount,
+      0
+    );
 
-    const resPerPage = Number(searchParams.get("perpage")) || 10;
-    // Extract page and per_page from request URL
-    const page = Number(searchParams.get("page")) || 1;
-    // Apply descending order based on a specific field (e.g., createdAt)
-    orderQuery = orderQuery.sort({ createdAt: -1 });
+    const expenseTotals = expenseQuery.reduce(
+      (total, expense) => total + expense.amount,
+      0
+    );
 
-    // Apply search Filters including order_id and orderStatus
-    const apiOrderFilters: any = new APIOrderFilters(orderQuery, searchParams)
-      .searchAllFields()
-      .filter();
-    let ordersData = await apiOrderFilters.query;
+    const itemCount = paymentQuery.length + expenseQuery.length;
 
-    const itemCount = ordersData.length;
-
-    apiOrderFilters.pagination(resPerPage, page);
-    ordersData = await apiOrderFilters.query.clone();
-    let orders = JSON.stringify(ordersData);
-
-    return {
-      orders: orders,
-      itemCount: itemCount,
-      resPerPage: resPerPage,
+    const dataPacket = {
+      payments: paymentQuery,
+      expenses: expenseQuery,
+      itemCount,
+      totalAmount: paymentTotals - expenseTotals,
     };
+    const dataString = JSON.stringify(dataPacket);
+
+    return dataString;
   } catch (error: any) {
     console.log(error);
     throw Error(error);
