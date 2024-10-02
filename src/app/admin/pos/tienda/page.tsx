@@ -1,8 +1,9 @@
-import ServerPagination from "@/components/pagination/ServerPagination";
 import ListPOSProducts from "@/components/products/ListPOSProducts";
 import { getAllPOSProduct } from "@/app/_actions";
 import { removeUndefinedAndPageKeys } from "@/backend/helpers";
 import POSCart from "@/components/pos/POSCart";
+import { getServerSession } from "next-auth";
+import { options } from "../../../api/auth/[...nextauth]/options";
 
 export const metadata = {
   title: "Tienda yunuencompany",
@@ -11,6 +12,8 @@ export const metadata = {
 };
 
 const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
+  const session = await getServerSession(options);
+  const userId = session.user._id;
   const urlParams = {
     keyword: searchParams.keyword,
     page: searchParams.page,
@@ -58,7 +61,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
         totalPages={totalPages}
         searchParams={keywordQuery}
       /> */}
-      <POSCart />
+      <POSCart userId={userId} />
     </div>
   );
 };
