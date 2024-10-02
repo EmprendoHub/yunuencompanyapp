@@ -73,13 +73,6 @@ export async function POST(request: any) {
         password: hashedPassword,
       });
 
-      const newCustomer = new Customer({
-        name,
-        email,
-        phone,
-        user: newUser._id,
-      });
-
       const res = await newUser.save();
 
       // if (res?._id) {

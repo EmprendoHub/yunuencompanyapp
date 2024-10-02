@@ -2468,7 +2468,7 @@ export async function getAllPOSOExpenses(searchQuery: any) {
     // Extract page and per_page from request URL
     const page = Number(searchParams.get("page")) || 1;
     // Apply descending expense based on a specific field (e.g., createdAt)
-    expenseQuery = expenseQuery.sort({ createdAt: -1 });
+    expenseQuery = expenseQuery.sort({ pay_date: -1 });
 
     // Apply search Filters including expense_id and expenseStatus
     const apiExpenseFilters: any = new APIExpenseFilters(

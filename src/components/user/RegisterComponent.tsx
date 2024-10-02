@@ -14,12 +14,6 @@ const RegisterFormComponent = ({ cookie }: { cookie: any }) => {
   const router = useRouter();
   const session = useSession();
 
-  useEffect(() => {
-    if (session?.status === "authenticated") {
-      router.replace("/");
-    }
-  }, [session, router]);
-
   const [honeypot, setHoneypot] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

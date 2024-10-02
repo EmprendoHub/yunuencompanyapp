@@ -85,7 +85,7 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
             <div className="flex gap-5 w-full">
               <button
                 onClick={() => handleCheckout("total")}
-                className="bg-black w-full text-slate-100 py-3 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-emerald-700 hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
+                className="bg-emerald-700 w-full text-slate-100 py-6 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-black hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
               >
                 Pagar
               </button>

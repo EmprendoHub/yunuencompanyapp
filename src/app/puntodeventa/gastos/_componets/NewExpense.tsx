@@ -2,8 +2,14 @@
 import React from "react";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const NewExpense = () => {
   const router = useRouter();
@@ -45,6 +51,15 @@ const NewExpense = () => {
       return;
     }
 
+    if (comment === "") {
+      toast({
+        variant: "destructive",
+        title:
+          "Por favor agregue una nota breve para explicar el pago antes de continuar.",
+      });
+      return;
+    }
+
     setActiveButton(true);
 
     try {
@@ -67,7 +82,6 @@ const NewExpense = () => {
           variant: "destructive",
           title: "Error al crear gasto intenta nuevamente",
         });
-        setActiveButton(true);
 
         setError("Error al crear gasto intenta nuevamente");
       }
@@ -79,6 +93,7 @@ const NewExpense = () => {
 
         router.push("/puntodeventa/tienda");
       }
+      setActiveButton(true);
     } catch (error) {
       console.log(error);
     }
@@ -93,24 +108,48 @@ const NewExpense = () => {
     <div className="relative flex fle-col py-7  pr-7 m-auto w-full rounded-xl z-10">
       {!formStatus ? (
         <form onSubmit={handleSubmit} className="flex flex-col w-full gap-y-4">
+          <div className="flex items-center gap-5">
+            <Select value={type} onValueChange={(value) => setType(value)}>
+              <SelectTrigger className="w-[300px] text-2xl">
+                <SelectValue placeholder="Tipo de Pago" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem className="text-2xl" value="NOMINA">
+                  NOMINA
+                </SelectItem>
+                <SelectItem className="text-2xl" value="COMIDA">
+                  COMIDA
+                </SelectItem>
+                <SelectItem className="text-2xl" value="PROVEEDOR">
+                  PROVEEDOR
+                </SelectItem>
+                <SelectItem className="text-2xl" value="OTRO">
+                  OTRO
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={method} onValueChange={(value) => setMethod(value)}>
+              <SelectTrigger className="w-[300px] text-2xl">
+                <SelectValue placeholder="Método de Pago" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem className="text-2xl" value="EFECTIVO">
+                  EFECTIVO
+                </SelectItem>
+                <SelectItem className="text-2xl" value="TRANSFERENCIA">
+                  TRANSFERENCIA
+                </SelectItem>
+                <SelectItem className="text-2xl" value="TARJETA">
+                  TARJETA
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <input
+            className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 text-6xl"
             type="text"
-            placeholder={"Tipo de Pago"}
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="p-2 border-black border-b font-playfair-display bg-white bg-opacity-0"
-          />
-          <input
-            type="text"
-            placeholder={"Método de Pago"}
-            value={method}
-            onChange={(e) => setMethod(e.target.value)}
-            className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 "
-          />
-          <input
-            className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 "
-            type="text"
-            placeholder="Cantidad"
+            placeholder="$0"
             value={amount}
             onChange={handleAmountChange}
           />
@@ -122,7 +161,11 @@ const NewExpense = () => {
             onChange={(e) => setComment(e.target.value)}
             className="p-2 border-black border-b font-playfair-display bg-white bg-opacity-0"
           ></textarea>
-          <button type="submit" className="mt-5" disabled={activeButton}>
+          <button
+            type="submit"
+            className={`${activeButton ? "hidden" : ""}`}
+            disabled={activeButton}
+          >
             <p className=" bg-black  text-white py-3">{"Agregar Gasto"}</p>
           </button>
         </form>
