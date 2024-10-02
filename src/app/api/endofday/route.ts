@@ -17,7 +17,7 @@ export const GET = async (request: any, res: any) => {
 
     let startOfDay, endOfDay;
     const currentDate = new Date();
-
+    console.log(currentDate);
     if (process.env.NODE_ENV === "development") {
       startOfDay = new Date(
         Date.UTC(
@@ -43,6 +43,8 @@ export const GET = async (request: any, res: any) => {
       endOfDay = new Date(currentDate);
       endOfDay.setHours(23, 59, 59, 999);
     }
+
+    console.log("startOfDay", startOfDay, "endOfDay", endOfDay);
 
     // Aggregate payments with orders and expenses
     const paymentQuery = await Payment.aggregate([
@@ -94,6 +96,8 @@ export const GET = async (request: any, res: any) => {
     );
 
     const itemCount = paymentQuery.length + expenseQuery.length;
+
+    console.log("payments", paymentQuery, "expenses", expenseQuery);
 
     const dataPacket = {
       payments: paymentQuery,
