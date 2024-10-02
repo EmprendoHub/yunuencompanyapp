@@ -17,7 +17,7 @@ export const GET = async (request: any, res: any) => {
 
     let startOfDay, endOfDay;
     const currentDate = new Date();
-
+    console.log(token);
     if (process.env.NODE_ENV === "development") {
       startOfDay = new Date(
         Date.UTC(

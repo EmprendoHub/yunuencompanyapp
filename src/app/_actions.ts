@@ -2316,7 +2316,55 @@ export async function getAllPOSOrder(searchQuery: any) {
     let orderQuery: any;
     if (session?.user?.role === "sucursal") {
       orderQuery = Order.find({
-        $and: [{ branch: "Sucursal" }, { orderStatus: { $ne: "Cancelado" } }],
+        $and: [
+          { branch: session?.user?._id.toString() },
+          { orderStatus: { $ne: "Cancelado" } },
+        ],
+      }).populate("user");
+    }
+
+    const searchParams = new URLSearchParams(searchQuery);
+
+    const resPerPage = Number(searchParams.get("perpage")) || 10;
+    // Extract page and per_page from request URL
+    const page = Number(searchParams.get("page")) || 1;
+    // Apply descending order based on a specific field (e.g., createdAt)
+    orderQuery = orderQuery.sort({ createdAt: -1 });
+
+    // Apply search Filters including order_id and orderStatus
+    const apiOrderFilters: any = new APIOrderFilters(orderQuery, searchParams)
+      .searchAllFields()
+      .filter();
+    let ordersData = await apiOrderFilters.query;
+
+    const itemCount = ordersData.length;
+
+    apiOrderFilters.pagination(resPerPage, page);
+    ordersData = await apiOrderFilters.query.clone();
+    let orders = JSON.stringify(ordersData);
+
+    return {
+      orders: orders,
+      itemCount: itemCount,
+      resPerPage: resPerPage,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getEndOfDayReport(searchQuery: any) {
+  try {
+    await dbConnect();
+    const session = await getServerSession(options);
+    let orderQuery: any;
+    if (session?.user?.role === "sucursal") {
+      orderQuery = Order.find({
+        $and: [
+          { branch: session?.user?._id.toString() },
+          { orderStatus: { $ne: "Cancelado" } },
+        ],
       }).populate("user");
     }
 
@@ -2356,8 +2404,14 @@ export async function getAllPOSOExpenses(searchQuery: any) {
     await dbConnect();
     const session = await getServerSession(options);
     let expenseQuery: any;
+
     if (session?.user?.role === "sucursal") {
-      expenseQuery = Expense.find({}).populate("user");
+      expenseQuery = Expense.find({
+        $and: [
+          { user: session?.user?._id.toString() },
+          { expenseIntent: { $ne: "cancelado" } },
+        ],
+      }).populate("user");
     }
 
     const searchParams = new URLSearchParams(searchQuery);
@@ -2723,33 +2777,52 @@ export async function getAllPOSProductOld(searchQuery: any) {
 export async function getAllPOSProduct(searchQuery: any) {
   try {
     await dbConnect();
-    // Find the product that contains the variation with the specified variation ID
-    let productQuery = Product.find({
-      $and: [{ stock: { $gt: 0 } }, { "availability.branch": true }],
-    });
+
+    // Extract search parameters
     const searchParams = new URLSearchParams(searchQuery);
     const resPerPage = Number(searchParams.get("perpage")) || 20;
-    // Extract page and per_page from request URL
     const page = Number(searchParams.get("page")) || 1;
-    productQuery = productQuery.sort({ createdAt: -1 });
-    // total number of documents in database
-    const productsCount = await Product.countDocuments();
-    // Apply search Filters
-    const apiProductFilters: any = new APIFilters(productQuery, searchParams)
-      .searchAllFields()
-      .filter();
+    const skip = (page - 1) * resPerPage;
 
-    let productsData = await apiProductFilters.query;
+    // Create the aggregation query
+    let productQuery = Product.aggregate([
+      {
+        $match: {
+          $and: [{ stock: { $gt: 0 } }, { "availability.branch": true }],
+        },
+      },
+      {
+        $addFields: {
+          numericTitle: { $toInt: "$title" }, // Convert title to integer
+        },
+      },
+      {
+        $sort: { numericTitle: -1 }, // Sort by numeric title
+      },
+      {
+        $skip: skip, // Pagination - skip the appropriate number of documents
+      },
+      {
+        $limit: resPerPage, // Pagination - limit the number of documents returned
+      },
+    ]);
 
-    const filteredProductsCount = productsData.length;
+    // Get the total count of products that match the criteria
+    const productsCount = await Product.countDocuments({
+      stock: { $gt: 0 },
+      "availability.branch": true,
+    });
 
-    apiProductFilters.pagination(resPerPage, page);
-    productsData = await apiProductFilters.query.clone();
+    // Execute the query
+    let productsData = await productQuery;
+
+    // Convert the product data to a JSON string
     let products = JSON.stringify(productsData);
-    revalidatePath("/admin/pos/productos/");
+
+    // Return the products and count of filtered products
     return {
       products: products,
-      filteredProductsCount: filteredProductsCount,
+      filteredProductsCount: productsCount, // Use total count as filtered count
     };
   } catch (error: any) {
     console.log(error);

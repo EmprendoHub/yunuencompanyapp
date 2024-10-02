@@ -152,13 +152,13 @@ const PayCartComp = ({
 
   return (
     <div className="flex flex-col  w-full h-full items-center justify-center">
-      <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg">
+      <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg relative">
         <section className=" p-6 w-full">
           <h1 className="text-2xl maxmd:text-5xl font-semibold text-foreground mb-4 font-EB_Garamond text-center uppercase">
             {payType === "layaway" ? "Apartar" : "Pagar"}
           </h1>
 
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-1 ">
             {validationError?.title && (
               <p className="text-sm text-red-400">
                 {validationError.title._errors.join(", ")}
@@ -195,16 +195,16 @@ const PayCartComp = ({
               <div className="flex flex-row flex-wrap items-center gap-3 w-full">
                 <div
                   onClick={() => setShowModal(false)}
-                  className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[45%] flex flex-row items-center justify-center gap-1 cursor-pointer"
+                  className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[20%] flex flex-row items-center justify-center gap-1 cursor-pointer absolute top-0 right-1"
                 >
                   <FaCircleExclamation className="text-xl" />
                   Cancelar
                 </div>
                 <button
                   onClick={() => handleCheckout("layaway")}
-                  className="my-2 w-[45%] px-4 py-2 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-row items-center justify-center gap-1"
+                  className="my-2 w-[100%] px-4 py-6 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-row items-center justify-center gap-1 text-2xl"
                 >
-                  <FaCircleCheck className="text-xl" /> Procesar
+                  <FaCircleCheck className="text-xl" /> PAGAR
                 </button>
               </div>
             )}

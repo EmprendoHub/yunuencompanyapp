@@ -1,4 +1,4 @@
-import ReportsComponent from "@/components/admin/ReportsComponent";
+import { getEndOfDayReport } from "@/app/_actions";
 import React from "react";
 import { getCookiesName } from "@/backend/helpers";
 import { cookies } from "next/headers";
@@ -45,7 +45,8 @@ const CortePage = async ({ searchParams }: { searchParams: any }) => {
   );
 
   const searchQuery = new URLSearchParams(filteredUrlParams).toString();
-  const data = await getAllPayments(searchQuery, currentCookies);
+  //const data = await getAllPayments(searchQuery, currentCookies);
+  const data = await getEndOfDayReport(searchQuery);
 
   const itemCount = data?.itemCount;
   return (
