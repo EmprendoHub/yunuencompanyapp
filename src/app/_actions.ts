@@ -2382,7 +2382,6 @@ export async function getEndOfDayReport(searchQuery: any) {
     }
 
     // To see it properly in the log:
-    console.log(userId, startOfDay, endOfDay);
     // Aggregate payments with orders and expenses
     const paymentQuery = await Payment.aggregate([
       {
@@ -2407,7 +2406,6 @@ export async function getEndOfDayReport(searchQuery: any) {
         $sort: { pay_date: -1 },
       },
     ]);
-    console.log({ _id: session?.user?._id });
     // Aggregate expenses with paymentIntent "pagado"
     const expenseQuery = await Expense.aggregate([
       {
@@ -2421,7 +2419,6 @@ export async function getEndOfDayReport(searchQuery: any) {
         $sort: { pay_date: -1 }, // Sort by expense date in descending order
       },
     ]);
-    console.log(expenseQuery);
     // Calculate totals for payments and expenses
     const paymentTotals = paymentQuery.reduce(
       (total, payment) => total + payment.amount,
