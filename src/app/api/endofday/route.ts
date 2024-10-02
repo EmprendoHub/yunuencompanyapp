@@ -2,6 +2,7 @@ import Payment from "@/backend/models/Payment";
 import Expense from "@/backend/models/Expense"; // Import the Expense model
 import dbConnect from "@/lib/db";
 import { NextResponse } from "next/server";
+import { DateTime } from "luxon";
 
 export const GET = async (request: any, res: any) => {
   const token = await request.headers.get("cookie");
@@ -15,33 +16,17 @@ export const GET = async (request: any, res: any) => {
   try {
     await dbConnect();
 
+    const currentDate = DateTime.now().setZone("America/Mexico_City");
+
     let startOfDay, endOfDay;
     const currentDate = new Date();
-    console.log(token);
+
     if (process.env.NODE_ENV === "development") {
-      startOfDay = new Date(
-        Date.UTC(
-          currentDate.getUTCFullYear(),
-          currentDate.getUTCMonth(),
-          currentDate.getUTCDate()
-        )
-      );
-      endOfDay = new Date(
-        Date.UTC(
-          currentDate.getUTCFullYear(),
-          currentDate.getUTCMonth(),
-          currentDate.getUTCDate(),
-          23,
-          59,
-          59,
-          999
-        )
-      );
+      startOfDay = currentDate.startOf("day").toJSDate();
+      endOfDay = currentDate.endOf("day").toJSDate();
     } else if (process.env.NODE_ENV === "production") {
-      startOfDay = new Date(currentDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      endOfDay = new Date(currentDate);
-      endOfDay.setHours(23, 59, 59, 999);
+      startOfDay = currentDate.startOf("day").toJSDate();
+      endOfDay = currentDate.endOf("day").toJSDate();
     }
 
     // Aggregate payments with orders and expenses
