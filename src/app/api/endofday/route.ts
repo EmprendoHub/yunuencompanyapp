@@ -19,7 +19,6 @@ export const GET = async (request: any, res: any) => {
     const currentDate = DateTime.now().setZone("America/Mexico_City");
 
     let startOfDay, endOfDay;
-    const currentDate = new Date();
 
     if (process.env.NODE_ENV === "development") {
       startOfDay = currentDate.startOf("day").toJSDate();
