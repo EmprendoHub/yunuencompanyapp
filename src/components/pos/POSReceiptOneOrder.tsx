@@ -79,7 +79,7 @@ const POSReceiptOneOrder = ({
   return (
     <div
       ref={ref}
-      className="main-receipt w-[300px] maxmd:w-full min-h-full mx-auto relative bg-white px-2"
+      className="main-receipt w-[300px] maxmd:w-full min-h-full mx-auto relative bg-background px-2"
     >
       <div className="flex flex-col justify-between items-center">
         <div className="relative flex flex-col items-center justify-center max-w-fit">
@@ -197,7 +197,7 @@ const POSReceiptOneOrder = ({
 
       <ReactToPrint
         bodyClass="print-agreement"
-        pageStyle="{ size: 2.5in 4in }"
+        pageStyle="@page { size: 2.5in 4in }"
         documentTitle={`#${order?.orderId}`}
         content={() => ref.current as HTMLDivElement} // Ensure ref.current is properly cast
         trigger={() => (
