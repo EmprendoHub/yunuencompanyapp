@@ -4,7 +4,7 @@ import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import POSModal from "../modals/POSModal";
 import { useSelector } from "react-redux";
 
-const POSPaymentForm = () => {
+const POSPaymentForm = ({ userId }: { userId: string }) => {
   const [showModal, setShowModal] = useState(false);
   const [payType, setPayType] = useState("");
   const { productsPOS }: any = useSelector((state: any) => state.compras);
@@ -26,6 +26,7 @@ const POSPaymentForm = () => {
         showModal={showModal}
         setShowModal={setShowModal}
         payType={payType}
+        userId={userId}
       />
       <div className=" bg-background flex flex-col p-2">
         <h2 className="text-5xl font-EB_Garamond mb-4">Totales</h2>
