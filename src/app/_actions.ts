@@ -2530,6 +2530,24 @@ export async function getAllPOSOExpenses(searchQuery: any) {
   }
 }
 
+export async function getAllPOSBranches() {
+  try {
+    await dbConnect();
+    const allBranches: any = await User.find({
+      $and: [{ role: "sucursal" }],
+    });
+
+    const branches = JSON.stringify(allBranches);
+
+    return {
+      branches: branches,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
 export async function getAllPOSSocialsOrder(searchQuery: any) {
   try {
     await dbConnect();

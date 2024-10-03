@@ -41,10 +41,12 @@ const EditVariationProduct = ({
   product,
   currentCookies,
   branchId,
+  branches,
 }: {
   product: any;
   currentCookies: string;
   branchId: string;
+  branches: any[];
 }) => {
   const getPathname = usePathname();
   let pathname: string = "";
