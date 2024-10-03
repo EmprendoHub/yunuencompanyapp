@@ -140,27 +140,47 @@ export async function DELETE(request: any) {
   try {
     await dbConnect();
     const payload = await request.formData();
-    let { note, orderId } = Object.fromEntries(payload);
+    let { note, orderId, branchId } = Object.fromEntries(payload);
+
     const soonToDeleteOrder = await Order.findById(orderId);
 
     if (!soonToDeleteOrder) {
-      const notFoundResponse = "Order not found";
-      return new Response(JSON.stringify(notFoundResponse), { status: 404 });
+      return new Response(JSON.stringify("Order not found"), { status: 404 });
     }
+
     const payment = await Payment.findOne({ order: orderId });
+
     // Iterate through order items and update Product quantities
     for (const orderItem of soonToDeleteOrder.orderItems) {
       const productId = orderItem.product.toString();
       const product = await Product.findById(productId);
 
       if (product) {
-        // Increment the product quantity by the quantity of items in the deleted order
-        await Product.updateOne(
-          { _id: productId },
-          { $inc: { stock: orderItem.quantity } }
+        // Find the stock entry for the specific branch
+        const branchStockIndex = product.stock.findIndex(
+          (s: { branch: string }) => s.branch.toString() === branchId
         );
+
+        if (branchStockIndex !== -1) {
+          // Update the stock for the specific branch
+          await Product.updateOne(
+            { _id: productId, "stock.branch": branchId },
+            { $inc: { "stock.$.amount": orderItem.quantity } }
+          );
+        } else {
+          // If no stock entry for this branch, create a new one
+          await Product.updateOne(
+            { _id: productId },
+            {
+              $push: {
+                stock: { branch: branchId, amount: orderItem.quantity },
+              },
+            }
+          );
+        }
       }
     }
+
     const date = newCSTDate();
     const cancelOrder = await Order.findByIdAndUpdate(orderId, {
       orderStatus: "cancelada",
@@ -175,10 +195,12 @@ export async function DELETE(request: any) {
       },
     });
 
-    await Payment.findByIdAndUpdate(payment._id, {
-      paymentIntent: "cancelado",
-      comment: note,
-    });
+    if (payment) {
+      await Payment.findByIdAndUpdate(payment._id, {
+        paymentIntent: "cancelado",
+        comment: note,
+      });
+    }
 
     revalidatePath(`/admin/pedidos`);
     revalidatePath(`/admin/pedido/${orderId}`);
@@ -187,6 +209,7 @@ export async function DELETE(request: any) {
 
     return new Response(JSON.stringify(cancelOrder), { status: 201 });
   } catch (error: any) {
+    console.log(error);
     return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }

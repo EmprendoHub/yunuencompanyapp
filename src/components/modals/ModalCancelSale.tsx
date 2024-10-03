@@ -23,6 +23,7 @@ const ModalCancelSale = ({
   orderId,
   isPaid,
   pendingTotal,
+  branchId,
 }: {
   pathname: string;
   showModal: boolean;
@@ -30,6 +31,7 @@ const ModalCancelSale = ({
   orderId: string;
   isPaid: boolean;
   pendingTotal: number;
+  branchId: string;
 }) => {
   return (
     <AnimatePresence mode="wait">
@@ -46,6 +48,7 @@ const ModalCancelSale = ({
             isPaid={isPaid}
             pathname={pathname}
             pendingTotal={pendingTotal}
+            branchId={branchId}
           />
         </motion.div>
       )}

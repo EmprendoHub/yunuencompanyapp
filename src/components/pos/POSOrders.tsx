@@ -14,9 +14,11 @@ import ModalCancelSale from "../modals/ModalCancelSale";
 const POSOrders = ({
   orders,
   filteredOrdersCount,
+  branchId,
 }: {
   orders: any;
   filteredOrdersCount: any;
+  branchId: string;
 }) => {
   const getPathname = usePathname();
   let pathname: any = "";
@@ -47,6 +49,7 @@ const POSOrders = ({
         pathname={pathname}
         pendingTotal={pendingTotal}
         isPaid={false}
+        branchId={branchId}
       />
       <div className="relative overflow-x-auto shadow-md rounded-lg">
         <div className=" flex flex-row maxsm:flex-col maxsm:items-start items-center justify-between">

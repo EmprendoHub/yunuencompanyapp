@@ -10,12 +10,14 @@ const CancelOrderComp = ({
   orderId,
   isPaid,
   pendingTotal,
+  branchId,
 }: {
   pathname: string;
   setShowModal: any;
   orderId: string;
   isPaid: boolean;
   pendingTotal: number;
+  branchId: string;
 }) => {
   const [note, setNote] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -36,6 +38,7 @@ const CancelOrderComp = ({
     try {
       const formData = new FormData();
       formData.set("orderId", orderId);
+      formData.set("branchId", branchId);
       try {
         const res = await fetch(`/api/order`, {
           method: "DELETE",

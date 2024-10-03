@@ -1,9 +1,13 @@
 import { getAllPOSOrder } from "@/app/_actions";
+import { options } from "@/app/api/auth/[...nextauth]/options";
 import POSOrders from "@/components/pos/POSOrders";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const POSOrdersPage = async ({ searchParams }: { searchParams: any }) => {
+  const session = await getServerSession(options);
+  const branchId = session.user._id.toString();
   const urlParams = {
     keyword: searchParams.keyword,
     page: searchParams.page,
@@ -34,7 +38,11 @@ const POSOrdersPage = async ({ searchParams }: { searchParams: any }) => {
 
   return (
     <>
-      <POSOrders orders={orders} filteredOrdersCount={filteredOrdersCount} />
+      <POSOrders
+        orders={orders}
+        filteredOrdersCount={filteredOrdersCount}
+        branchId={branchId}
+      />
       {isPageOutOfRange ? (
         <div className="flex justify-center items-center h-[300px]">
           No hay Resultados...
