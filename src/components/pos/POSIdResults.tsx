@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineClose } from "react-icons/ai";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
-const POSIdResults = () => {
+const POSIdResults = ({ userId }: { userId: string }) => {
   const { productsPOS } = useSelector((state: any) => state?.compras);
   const dispatch = useDispatch();
 
@@ -85,7 +85,12 @@ const POSIdResults = () => {
                                 <span>{cartItem?.quantity || 1}</span>
                                 <span
                                   onClick={() =>
-                                    dispatch(increasePOSQuantity(cartItem))
+                                    dispatch(
+                                      increasePOSQuantity({
+                                        _id: cartItem._id,
+                                        branchId: userId,
+                                      })
+                                    )
                                   }
                                   className="cursor-pointer"
                                 >

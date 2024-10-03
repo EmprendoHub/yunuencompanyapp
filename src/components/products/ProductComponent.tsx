@@ -36,7 +36,7 @@ const ProductComponent = ({
     color: product?.variations[0].color,
     colorHex: product?.variations[0].colorHex,
     price: product?.variations[0].price,
-    stock: product?.variations[0].stock,
+    stock: [{ amount: product?.variations[0].stock[0].amount, branch: "" }],
     image: product?.variations[0].image,
   });
 
@@ -282,7 +282,7 @@ const ProductComponent = ({
                 <span>
                   Existencias:{" "}
                   <span className=" font-bodyFont">
-                    <b>{variation.stock}</b>
+                    <b>{variation.stock[0].amount}</b>
                   </span>
                 </span>
                 {product?.stock <= 0 || alreadyCart ? (
@@ -371,23 +371,23 @@ const ProductComponent = ({
                     </span>
                   ) : (
                     <motion.button
-                      disabled={variation?.stock <= 0}
+                      disabled={variation?.stock[0].amount <= 0}
                       whileHover={{ scale: 1.07 }}
                       whileTap={{ scale: 0.9 }}
                       className={`${
-                        variation?.stock <= 0
+                        variation?.stock[0].amount <= 0
                           ? "bg-slate-300 grayscale-0 text-slate-500 border-slate-300"
                           : "text-white border-black"
                       } border  drop-shadow-md flex flex-row items-center justify-between px-6 py-3 text-sm gap-x-4 rounded-sm  bg-black  ease-in-out  duration-300 w-80 uppercase tracking-wider cursor-pointer `}
                       onClick={handleClick}
                     >
-                      {variation?.stock <= 0
+                      {variation?.stock[0].amount <= 0
                         ? "Out of Stock"
                         : "Agregar a carrito"}
 
                       <span
                         className={`${
-                          variation?.stock <= 0
+                          variation?.stock[0].amount <= 0
                             ? "bg-slate-300 grayscale-0 text-slate-500"
                             : "group-hover:bg-black hover:text-white duration-200 "
                         } text-xl text-slate-400 w-12 flex items-center justify-center  rounded-full py-2`}
