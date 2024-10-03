@@ -7,7 +7,6 @@ import { generateUrlSafeTitle, newCSTDate } from "@/backend/helpers";
 export async function POST(request: any, res: any) {
   const token: any = await getToken({ req: request });
   if (!token) {
-    // Return immediately if not authorized
     return new Response("Unauthorized", { status: 401 });
   }
   try {
@@ -29,15 +28,15 @@ export async function POST(request: any, res: any) {
       salePrice,
       salePriceEndDate,
       createdAt,
+      branchId,
     } = Object.fromEntries(payload);
 
     let slug = generateUrlSafeTitle(title);
 
     let slugExists = await Product.findOne({ slug });
 
-    // Attempt to generate a new unique slug if the original one is already in use
     while (slugExists) {
-      const randomNum = Math.floor(1000 + Math.random() * 9000); // Generates a four-digit number
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
       const newTitle = `${title} Mod-${randomNum}`;
       title = newTitle;
       slug = generateUrlSafeTitle(newTitle);
@@ -45,7 +44,7 @@ export async function POST(request: any, res: any) {
     }
 
     const user = { _id: token?.user?._id };
-    // Parse variations JSON string with reviver function to convert numeric strings to numbers
+
     let colors: any[] = [];
     variations = JSON.parse(variations, (key, value) => {
       if (key === "color") {
@@ -53,21 +52,19 @@ export async function POST(request: any, res: any) {
           value: value,
           label: value,
         };
-        //check array of object to see if values exists
         const exists = colors.some(
           (c) => c.value === value || c.label === value
         );
         if (!exists) {
-          colors.push(color); // add to colors array
+          colors.push(color);
         }
       }
-      // Check if the value is a string and represents a number
       if (!isNaN(value) && value !== "" && !Array.isArray(value)) {
-        if (key != "size") {
-          return Number(value); // Convert the string to a number
+        if (key !== "size") {
+          return Number(value);
         }
       }
-      return value; // Return unchanged for other types of values
+      return value;
     });
 
     tags = JSON.parse(tags);
@@ -75,11 +72,11 @@ export async function POST(request: any, res: any) {
     const sale_price_end_date = salePriceEndDate;
     const images = [{ url: mainImage }];
 
-    // calculate product stock
-    const stock = variations.reduce(
-      (total: any, variation: any) => total + variation.stock,
-      0
-    );
+    // Update stock structure
+    const stock = variations.map((variation: any) => ({
+      amount: variation.stock,
+      branch: branchId,
+    }));
 
     createdAt = newCSTDate();
 
@@ -88,6 +85,12 @@ export async function POST(request: any, res: any) {
       branch: branchAvailability,
       online: onlineAvailability,
     };
+
+    // Update variations structure
+    const updatedVariations = variations.map((variation: any) => ({
+      ...variation,
+      stock: [{ amount: variation.stock, branch: branchId }],
+    }));
 
     const newProduct = new Product({
       type: "variation",
@@ -102,7 +105,7 @@ export async function POST(request: any, res: any) {
       tags,
       images,
       colors,
-      variations,
+      variations: updatedVariations,
       stock,
       sale_price,
       sale_price_end_date,
@@ -110,7 +113,6 @@ export async function POST(request: any, res: any) {
       user,
     });
 
-    // Save the Product to the database
     await newProduct.save();
     return new Response(
       JSON.stringify({
@@ -118,7 +120,7 @@ export async function POST(request: any, res: any) {
         success: true,
       }),
       {
-        status: 200, // Use HTTP 200 to indicate success
+        status: 200,
         headers: {
           "Content-Type": "application/json",
         },
@@ -126,7 +128,6 @@ export async function POST(request: any, res: any) {
     );
   } catch (error) {
     console.log(error);
-
     return new Response(
       JSON.stringify({
         error: "Error al crear Producto",
@@ -140,7 +141,6 @@ export async function PUT(request: any, res: any) {
   const token: any = await getToken({ req: request });
 
   if (!token) {
-    // Return immediately if not authorized
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -162,6 +162,7 @@ export async function PUT(request: any, res: any) {
       variations,
       salePrice,
       salePriceEndDate,
+      branchId,
       updatedAt,
       _id,
     } = Object.fromEntries(payload);
@@ -172,9 +173,8 @@ export async function PUT(request: any, res: any) {
       _id: { $ne: _id },
     });
 
-    // Attempt to generate a new unique slug if the original one is already in use
     while (slugExists) {
-      const randomNum = Math.floor(1000 + Math.random() * 9000); // Generates a four-digit number
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
       const newTitle = `${title} Mod-${randomNum}`;
       title = newTitle;
       slug = generateUrlSafeTitle(newTitle);
@@ -183,7 +183,6 @@ export async function PUT(request: any, res: any) {
 
     const user = { _id: token?.user?._id };
 
-    // Parse variations JSON string with reviver function to convert numeric strings to numbers
     let colors: any[] = [];
     variations = JSON.parse(variations, (key, value) => {
       if (key === "color") {
@@ -191,21 +190,19 @@ export async function PUT(request: any, res: any) {
           value: value,
           label: value,
         };
-        //check array of object to see if values exists
         const exists = colors.some(
           (c) => c.value === value || c.label === value
         );
         if (!exists) {
-          colors.push(color); // add to colors array
+          colors.push(color);
         }
       }
-      // Check if the value is a string and represents a number
       if (!isNaN(value) && value !== "" && !Array.isArray(value)) {
-        if (key != "size") {
-          return Number(value); // Convert the string to a number
+        if (key !== "size") {
+          return Number(value);
         }
       }
-      return value; // Return unchanged for other types of values
+      return value;
     });
 
     tags = JSON.parse(tags);
@@ -213,11 +210,11 @@ export async function PUT(request: any, res: any) {
     const sale_price_end_date = salePriceEndDate;
     const images = [{ url: mainImage }];
 
-    // calculate product stock
-    const stock = variations.reduce(
-      (total: any, variation: any) => total + variation.stock,
-      0
-    );
+    // Update stock structure
+    const stock = variations.map((variation: any) => ({
+      amount: variation.stock,
+      branch: branchId,
+    }));
 
     updatedAt = new Date(updatedAt);
 
@@ -227,7 +224,12 @@ export async function PUT(request: any, res: any) {
       online: onlineAvailability,
     };
 
-    // Update a Product in the database
+    // Update variations structure
+    const updatedVariations = variations.map((variation: any) => ({
+      ...variation,
+      stock: [{ amount: variation.stock, branch: branchId }],
+    }));
+
     await Product.updateOne(
       { _id },
       {
@@ -243,7 +245,7 @@ export async function PUT(request: any, res: any) {
         tags,
         images,
         colors,
-        variations,
+        variations: updatedVariations,
         stock,
         sale_price,
         sale_price_end_date,
@@ -260,7 +262,7 @@ export async function PUT(request: any, res: any) {
   } catch (error) {
     return NextResponse.json(
       {
-        error: "Error al crear Producto",
+        error: "Error al actualizar Producto",
       },
       { status: 500 }
     );

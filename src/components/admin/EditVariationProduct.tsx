@@ -40,9 +40,11 @@ export interface ValidationError {
 const EditVariationProduct = ({
   product,
   currentCookies,
+  branchId,
 }: {
   product: any;
   currentCookies: string;
+  branchId: string;
 }) => {
   const getPathname = usePathname();
   let pathname: string = "";
@@ -459,6 +461,7 @@ const EditVariationProduct = ({
     formData.append("salePriceEndDate", salePriceEndDate);
     formData.append("updatedAt", updatedAt);
     formData.append("_id", product?._id);
+    formData.append("branchId", branchId);
     // write to database using server actions
 
     setIsSending(true);

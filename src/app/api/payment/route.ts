@@ -118,7 +118,7 @@ export async function POST(req: any, res: any) {
       customer = customerExists;
     }
     items = JSON.parse(items);
-    const branchInfo = pathname;
+    const branchId = pathname;
     const ship_cost = 0;
     const date = newCSTDate();
 
@@ -172,16 +172,31 @@ export async function POST(req: any, res: any) {
         const variation = product.variations.find((variation: any) =>
           variation._id.equals(variationId)
         );
-        // Check if there is enough stock
-        if (variation.stock < item.quantity) {
+        // Find the stock object for the specified branch
+        const stockForBranch = variation.stock.find(
+          (stockItem: { branch: any }) => stockItem.branch === branchId
+        );
+
+        // Check if there is enough stock for the branch
+        if (!stockForBranch || stockForBranch.amount < item.quantity) {
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
             },
           };
         } else {
-          variation.stock -= 1;
-          product.stock -= 1;
+          // Reduce the stock amount for the branch
+          stockForBranch.amount -= item.quantity;
+
+          // Reduce the overall product stock if needed
+          product.stock = product.stock.find(
+            (stockItem: { branch: any }) => stockItem.branch === branchId
+          );
+          if (product.stock) {
+            product.stock.amount -= item.quantity;
+          }
+
+          // Add the item to the cart
           cartItems.push({
             product: product._id,
             variation: variationId,
@@ -192,6 +207,8 @@ export async function POST(req: any, res: any) {
             quantity: item.quantity,
             image: item.image,
           });
+
+          // Save the updated product
           product.save();
         }
       })
@@ -205,7 +222,7 @@ export async function POST(req: any, res: any) {
       comment: note,
       ship_cost,
       createdAt: date,
-      branch: branchInfo,
+      branch: branchId,
       paymentInfo,
       orderItems: cartItems,
       orderStatus: currentOrderStatus,

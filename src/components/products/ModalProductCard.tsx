@@ -59,7 +59,7 @@ const ModalProductCard = ({
               Oferta
             </span>
           )}
-          {item?.stock <= 0 && (
+          {item?.stock[0].amount <= 0 && (
             <span className="absolute rotate-12 top-1/2 right-1/4  border-[1px] border-black font-medium text-xl py-1 px-3 rounded-sm bg-black text-slate-100 group-hover:bg-slate-100 group-hover:text-foreground duration-200">
               SOLD OUT
             </span>

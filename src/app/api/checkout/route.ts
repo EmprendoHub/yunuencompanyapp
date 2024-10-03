@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-async function getCartItems(items: any) {
+async function getCartItems(items: any, branchId: string) {
   return new Promise((resolve, reject) => {
     let cartItems = [];
 
@@ -20,10 +20,15 @@ async function getCartItems(items: any) {
       const variation = product.variations.find((variation: any) =>
         variation._id.equals(item.variation)
       );
-      // Check if there is enough stock
-      if (variation.stock < item.quantity) {
-        console.log("Insufficient stock");
-        return;
+
+      // Find the stock specific to the branchId
+      const branchStock = variation.stock.find(
+        (s: any) => s.branch === branchId
+      );
+
+      if (!branchStock || branchStock.amount < item.quantity) {
+        console.log("Insufficient stock for branch:", branchId);
+        return reject("Insufficient stock");
       }
 
       cartItems.push({
@@ -122,7 +127,7 @@ export const POST = async (request: any) => {
       taxPaid: 0,
       paymentIntent: "pending",
     };
-    const order_items = await getCartItems(items);
+    const order_items = await getCartItems(items, user._id.toString());
 
     const line_items = await items.map((item: any) => {
       return {

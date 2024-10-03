@@ -339,16 +339,32 @@ export async function payPOSDrawer(data: any) {
         const variation = product.variations.find((variation: any) =>
           variation._id.equals(variationId)
         );
-        // Check if there is enough stock
-        if (variation.stock < item.quantity) {
+
+        // Find the stock object for the specified branch
+        const stockForBranch = variation.stock.find(
+          (stockItem: { branch: any }) => stockItem.branch === userId
+        );
+
+        // Check if there is enough stock for the branch
+        if (!stockForBranch || stockForBranch.amount < item.quantity) {
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
             },
           };
         } else {
-          variation.stock -= 1;
-          product.stock -= 1;
+          // Reduce the stock amount for the branch
+          stockForBranch.amount -= item.quantity;
+
+          // Reduce the overall product stock if needed
+          product.stock = product.stock.find(
+            (stockItem: { branch: any }) => stockItem.branch === userId
+          );
+          if (product.stock) {
+            product.stock.amount -= item.quantity;
+          }
+
+          // Add the item to the cart
           cartItems.push({
             product: product._id,
             variation: variationId,
@@ -359,6 +375,8 @@ export async function payPOSDrawer(data: any) {
             quantity: item.quantity,
             image: item.image,
           });
+
+          // Save the updated product
           product.save();
         }
       })
@@ -585,6 +603,8 @@ export async function payPOSSocialsDrawer(data: any) {
     let customerEmail;
     let customerPhone;
     let customerName;
+    const session = await getServerSession(options);
+    const userId = session.user._id.toString();
 
     if (email.length > 3) {
       customerEmail = email;
@@ -680,16 +700,30 @@ export async function payPOSSocialsDrawer(data: any) {
         const variation = product.variations.find((variation: any) =>
           variation._id.equals(variationId)
         );
+
+        // Find the stock object for the specified branch
+        const stockForBranch = variation.stock.find(
+          (stockItem: { branch: any }) => stockItem.branch === userId
+        );
+
         // Check if there is enough stock
-        if (variation.stock < item.quantity) {
+        if (!stockForBranch || stockForBranch.amount < item.quantity) {
           return {
             error: {
               title: { _errors: ["Este producto no cuenta con existencias"] },
             },
           };
         } else {
-          variation.stock -= 1;
-          product.stock -= 1;
+          // Reduce the stock amount for the branch
+          stockForBranch.amount -= item.quantity;
+
+          // Reduce the overall product stock if needed
+          product.stock = product.stock.find(
+            (stockItem: { branch: any }) => stockItem.branch === userId
+          );
+          if (product.stock) {
+            product.stock.amount -= item.quantity;
+          }
           cartItems.push({
             product: product._id,
             variation: variationId,
@@ -2621,14 +2655,19 @@ export async function updateProductQuantity(variationId: any) {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     let product = await Product.findOne({ "variations._id": variationId });
+    const session = await getServerSession(options);
+    const userId = session.user._id.toString();
 
     if (product) {
       // Find the variation within the variations array
       let variation = product.variations.find(
         (variation: any) => variation._id.toString() === variationId
       );
+      const stockForBranch = variation.stock.find(
+        (stockItem: { branch: any }) => stockItem.branch === userId
+      );
       // Update the stock of the variation
-      variation.stock -= 1; // Example stock update
+      stockForBranch.amount -= 1; // Example stock update
       // Save the product to persist the changes
       await product.save();
     } else {
@@ -2714,13 +2753,19 @@ export async function getVariationStock(variationId: any) {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     let product = await Product.findOne({ "variations._id": variationId });
+    const session = await getServerSession(options);
+    const userId = session.user._id.toString();
 
     if (product) {
       // Find the variation within the variations array
       let variation = product.variations.find(
         (variation: any) => variation._id.toString() === variationId
       );
-      return { currentStock: variation.stock };
+      const stockForBranch = variation.stock.find(
+        (stockItem: { branch: any }) => stockItem.branch === userId
+      );
+
+      return { currentStock: stockForBranch.amount };
     } else {
       throw Error("Product not found");
     }
@@ -2825,6 +2870,8 @@ export async function getAllPOSProductOld(searchQuery: any) {
 export async function getAllPOSProduct(searchQuery: any) {
   try {
     await dbConnect();
+    const session = await getServerSession(options);
+    const branchId = session.user._id.toString();
 
     // Extract search parameters
     const searchParams = new URLSearchParams(searchQuery);
@@ -2836,33 +2883,46 @@ export async function getAllPOSProduct(searchQuery: any) {
     let productQuery = Product.aggregate([
       {
         $match: {
-          $and: [{ stock: { $gt: 0 } }, { "availability.branch": true }],
+          $and: [
+            { "stock.amount": { $gt: 0 } },
+            { "stock.branch": branchId },
+            { "availability.branch": true },
+          ],
         },
       },
       {
         $addFields: {
-          numericTitle: { $toInt: "$title" }, // Convert title to integer
+          numericTitle: { $toInt: "$title" },
+          branchStock: {
+            $filter: {
+              input: "$stock",
+              as: "s",
+              cond: { $eq: ["$$s.branch", branchId] },
+            },
+          },
         },
       },
       {
-        $sort: { numericTitle: -1 }, // Sort by numeric title
+        $sort: { numericTitle: -1 },
       },
       {
-        $skip: skip, // Pagination - skip the appropriate number of documents
+        $skip: skip,
       },
       {
-        $limit: resPerPage, // Pagination - limit the number of documents returned
+        $limit: resPerPage,
       },
     ]);
 
     // Get the total count of products that match the criteria
     const productsCount = await Product.countDocuments({
-      stock: { $gt: 0 },
+      "stock.amount": { $gt: 0 },
+      "stock.branch": branchId,
       "availability.branch": true,
     });
 
     // Execute the query
     let productsData = await productQuery;
+    console.log("productsData", branchId);
 
     // Convert the product data to a JSON string
     let products = JSON.stringify(productsData);
@@ -2870,7 +2930,7 @@ export async function getAllPOSProduct(searchQuery: any) {
     // Return the products and count of filtered products
     return {
       products: products,
-      filteredProductsCount: productsCount, // Use total count as filtered count
+      filteredProductsCount: productsCount,
     };
   } catch (error: any) {
     console.log(error);
@@ -3693,6 +3753,7 @@ export async function updatePost(data: any) {
 export async function addVariationProduct(data: any) {
   const session = await getServerSession(options);
   const user = { _id: session?.user?._id };
+  const branchId = session.user._id.toString();
 
   let {
     title,
@@ -3739,11 +3800,12 @@ export async function addVariationProduct(data: any) {
   const sale_price_end_date = salePriceEndDate;
   const images = [{ url: mainImage }];
 
-  // calculate product stock
-  const stock = variations.reduce(
-    (total: any, variation: any) => total + variation.stock,
-    0
-  );
+  // Calculate product stock as an array of objects for the given branch
+  const stock = variations.map((variation: any) => ({
+    branch: branchId, // Stock is per branch, so associate it with the current branch ID
+    amount: variation.stock, // Use the stock amount from the variation for this branch
+  }));
+
   createdAt = new Date(createdAt);
 
   // validate form data
@@ -3812,6 +3874,7 @@ export async function addVariationProduct(data: any) {
 export async function updateVariationProduct(data: any) {
   const session = await getServerSession(options);
   const user = { _id: session?.user?._id };
+  const branchId = session.user._id.toString();
 
   let {
     title,
@@ -3859,11 +3922,12 @@ export async function updateVariationProduct(data: any) {
   const sale_price_end_date = salePriceEndDate;
   const images = [{ url: mainImage }];
 
-  // calculate product stock
-  const stock = variations.reduce(
-    (total: any, variation: any) => total + variation.stock,
-    0
-  );
+  // Calculate product stock as an array of objects for the given branch
+  const stock = variations.map((variation: any) => ({
+    branch: branchId, // Stock is per branch, so associate it with the current branch ID
+    amount: variation.stock, // Use the stock amount from the variation for this branch
+  }));
+
   updatedAt = new Date(updatedAt);
   // validate form data
   const result = VariationUpdateProductEntrySchema.safeParse({

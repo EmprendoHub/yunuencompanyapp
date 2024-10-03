@@ -112,9 +112,16 @@ const ProductSchema = new mongoose.Schema(
         title: {
           type: String,
         },
-        stock: {
-          type: Number,
-        },
+        stock: [
+          {
+            amount: {
+              type: Number,
+            },
+            branch: {
+              type: String,
+            },
+          },
+        ],
         color: {
           type: String,
         },
@@ -165,11 +172,16 @@ const ProductSchema = new mongoose.Schema(
         default: false,
       },
     },
-    stock: {
-      require: true,
-      type: Number,
-      default: 0,
-    },
+    stock: [
+      {
+        amount: {
+          type: Number,
+        },
+        branch: {
+          type: String,
+        },
+      },
+    ],
     rating: {
       type: Number,
       default: 0,

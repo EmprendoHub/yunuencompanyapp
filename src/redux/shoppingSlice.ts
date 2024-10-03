@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Define the Variation interface
+// Updated Variation interface
 interface Variation {
   _id: string;
   size: string;
   color: string;
   colorHex: string;
   price: number;
-  discountRate?: number; // Optional discountRate
-  stock: number;
+  discountRate?: number;
+  stock: { amount: number; branch: string }[];
   image: string;
   product?: string;
   variation?: string;
@@ -21,6 +21,15 @@ interface Variation {
 // Define the initial state type
 interface CartState {
   productsData: Variation[];
+  productsPOS: Variation[];
+  favoritesData: Variation[];
+  userInfo: any;
+  shippingInfo: any;
+  orderData: any[];
+  affiliateInfo: any;
+  emailListData: any[];
+  qrListData: any[];
+  loginAttempts: any;
 }
 
 // Define the action type
@@ -46,6 +55,96 @@ export const shoppingSlice = createSlice({
   name: "compras",
   initialState,
   reducers: {
+    addToPOSCart: (state: any, action: PayloadAction<Variation>) => {
+      const existingProduct: any = state.productsPOS.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (existingProduct) {
+        existingProduct.quantity =
+          (existingProduct.quantity || 0) + (action.payload.quantity || 1);
+      } else {
+        state.productsPOS.push({
+          ...action.payload,
+          quantity: action.payload.quantity || 1,
+        });
+      }
+    },
+    increasePOSQuantity: (
+      state,
+      action: PayloadAction<{ _id: string; branchId: string }>
+    ) => {
+      const existingProduct: any = state.productsPOS.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (existingProduct) {
+        const branchStock = existingProduct.stock.find(
+          (s: { branch: string }) => s.branch === action.payload.branchId
+        );
+        if (
+          branchStock &&
+          (existingProduct.quantity || 0) < branchStock.amount
+        ) {
+          existingProduct.quantity = (existingProduct.quantity || 0) + 1;
+        }
+      }
+    },
+    decreasePOSQuantity: (state, action: PayloadAction<{ _id: string }>) => {
+      const existingProduct: any = state.productsPOS.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (
+        existingProduct &&
+        existingProduct.quantity &&
+        existingProduct.quantity > 1
+      ) {
+        existingProduct.quantity--;
+      }
+    },
+    addToCart: (state: any, action: PayloadAction<Variation>) => {
+      const existingProduct: any = state.productsData.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (existingProduct) {
+        existingProduct.quantity =
+          (existingProduct.quantity || 0) + (action.payload.quantity || 1);
+      } else {
+        state.productsData.push({
+          ...action.payload,
+          quantity: action.payload.quantity || 1,
+        });
+      }
+    },
+    increaseQuantity: (
+      state: any,
+      action: PayloadAction<{ _id: string; branchId: string }>
+    ) => {
+      const existingProduct = state.productsData.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (existingProduct) {
+        const branchStock = existingProduct.stock.find(
+          (s: { branch: string }) => s.branch === action.payload.branchId
+        );
+        if (
+          branchStock &&
+          (existingProduct.quantity || 0) < branchStock.amount
+        ) {
+          existingProduct.quantity = (existingProduct.quantity || 0) + 1;
+        }
+      }
+    },
+    decreaseQuantity: (state, action: PayloadAction<{ _id: string }>) => {
+      const existingProduct: any = state.productsData.find(
+        (item: any) => item._id === action.payload._id
+      );
+      if (
+        existingProduct &&
+        existingProduct.quantity &&
+        existingProduct.quantity > 1
+      ) {
+        existingProduct.quantity--;
+      }
+    },
     increaseLoginAttempts: (state, action) => {
       state.loginAttempts += action.payload.count;
     },
@@ -60,35 +159,7 @@ export const shoppingSlice = createSlice({
         existingProduct.discountRate = action.payload.discountRate;
       }
     },
-    addToPOSCart: (state: any, action: any) => {
-      const existingProduct: any = state.productsPOS.find(
-        (item: any) => item._id === action.payload._id
-      );
-      if (existingProduct) {
-        existingProduct.quantity += action.payload.quantity;
-      } else {
-        state.productsPOS.push(action.payload);
-      }
-    },
-    increasePOSQuantity: (state, action) => {
-      const existingProduct: any = state.productsPOS.find(
-        (item: any) => item._id === action.payload._id
-      );
 
-      if (existingProduct && existingProduct.stock > existingProduct.quantity) {
-        existingProduct.quantity++;
-      }
-    },
-    decreasePOSQuantity: (state, action) => {
-      const existingProduct: any = state.productsPOS.find(
-        (item: any) => item._id === action.payload._id
-      );
-      if (existingProduct?.quantity === 1) {
-        existingProduct.quantity === 1;
-      } else {
-        existingProduct && existingProduct.quantity--;
-      }
-    },
     deletePOSProduct: (state, action) => {
       state.productsPOS = state.productsPOS.filter(
         (item: any) => item._id !== action.payload
@@ -97,33 +168,7 @@ export const shoppingSlice = createSlice({
     resetPOSCart: (state) => {
       state.productsPOS = [];
     },
-    addToCart: (state: any, action: PayloadAction<Variation>) => {
-      const existingProduct: any = state.productsData.find(
-        (item: any) => item._id === action.payload._id
-      );
-      if (existingProduct) {
-        existingProduct.quantity =
-          (existingProduct.quantity ?? 0) + action.payload.quantity!;
-      } else {
-        state.productsData.push(action.payload);
-      }
-    },
-    increaseQuantity: (state, action) => {
-      const existingProduct: any = state.productsData.find(
-        (item: any) => item._id === action.payload._id
-      );
-      existingProduct.quantity++;
-    },
-    decreaseQuantity: (state, action) => {
-      const existingProduct: any = state.productsData.find(
-        (item: any) => item._id === action.payload._id
-      );
-      if (existingProduct?.quantity === 1) {
-        existingProduct.quantity === 1;
-      } else {
-        existingProduct && existingProduct.quantity--;
-      }
-    },
+
     deleteProduct: (state, action) => {
       state.productsData = state.productsData.filter(
         (item: any) => item._id !== action.payload

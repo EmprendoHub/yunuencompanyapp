@@ -11,7 +11,7 @@ const ListPOSProducts = ({
   filteredProductsCount: number;
 }) => {
   const filteredProducts = products?.filter(
-    (product: any) => product.stock > 0
+    (product: any) => product.stock[0].amount > 0
   );
 
   return (

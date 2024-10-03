@@ -24,8 +24,10 @@ import { ValidationError } from "./EditVariationProduct";
 
 const NewVariationOptimized = ({
   currentCookies,
+  branchId,
 }: {
   currentCookies: string;
+  branchId: string;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -492,6 +494,8 @@ const NewVariationOptimized = ({
     );
     formData.append("salePriceEndDate", salePriceEndDate);
     formData.append("createdAt", createdAt);
+    formData.append("branchId", branchId);
+
     // write to database using server actions
 
     //const result = await addVariationProduct(formData);
