@@ -811,7 +811,7 @@ const EditVariationProduct = ({
             </div>
             {/* Main Variation */}
             <div className="w-full main-variation flex maxsm:flex-col items-center">
-              <div className="flex flex-row items-center gap-3 w-2/3  maxsm:w-full">
+              <div className="flex flex-col items-center gap-3 w-2/3  maxsm:w-full">
                 <div className="mb-4 w-full">
                   <label className="block mb-1 font-EB_Garamond"> Talla </label>
                   <div className="relative">
@@ -921,28 +921,30 @@ const EditVariationProduct = ({
                   </div>
                 </div>
                 <div className="mb-4 w-full">
-                  <label className="block mb-1 font-EB_Garamond">
-                    {" "}
-                    Existencias{" "}
-                  </label>
-                  <div className="relative">
-                    <div className="col-span-2">
-                      <input
-                        type="number"
-                        className="appearance-none border border-gray-300 bg-gray-100 rounded-md pl-2 remove-arrow focus:outline-none focus:border-gray-400 w-full"
-                        placeholder="1"
-                        min="1"
-                        value={variations[0]?.stock}
-                        onChange={(e) => handleStockChange(0, e.target.value)}
-                        name="stock"
-                      />
-                      {validationError?.stock && (
-                        <p className="text-sm text-red-400">
-                          {validationError.stock._errors.join(", ")}
-                        </p>
-                      )}
+                  {variations[0]?.stock.map((branchStock: any) => (
+                    <div className="relative" key={branchStock.branch}>
+                      <label className="block mb-1 font-EB_Garamond">
+                        {" "}
+                        Existencias {branchStock.branch}
+                      </label>
+                      <div className="col-span-2">
+                        <input
+                          type="number"
+                          className="appearance-none border border-gray-300 bg-gray-100 rounded-md pl-2 remove-arrow focus:outline-none focus:border-gray-400 w-full"
+                          placeholder="1"
+                          min="1"
+                          value={branchStock?.amount}
+                          onChange={(e) => handleStockChange(0, e.target.value)}
+                          name="stock"
+                        />
+                        {validationError?.stock && (
+                          <p className="text-sm text-red-400">
+                            {validationError.stock._errors.join(", ")}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
               {/* Imagen de Variación # 1 */}

@@ -269,11 +269,13 @@ const AdminProducts = ({
                 </td>
                 <td className="w-full px-6 maxsm:px-0 py-0 ">
                   <b>
-                    <FormattedPrice amount={product?.currentPrice} />
+                    <FormattedPrice amount={product?.variations[0].price} />
                   </b>
                 </td>
 
-                <td className="w-full px-1 py-0 ">{product?.stock}</td>
+                <td className="w-full px-1 py-0 ">
+                  {product?.stock[0].amount}
+                </td>
                 <td className="w-full px-1 py-0 flex flex-row items-center gap-x-1">
                   <Link
                     href={`/${pathname}/productos/variacion/${product?.slug}?&callback=${currentPage}`}

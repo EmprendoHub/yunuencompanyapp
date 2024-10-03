@@ -3070,7 +3070,7 @@ export async function getAllProduct(searchQuery: any) {
       allBrands: JSON.stringify(allBrands),
     };
 
-    revalidatePath("/admin/mercadolibre/producto/");
+    revalidatePath("/admin/producto");
 
     return response;
   } catch (error: any) {
