@@ -50,7 +50,7 @@ const CancelOrderComp = ({
         toast({
           duration: 2000,
           className: "bg-destructive text-slate-100",
-          title: "Error cancelando el pedido. Por favor Intenta de nuevo",
+          title: "Error cancelando el pedido. Por favor Intenta de nuevo.",
         });
       }
     } catch (error) {
