@@ -947,15 +947,16 @@ export async function getDashboard() {
     await dbConnect();
     let orders;
     let products;
-    let affiliates;
-    let clients;
-    let posts;
     let thisWeeksOrder;
     let totalPaymentsThisWeek;
+    let totalExpensesThisWeek;
     let dailyOrders;
     let dailyPaymentsTotals;
-    let monthlyOrdersTotals;
-    let yearlyOrdersTotals;
+    let dailyExpensesTotals;
+    let monthlyPaymentsTotals;
+    let monthlyExpensesTotals;
+    let yearlyExpensesTotals;
+    let yearlyPaymentsTotals;
 
     const cstOffset = 6 * 60 * 60 * 1000; // CST is UTC+6
 
@@ -963,6 +964,7 @@ export async function getDashboard() {
 
     // Create a new date with the offset applied
     const today = new Date(Date.now() + minusCstOffset);
+
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight
     // Set start of the current year
     const startOfYear = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
@@ -1081,17 +1083,7 @@ export async function getDashboard() {
       999
     );
 
-    orders = await Order.find({ orderStatus: { $ne: "Cancelado" } })
-      .sort({ createdAt: -1 }) // Sort in descending order of creation date
-      .limit(5);
-
-    affiliates = await Affiliate.find({ published: { $ne: "false" } })
-      .sort({ createdAt: -1 }) // Sort in descending order of creation date
-      .limit(5);
-    clients = await Customer.find()
-      .sort({ createdAt: -1 }) // Sort in descending order of creation date
-      .limit(5);
-    posts = await Post.find({ published: { $ne: "false" } })
+    orders = await Order.find({ orderStatus: { $ne: "cancelada" } })
       .sort({ createdAt: -1 }) // Sort in descending order of creation date
       .limit(5);
 
@@ -1102,6 +1094,7 @@ export async function getDashboard() {
             $gte: startOfLast7Days,
             $lt: endOfLast7Days,
           },
+          paymentIntent: "paid", // Add filter for paymentIntent
         },
       },
       {
@@ -1195,8 +1188,43 @@ export async function getDashboard() {
       },
     ]);
 
+    dailyExpensesTotals = await Expense.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfToday,
+            $lt: endOfToday,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
     // Perform aggregation to get yesterday's totals
-    let yesterdaysOrdersTotals = await Payment.aggregate([
+    let yesterdaysPaymentsTotals = await Payment.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: yesterday,
+            $lt: endOfYesterday,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
+    // Perform aggregation to get yesterday's totals
+    let yesterdayExpensesTotals = await Expense.aggregate([
       {
         $match: {
           pay_date: {
@@ -1316,6 +1344,23 @@ export async function getDashboard() {
       },
     ]);
 
+    totalExpensesThisWeek = await Expense.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfLast7Days,
+            $lt: endOfLast7Days,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
     // Perform aggregation to get last weeks totals
     let lastWeeksLayawayPaymentsTotals = await Payment.aggregate([
       {
@@ -1342,7 +1387,24 @@ export async function getDashboard() {
     ]);
 
     // Perform aggregation to get this month's totals
-    monthlyOrdersTotals = await Payment.aggregate([
+    monthlyPaymentsTotals = await Payment.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
+    monthlyExpensesTotals = await Expense.aggregate([
       {
         $match: {
           pay_date: {
@@ -1360,7 +1422,24 @@ export async function getDashboard() {
     ]);
 
     // Perform aggregation to get this year's totals
-    yearlyOrdersTotals = await Payment.aggregate([
+    yearlyPaymentsTotals = await Payment.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfYear,
+            $lt: endOfYear,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
+    yearlyExpensesTotals = await Expense.aggregate([
       {
         $match: {
           pay_date: {
@@ -1394,33 +1473,39 @@ export async function getDashboard() {
     const orderCountPreviousMonth = await getDocumentCountPreviousMonth(Order);
 
     orders = JSON.stringify(orders);
-    clients = JSON.stringify(clients);
     dailyOrders = JSON.stringify(dailyOrders);
-    affiliates = JSON.stringify(affiliates);
     products = JSON.stringify(products);
-    posts = JSON.stringify(posts);
     weeklyData = JSON.stringify(weeklyData);
     dailyData = JSON.stringify(dailyData);
     thisWeeksOrder = JSON.stringify(thisWeeksOrder);
     totalPaymentsThisWeek = totalPaymentsThisWeek[0]?.total;
-    dailyPaymentsTotals = dailyPaymentsTotals[0]?.total;
+    totalExpensesThisWeek = totalExpensesThisWeek[0]?.total;
 
-    yesterdaysOrdersTotals = yesterdaysOrdersTotals[0]?.total;
-    monthlyOrdersTotals = monthlyOrdersTotals[0]?.total;
-    yearlyOrdersTotals = yearlyOrdersTotals[0]?.total;
+    dailyPaymentsTotals = dailyPaymentsTotals[0]?.total;
+    dailyExpensesTotals = dailyExpensesTotals[0]?.total;
+
+    yesterdaysPaymentsTotals = yesterdaysPaymentsTotals[0]?.total;
+    yesterdayExpensesTotals = yesterdayExpensesTotals[0]?.total;
+
+    monthlyPaymentsTotals = monthlyPaymentsTotals[0]?.total;
+    monthlyExpensesTotals = monthlyExpensesTotals[0]?.total;
+    yearlyExpensesTotals = yearlyExpensesTotals[0]?.total;
+
+    yearlyPaymentsTotals = yearlyPaymentsTotals[0]?.total;
+
     lastWeeksPaymentsTotals = lastWeeksPaymentsTotals[0]?.total;
     lastMonthsPaymentsTotals = lastMonthsPaymentsTotals[0]?.total;
     lastYearsPaymentsTotals = lastYearsPaymentsTotals[0]?.total;
     return {
       dailyData: dailyData,
+
       weeklyData: weeklyData,
       orders: orders,
-      clients: clients,
-      posts: posts,
-      affiliates: affiliates,
       dailyOrders: dailyOrders,
       dailyPaymentsTotals: dailyPaymentsTotals,
-      yesterdaysOrdersTotals: yesterdaysOrdersTotals,
+      dailyExpensesTotals: dailyExpensesTotals,
+      yesterdaysPaymentsTotals: yesterdaysPaymentsTotals,
+      yesterdayExpensesTotals: yesterdayExpensesTotals,
       thisWeeksOrder: thisWeeksOrder,
       products: products,
       totalOrderCount: totalOrderCount,
@@ -1428,8 +1513,11 @@ export async function getDashboard() {
       orderCountPreviousMonth: orderCountPreviousMonth,
       totalProductCount: totalProductCount,
       totalPaymentsThisWeek: totalPaymentsThisWeek,
-      monthlyOrdersTotals: monthlyOrdersTotals,
-      yearlyOrdersTotals: yearlyOrdersTotals,
+      totalExpensesThisWeek: totalExpensesThisWeek,
+      monthlyExpensesTotals: monthlyExpensesTotals,
+      monthlyPaymentsTotals: monthlyPaymentsTotals,
+      yearlyPaymentsTotals: yearlyPaymentsTotals,
+      yearlyExpensesTotals: yearlyExpensesTotals,
       totalPostCount: totalPostCount,
       lastWeeksPaymentsTotals: lastWeeksPaymentsTotals,
       lastMonthsPaymentsTotals: lastMonthsPaymentsTotals,

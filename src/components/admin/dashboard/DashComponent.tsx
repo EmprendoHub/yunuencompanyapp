@@ -3,12 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MdAttachMoney, MdOutlineSavings } from "react-icons/md";
 import { IoArrowRedoSharp } from "react-icons/io5";
-import {
-  HiArrowNarrowUp,
-  HiArrowRight,
-  HiDocumentText,
-  HiOutlineUserGroup,
-} from "react-icons/hi";
+import { HiArrowNarrowUp } from "react-icons/hi";
 import { GiClothes } from "react-icons/gi";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { FaTags } from "react-icons/fa6";
@@ -39,22 +34,26 @@ const DashComponent = ({ data }: { data: any }) => {
   // Prepare the labels and data for the chart
   const chartLabels = sortedData.map((data: any) => data.date);
   const chartData = sortedData.map((data: any) => data.Total);
-  const clients = JSON.parse(data?.clients);
   const products = JSON.parse(data?.products);
   const orders = JSON.parse(data?.orders);
-  const posts = JSON.parse(data?.posts);
-  const totalPostCount = data?.totalPostCount;
+
   const orderCountPreviousMonth = data?.orderCountPreviousMonth;
-  const postCountPreviousMonth = data?.postCountPreviousMonth;
   const totalOrderCount = data?.totalOrderCount;
   const totalProductCount = data?.totalProductCount;
   const productsCountPreviousMonth = data?.productsCountPreviousMonth;
-  const totalCustomerCount = data?.totalCustomerCount;
   const totalPaymentsThisWeek = data?.totalPaymentsThisWeek;
+  const totalExpensesThisWeek = data?.totalExpensesThisWeek;
+
+  const dailyExpensesTotals = data?.dailyExpensesTotals;
   const dailyPaymentsTotals = data?.dailyPaymentsTotals;
-  const yesterdaysOrdersTotals = data?.yesterdaysOrdersTotals;
-  const monthlyOrdersTotals = data?.monthlyOrdersTotals;
-  const yearlyOrdersTotals = data?.yearlyOrdersTotals;
+  const yesterdaysPaymentsTotals = data?.yesterdaysPaymentsTotals;
+  const yesterdayExpensesTotals = data?.yesterdayExpensesTotals;
+  const monthlyExpensesTotals = data?.monthlyExpensesTotals;
+
+  const monthlyPaymentsTotals = data?.monthlyPaymentsTotals;
+
+  const yearlyPaymentsTotals = data?.yearlyPaymentsTotals;
+  const yearlyExpensesTotals = data?.yearlyExpensesTotals;
   const lastWeeksPaymentsTotals = data?.lastWeeksPaymentsTotals;
   const lastMonthsPaymentsTotals = data?.lastMonthsPaymentsTotals;
   const lastYearsPaymentsTotals = data?.lastYearsPaymentsTotals;
@@ -108,40 +107,40 @@ const DashComponent = ({ data }: { data: any }) => {
   };
 
   return (
-    <div className="p-3 md:mx-auto  text-card-foreground">
+    <div className="p-1 md:mx-auto  text-card-foreground">
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full">
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-3 bg-card shadow-lg gap-4 w-full rounded-md">
+          <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
             <div className="flex justify-between ">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
+                <h3 className="text-card-foreground text-sm uppercase">
                   Ventas del Dia
                 </h3>
                 <p className="text-2xl  text-card-foreground">
                   <FormattedPrice amount={dailyPaymentsTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-blue-600  text-white rounded-full text-5xl p-3 shadow-lg" />
+              <MdAttachMoney className="bg-blue-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
-              <span className="text-green-500 flex items-center">
+              <span className="text-emerald-700 flex items-center">
                 <HiArrowNarrowUp />
-                <FormattedPrice amount={yesterdaysOrdersTotals || 0} />
+                <FormattedPrice amount={yesterdaysPaymentsTotals || 0} />
               </span>
               <div className="text-card-foreground">Dia Anterior</div>
             </div>
           </div>
-          <div className="flex flex-col p-3 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
             <div className="flex justify-between">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
+                <h3 className="text-card-foreground text-sm uppercase">
                   Venta Semanal
                 </h3>
                 <p className="text-2xl  text-slate-700">
                   <FormattedPrice amount={totalPaymentsThisWeek || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-5xl p-3 shadow-lg" />
+              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -154,17 +153,17 @@ const DashComponent = ({ data }: { data: any }) => {
         </div>
 
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-3 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
             <div className="flex justify-between">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
+                <h3 className="text-card-foreground text-sm uppercase">
                   Venta Mensual
                 </h3>
                 <p className="text-2xl  text-slate-700">
-                  <FormattedPrice amount={monthlyOrdersTotals || 0} />
+                  <FormattedPrice amount={monthlyPaymentsTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-5xl p-3 shadow-lg" />
+              <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -174,17 +173,17 @@ const DashComponent = ({ data }: { data: any }) => {
               <div className="text-card-foreground">Mes Anterior</div>
             </div>
           </div>
-          <div className="flex flex-col p-3 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
             <div className="flex justify-between">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
+                <h3 className="text-card-foreground text-sm uppercase">
                   Venta Anual
                 </h3>
                 <p className="text-2xl  text-slate-700">
-                  <FormattedPrice amount={yearlyOrdersTotals || 0} />
+                  <FormattedPrice amount={yearlyPaymentsTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className=" bg-orange-500 text-white rounded-full text-5xl p-3 shadow-lg" />
+              <MdAttachMoney className=" bg-orange-500 text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -192,6 +191,65 @@ const DashComponent = ({ data }: { data: any }) => {
                 <FormattedPrice amount={lastYearsPaymentsTotals || 0} />
               </span>
               <div className="text-card-foreground">Año Anterior</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-5">
+        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
+          <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
+            <div className="flex justify-between ">
+              <div className="">
+                <h3 className="text-card-foreground text-sm uppercase">
+                  Gastos del Dia
+                </h3>
+                <p className="text-2xl  text-card-foreground">
+                  <FormattedPrice amount={dailyExpensesTotals || 0} />
+                </p>
+              </div>
+              <MdAttachMoney className="bg-blue-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+            </div>
+          </div>
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
+            <div className="flex justify-between">
+              <div className="">
+                <h3 className="text-card-foreground text-sm uppercase">
+                  Gastos Semanal
+                </h3>
+                <p className="text-2xl  text-slate-700">
+                  <FormattedPrice amount={totalExpensesThisWeek || 0} />
+                </p>
+              </div>
+              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
+            <div className="flex justify-between">
+              <div className="">
+                <h3 className="text-card-foreground text-sm uppercase">
+                  Gastos Mensual
+                </h3>
+                <p className="text-2xl  text-slate-700">
+                  <FormattedPrice amount={monthlyExpensesTotals || 0} />
+                </p>
+              </div>
+              <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+            </div>
+          </div>
+          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
+            <div className="flex justify-between">
+              <div className="">
+                <h3 className="text-card-foreground text-sm uppercase">
+                  Gastos Anual
+                </h3>
+                <p className="text-2xl  text-slate-700">
+                  <FormattedPrice amount={yearlyExpensesTotals || 0} />
+                </p>
+              </div>
+              <MdAttachMoney className=" bg-orange-500 text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
           </div>
         </div>
@@ -205,32 +263,15 @@ const DashComponent = ({ data }: { data: any }) => {
       </div>
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-4">
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-3 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
+          <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
             <div className="flex justify-between">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
-                  Clientes Totales
-                </h3>
-                <p className="text-2xl  text-slate-700">{totalCustomerCount}</p>
-              </div>
-              <HiOutlineUserGroup className="bg-blue-600  text-white rounded-full text-5xl p-3 shadow-lg" />
-            </div>
-            <Link href={"/admin/clientes"} className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <HiArrowRight />
-              </span>
-              <div className="text-card-foreground">Explorar Clientes</div>
-            </Link>
-          </div>
-          <div className="flex flex-col p-3 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
-                  Pedidos Totales
+                <h3 className="text-card-foreground text-sm uppercase">
+                  Ventas Totales
                 </h3>
                 <p className="text-2xl text-slate-700">{totalOrderCount}</p>
               </div>
-              <FaTags className="bg-teal-600  text-white rounded-full text-5xl p-3 shadow-lg" />
+              <FaTags className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -243,38 +284,20 @@ const DashComponent = ({ data }: { data: any }) => {
         </div>
 
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-3 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
+          <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
             <div className="flex justify-between">
               <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
+                <h3 className="text-card-foreground text-sm uppercase">
                   Total de Productos
                 </h3>
                 <p className="text-2xl  text-slate-700">{totalProductCount}</p>
               </div>
-              <GiClothes className="bg-indigo-600  text-white rounded-full text-5xl p-3 shadow-lg" />
+              <GiClothes className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
                 <HiArrowNarrowUp />
                 {productsCountPreviousMonth}
-              </span>
-              <div className="text-card-foreground">Mes Anterior</div>
-            </div>
-          </div>
-          <div className="flex flex-col p-3 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-md uppercase">
-                  Total de Publicaciones
-                </h3>
-                <p className="text-2xl  text-slate-700">{totalPostCount}</p>
-              </div>
-              <HiDocumentText className=" bg-orange-500 text-white rounded-full text-5xl p-3 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
-                {postCountPreviousMonth}
               </span>
               <div className="text-card-foreground">Mes Anterior</div>
             </div>
@@ -285,50 +308,7 @@ const DashComponent = ({ data }: { data: any }) => {
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
           <div className="flex flex-col w-full shadow-md p-5 rounded-md bg-card">
             <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Clientes Recientes</h1>
-              <button>
-                <Link href={"/admin/clientes"}>Ver Todos</Link>
-              </button>
-            </div>
-            <table>
-              <thead className=" text-slate-700">
-                <tr className="flex justify-between items-center">
-                  <th>Img.</th>
-                  <th>Nombre</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              {clients &&
-                clients.map((client: any) => (
-                  <tbody key={client._id} className="divide-y">
-                    <tr className=" dark:border-gray-700 dark:bg-card flex justify-between items-center mb-2">
-                      <td>
-                        <Image
-                          src={
-                            client.avatar || "/images/avatar_placeholder.jpg"
-                          }
-                          alt="client"
-                          width={400}
-                          height={400}
-                          className="w-5 h-5 rounded-full bg-gray-500"
-                        />
-                      </td>
-                      <td className="capitalize text-slate-800 text-sm">
-                        {client.name.substring(0, 11)}...
-                      </td>
-                      <td>
-                        <Link href={`/admin/cliente/${client._id}`}>
-                          <IoArrowRedoSharp className=" text-blue-500 " />
-                        </Link>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-            </table>
-          </div>
-          <div className="flex flex-col w-full shadow-md p-5 rounded-md bg-card">
-            <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Pedidos recientes</h1>
+              <h1>Ventas recientes</h1>
               <button>
                 <Link href={"/admin/pedidos"}>Ver todos</Link>
               </button>
@@ -409,45 +389,6 @@ const DashComponent = ({ data }: { data: any }) => {
                       <td>
                         <Link href={`/admin/productos/editar/${product.slug}`}>
                           <IoArrowRedoSharp className=" text-indigo-700 " />
-                        </Link>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-            </table>
-          </div>
-          <div className="flex flex-col w-full shadow-md p-5 rounded-md bg-card">
-            <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Publicaciones recientes</h1>
-              <button>
-                <Link href={"/admin/blog"}>Ver todas</Link>
-              </button>
-            </div>
-            <table>
-              <thead>
-                <tr className="flex justify-between mb-4">
-                  <th>Img.</th>
-                  <th>Titulo</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              {posts &&
-                posts?.map((post: any) => (
-                  <tbody key={post?._id} className="divide-y">
-                    <tr className=" flex justify-between dark:border-gray-700 dark:bg-card mb-2">
-                      <td>
-                        <Image
-                          src={post?.mainImage || "/next.svg"}
-                          alt="user"
-                          width={400}
-                          height={400}
-                          className="w-5 h-5 rounded-md bg-gray-500"
-                        />
-                      </td>
-                      <td>{post.mainTitle.substring(0, 20)}...</td>
-                      <td>
-                        <Link href={`/admin/blog/editar/${post.slug}`}>
-                          <IoArrowRedoSharp className=" text-orange-700 " />
                         </Link>
                       </td>
                     </tr>
