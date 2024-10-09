@@ -2990,8 +2990,8 @@ export async function getAllPOSProduct(searchQuery: any) {
       {
         $match: {
           $and: [
-            { "stock.amount": { $gt: 0 } },
-            { "stock.branch": branchId },
+            { "variations.stock.amount": { $gt: 0 } },
+            { "variations.stock.branch": branchId },
             { "availability.branch": true },
           ],
         },
