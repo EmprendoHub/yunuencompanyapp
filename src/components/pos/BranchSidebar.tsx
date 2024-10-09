@@ -126,18 +126,18 @@ export function SideBarItem({
 
   return (
     <li
-      className={`relative flex flex-col items-center justify-center py-2 px-3 maxmd:pr-1 my-1 font-medium rounded-md cursor-pointer gap-x-1 transition-colors group ${
+      className={`relative flex flex-col items-center justify-center py-8 px-3 maxmd:pr-1 my-2 font-medium rounded-md cursor-pointer gap-x-1 transition-colors group ${
         active
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-primary"
           : "hover:bg-indigo-50 text-gray-600"
       }`}
       onClick={handleDropdownToggle}
     >
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center text-2xl">
         {icon}
         <span
-          className={`flex justify-between items-center overflow-hidden transition-all ease-in-out  ${
-            expandSidebar ? " w-36 ml-2  maxmd:w-36 maxmd:ml-1" : "w-0"
+          className={`flex justify-between items-center overflow-hidden transition-all ease-in-out   ${
+            expandSidebar ? " w-30 ml-2  maxmd:w-30 maxmd:ml-1" : "w-0"
           }`}
         >
           {text}
