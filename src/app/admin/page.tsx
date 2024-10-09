@@ -1,5 +1,5 @@
-import DashComponent from '@/components/admin/dashboard/DashComponent';
-import { getDashboard } from '../_actions';
+import DashComponent from "@/components/admin/dashboard/DashComponent";
+import { getDashboard } from "../_actions";
 
 const ProfilePage = async () => {
   const data = await getDashboard();

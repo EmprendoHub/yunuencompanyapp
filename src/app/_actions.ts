@@ -1087,7 +1087,7 @@ export async function getDashboard() {
       .sort({ createdAt: -1 }) // Sort in descending order of creation date
       .limit(5);
 
-    let weeklyData: any = await Payment.aggregate([
+    let weeklyPaymentData: any = await Payment.aggregate([
       {
         $match: {
           pay_date: {
@@ -1095,6 +1095,37 @@ export async function getDashboard() {
             $lt: endOfLast7Days,
           },
           paymentIntent: "paid", // Add filter for paymentIntent
+        },
+      },
+      {
+        $group: {
+          // Group by day using the $dateToString operator
+          _id: { $dateToString: { format: "%m-%d-%Y", date: "$pay_date" } },
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Optional: Remove the _id field
+          date: "$_id", // Rename _id to date
+          Total: "$totalAmount", // Rename totalAmount to Total
+          count: 1, // Include the count field as is
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date in ascending order
+      },
+    ]);
+
+    let weeklyExpenseData: any = await Expense.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfLast7Days,
+            $lt: endOfLast7Days,
+          },
+          expenseIntent: "pagado", // Add filter for paymentIntent
         },
       },
       {
@@ -1475,7 +1506,8 @@ export async function getDashboard() {
     orders = JSON.stringify(orders);
     dailyOrders = JSON.stringify(dailyOrders);
     products = JSON.stringify(products);
-    weeklyData = JSON.stringify(weeklyData);
+    weeklyPaymentData = JSON.stringify(weeklyPaymentData);
+    weeklyExpenseData = JSON.stringify(weeklyExpenseData);
     dailyData = JSON.stringify(dailyData);
     thisWeeksOrder = JSON.stringify(thisWeeksOrder);
     totalPaymentsThisWeek = totalPaymentsThisWeek[0]?.total;
@@ -1498,8 +1530,8 @@ export async function getDashboard() {
     lastYearsPaymentsTotals = lastYearsPaymentsTotals[0]?.total;
     return {
       dailyData: dailyData,
-
-      weeklyData: weeklyData,
+      weeklyPaymentData: weeklyPaymentData,
+      weeklyExpenseData: weeklyExpenseData,
       orders: orders,
       dailyOrders: dailyOrders,
       dailyPaymentsTotals: dailyPaymentsTotals,

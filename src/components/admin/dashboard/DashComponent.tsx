@@ -17,23 +17,43 @@ interface WeeklyDataItem {
 }
 
 const DashComponent = ({ data }: { data: any }) => {
-  const weeklyData = JSON.parse(data?.weeklyData);
-  const sortedData = weeklyData
+  const weeklyPaymentData = JSON.parse(data?.weeklyPaymentData);
+  const weeklyExpenseData = JSON.parse(data?.weeklyExpenseData);
+  const sortedPaymentData = weeklyPaymentData
     .map((item: WeeklyDataItem, index: number) => ({ index, item }))
     .sort(
       (a: any, b: any) =>
         new Date(a.item.date).getTime() - new Date(b.item.date).getTime()
     )
-    .map(({ index }: { index: number }) => weeklyData[index]);
+    .map(({ index }: { index: number }) => weeklyPaymentData[index]);
 
-  // Ensure `weeklyData` is sorted correctly
-  weeklyData.sort(
+  // Ensure `weeklyPaymentData` is sorted correctly
+  weeklyPaymentData.sort(
     (a: WeeklyDataItem, b: WeeklyDataItem) =>
       new Date(a.date).getTime() - new Date(b.date).getTime()
   );
+
+  // Prepare the labels and data for the Payment chart
+  const paymentChartLabels = sortedPaymentData.map((data: any) => data.date);
+  const paymentChartData = sortedPaymentData.map((data: any) => data.Total);
+
+  const sortedExpenseData = weeklyExpenseData
+    .map((item: WeeklyDataItem, index: number) => ({ index, item }))
+    .sort(
+      (a: any, b: any) =>
+        new Date(a.item.date).getTime() - new Date(b.item.date).getTime()
+    )
+    .map(({ index }: { index: number }) => weeklyExpenseData[index]);
+
+  // Ensure `weeklyPaymentData` is sorted correctly
+  weeklyExpenseData.sort(
+    (a: WeeklyDataItem, b: WeeklyDataItem) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
   // Prepare the labels and data for the chart
-  const chartLabels = sortedData.map((data: any) => data.date);
-  const chartData = sortedData.map((data: any) => data.Total);
+  const expenseChartLabels = sortedExpenseData.map((data: any) => data.date);
+  const expenseChartData = sortedExpenseData.map((data: any) => data.Total);
   const products = JSON.parse(data?.products);
   const orders = JSON.parse(data?.orders);
 
@@ -57,14 +77,43 @@ const DashComponent = ({ data }: { data: any }) => {
   const lastWeeksPaymentsTotals = data?.lastWeeksPaymentsTotals;
   const lastMonthsPaymentsTotals = data?.lastMonthsPaymentsTotals;
   const lastYearsPaymentsTotals = data?.lastYearsPaymentsTotals;
-  // Assuming `weeklyData` is your fetched dataset
+  // Assuming `weeklyPaymentData` is your fetched dataset
 
-  const weeklyDataWithColors = {
-    labels: chartLabels,
+  const weeklyPaymentDataWithColors = {
+    labels: paymentChartLabels,
     datasets: [
       {
-        label: "Total de dia",
-        data: chartData,
+        label: "Total del dia",
+        data: paymentChartData,
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(153, 102, 255, 0.5)",
+          "rgba(255, 159, 64, 0.5)",
+          "rgba(131, 201, 139, 0.5)", // Example colors for 7 data points
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(131, 201, 139, 1)", // Example border colors for 7 data points
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const weeklyExpenseDataWithColors = {
+    labels: expenseChartLabels,
+    datasets: [
+      {
+        label: "Total del dia",
+        data: expenseChartData,
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",
@@ -101,7 +150,6 @@ const DashComponent = ({ data }: { data: any }) => {
       },
       title: {
         display: true,
-        text: "Ventas de La Semana",
       },
     },
   };
@@ -257,8 +305,15 @@ const DashComponent = ({ data }: { data: any }) => {
       <div className="w-full min-h-[400px] bg-card p-5  mt-4">
         {/* Chart to display daily totals for the last 7 days */}
         <div className="chart-container h-[400px] maxsm:h-[200px]">
-          <h2>Totales diarios de la semana</h2>
-          <Bar data={weeklyDataWithColors} options={options} />
+          <h2>Ventas de la semana</h2>
+          <Bar data={weeklyPaymentDataWithColors} options={options} />
+        </div>
+      </div>
+      <div className="w-full min-h-[400px] bg-card p-5  mt-4">
+        {/* Chart to display daily totals for the last 7 days */}
+        <div className="chart-container h-[400px] maxsm:h-[200px]">
+          <h2>Gastos de la semana</h2>
+          <Bar data={weeklyExpenseDataWithColors} options={options} />
         </div>
       </div>
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-4">

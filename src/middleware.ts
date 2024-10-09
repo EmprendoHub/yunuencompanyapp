@@ -29,10 +29,10 @@ export async function middleware(request: any) {
       return NextResponse.redirect(signInUrl);
     }
 
-    // if (token?.user?.role === "manager" && !pathname.includes("admin")) {
-    //   signInUrl = new URL("/admin", request.url);
-    //   return NextResponse.redirect(signInUrl);
-    // }
+    if (token?.user?.role === "manager" && !pathname.includes("admin")) {
+      signInUrl = new URL("/admin", request.url);
+      return NextResponse.redirect(signInUrl);
+    }
   }
 
   if (pathname.includes("admin")) {
