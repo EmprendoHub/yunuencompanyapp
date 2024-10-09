@@ -14,7 +14,6 @@ const POSScannerComponent = ({
   variation: any;
   error?: any;
 }) => {
-  console.log(product);
   const router = useRouter();
   const dispatch = useDispatch();
   const { productsPOS } = useSelector((state: any) => state?.compras);

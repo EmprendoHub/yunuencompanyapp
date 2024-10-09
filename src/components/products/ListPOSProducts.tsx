@@ -12,8 +12,6 @@ const ListPOSProducts = ({
   filteredProductsCount: number;
   branchId: string;
 }) => {
-  console.log("branchId", branchId);
-
   const filteredProducts = products?.filter((product: any) =>
     product?.variations.some((variation: any) =>
       variation?.stock.some(

@@ -2,7 +2,6 @@
 import React from "react";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -12,17 +11,12 @@ import {
 } from "@/components/ui/select";
 
 const NewExpense = () => {
-  const router = useRouter();
-  const [notification, setNotification] = useState("");
-
   const [type, setType] = useState("");
   const [amount, setAmount] = useState("");
   const [reference, setReference] = useState("");
-  const [method, setMethod] = useState("");
+  const [method, setMethod] = useState("EFECTIVO");
   const [comment, setComment] = useState("");
   const [activeButton, setActiveButton] = useState(false);
-  const [formStatus, setFormStatus] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -82,18 +76,20 @@ const NewExpense = () => {
           variant: "destructive",
           title: "Error al crear gasto intenta nuevamente",
         });
-
-        setError("Error al crear gasto intenta nuevamente");
       }
       if (res.ok) {
-        setFormStatus(true);
         toast({
           title: "El gasto se creo exitosamente",
         });
-      }
-      setActiveButton(true);
 
-      router.refresh();
+        // Reset the form fields after a successful response
+        setType("");
+        setAmount("");
+        setReference("");
+        setMethod("EFECTIVO");
+        setComment("");
+      }
+      setActiveButton(false);
     } catch (error) {
       console.log(error);
     }
@@ -105,8 +101,8 @@ const NewExpense = () => {
   };
 
   return (
-    <div className="relative flex fle-col py-7  pr-7 m-auto w-full rounded-xl z-10">
-      {!formStatus ? (
+    <div className="relative flex w-[70%] h-screen items-center justify-center fle-col py-7  pr-7 m-auto rounded-xl z-10">
+      {!activeButton ? (
         <form onSubmit={handleSubmit} className="flex flex-col w-full gap-y-4">
           <div className="flex items-center gap-5">
             <Select value={type} onValueChange={(value) => setType(value)}>
@@ -114,8 +110,8 @@ const NewExpense = () => {
                 <SelectValue placeholder="Tipo de Pago" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem className="text-2xl" value="NOMINA">
-                  NOMINA
+                <SelectItem className="text-2xl" value="OTRO">
+                  OTRO
                 </SelectItem>
                 <SelectItem className="text-2xl" value="COMIDA">
                   COMIDA
@@ -123,25 +119,8 @@ const NewExpense = () => {
                 <SelectItem className="text-2xl" value="PROVEEDOR">
                   PROVEEDOR
                 </SelectItem>
-                <SelectItem className="text-2xl" value="OTRO">
-                  OTRO
-                </SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={method} onValueChange={(value) => setMethod(value)}>
-              <SelectTrigger className="w-[300px] text-2xl">
-                <SelectValue placeholder="Método de Pago" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem className="text-2xl" value="EFECTIVO">
-                  EFECTIVO
-                </SelectItem>
-                <SelectItem className="text-2xl" value="TRANSFERENCIA">
-                  TRANSFERENCIA
-                </SelectItem>
-                <SelectItem className="text-2xl" value="TARJETA">
-                  TARJETA
+                <SelectItem className="text-2xl" value="NOMINA">
+                  NOMINA
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -170,9 +149,7 @@ const NewExpense = () => {
           </button>
         </form>
       ) : (
-        <div className="w-full h-screen flex flex-col items-center justify-center text-green-700">
-          El gasto se creo exitosamente
-        </div>
+        <span className="loader"></span>
       )}
     </div>
   );

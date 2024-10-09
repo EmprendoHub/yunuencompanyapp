@@ -8,7 +8,6 @@ export async function generateMetadata(
   // fetch data
   const data = await getOneProduct(params.slug, false);
   const product = JSON.parse(data.product);
-  console.log("product", product);
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];

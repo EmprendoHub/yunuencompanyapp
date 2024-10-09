@@ -63,6 +63,8 @@ export default function UserLayout({ children }: { children: any }) {
         </BranchSidebar>
         <div className="relative w-full mb-5 ">{children}</div>
         {!pathname.includes("tienda") &&
+        !pathname.includes("gastos") &&
+        !pathname.includes("corte") &&
         !pathname.includes("pedidos") &&
         !pathname.includes("pedido") ? (
           <Link

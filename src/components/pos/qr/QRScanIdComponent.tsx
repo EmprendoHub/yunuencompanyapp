@@ -76,7 +76,6 @@ const QRScanIdComponent: React.FC = () => {
       console.log("no hay resultados");
     } else {
       const id_part = text.split(/[-']/)[0];
-      console.log(id_part);
       if (pathname.includes("admin")) {
         router.push(`/admin/pos/scanid/${id_part}`);
       } else if (pathname.includes("puntodeventa")) {
