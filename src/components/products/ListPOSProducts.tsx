@@ -5,13 +5,22 @@ const ListPOSProducts = ({
   products,
   pageName,
   filteredProductsCount,
+  branchId,
 }: {
   products: any;
   pageName: string;
   filteredProductsCount: number;
+  branchId: string;
 }) => {
-  const filteredProducts = products?.filter(
-    (product: any) => product.stock[0].amount > 0
+  console.log("branchId", branchId);
+
+  const filteredProducts = products?.filter((product: any) =>
+    product?.variations.some((variation: any) =>
+      variation?.stock.some(
+        (stockItem: any) =>
+          stockItem?.amount > 0 && stockItem?.branch === branchId
+      )
+    )
   );
 
   return (
@@ -19,12 +28,13 @@ const ListPOSProducts = ({
       <div className=" mx-auto flex justify-center items-center w-full">
         <div className="w-full justify-center items-center gap-x-5">
           <main className=" flex flex-row gap-4 maxsm:gap-6 flex-wrap items-center w-full pl-5">
-            {filteredProducts
-              ?.slice()
-              .reverse()
-              .map((product: any, index: number) => (
-                <POSProductCard product={product} key={index} />
-              ))}
+            {filteredProducts &&
+              filteredProducts
+                ?.slice()
+                .reverse()
+                .map((product: any, index: number) => (
+                  <POSProductCard product={product} key={index} />
+                ))}
           </main>
         </div>
       </div>

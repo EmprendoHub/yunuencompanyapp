@@ -90,10 +90,10 @@ const NewExpense = () => {
         toast({
           title: "El gasto se creo exitosamente",
         });
-
-        router.push("/puntodeventa/tienda");
       }
       setActiveButton(true);
+
+      router.refresh();
     } catch (error) {
       console.log(error);
     }

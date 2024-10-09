@@ -2,6 +2,8 @@ import ServerPagination from "@/components/pagination/ServerPagination";
 import ListPOSProducts from "@/components/products/ListPOSProducts";
 import { getAllPOSMercadoLibreProduct } from "@/app/_actions";
 import { removeUndefinedAndPageKeys } from "@/backend/helpers";
+import { getServerSession } from "next-auth";
+import { options } from "@/app/api/auth/[...nextauth]/options";
 
 export const metadata = {
   title: "Tienda yunuencompany",
@@ -10,6 +12,9 @@ export const metadata = {
 };
 
 const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
+  const session = await getServerSession(options);
+  const userId = session.user._id;
+
   const urlParams = {
     keyword: searchParams.keyword,
     page: searchParams.page,
@@ -47,6 +52,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
         pageName={"Socials"}
         products={products}
         filteredProductsCount={filteredProductsCount}
+        branchId={userId}
       />
       <ServerPagination
         isPageOutOfRange={isPageOutOfRange}

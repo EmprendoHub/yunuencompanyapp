@@ -34,6 +34,7 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
         pageName={"Sucursal"}
         products={products}
         filteredProductsCount={filteredProductsCount}
+        branchId={userId}
       />
       <POSCart userId={userId} />
     </div>

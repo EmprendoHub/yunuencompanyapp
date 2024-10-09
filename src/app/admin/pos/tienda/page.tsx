@@ -14,27 +14,13 @@ export const metadata = {
 const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   const session = await getServerSession(options);
   const userId = session.user._id;
-  const urlParams = {
-    keyword: searchParams.keyword,
-    page: searchParams.page,
-  };
-  const filteredUrlParams = Object.fromEntries(
-    Object.entries(urlParams).filter(([key, value]) => value !== undefined)
-  );
-  const searchQuery = new URLSearchParams(filteredUrlParams).toString();
-
-  const queryUrlParams = removeUndefinedAndPageKeys(urlParams);
-  const keywordQuery = new URLSearchParams(queryUrlParams).toString();
 
   const data = await getAllPOSProduct(searchParams);
   //pagination
-  let page = parseInt(searchParams.page, 20);
+  let page = parseInt(searchParams.page, 40);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 20;
+  const perPage = 40;
   const totalPages = Math.ceil(data.filteredProductsCount / perPage);
-  const prevPage = page - 1 > 0 ? page - 1 : 1;
-  const nextPage = page + 1;
-  const isPageOutOfRange = page > totalPages;
   const pageNumbers = [];
   const offsetNumber = 3;
   const products = JSON.parse(data?.products);
@@ -48,19 +34,12 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   return (
     <div className="flex maxsm:flex-col items-start justify-center gap-5">
       <ListPOSProducts
-        pageName={"Sucursal"}
+        pageName={`Sucursal ${session.user.name}`}
         products={products}
         filteredProductsCount={filteredProductsCount}
+        branchId={userId}
       />
-      {/* <ServerPagination
-        isPageOutOfRange={isPageOutOfRange}
-        page={page}
-        pageNumbers={pageNumbers}
-        prevPage={prevPage}
-        nextPage={nextPage}
-        totalPages={totalPages}
-        searchParams={keywordQuery}
-      /> */}
+
       <POSCart userId={userId} />
     </div>
   );
