@@ -1431,13 +1431,6 @@ export async function getDashboard() {
       },
     ]);
 
-    console.log(
-      "monthlyOrderTotals",
-      monthlyOrderTotals,
-      startOfMonth,
-      endOfMonth
-    );
-
     monthlyExpensesTotals = await Expense.aggregate([
       {
         $match: {

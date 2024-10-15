@@ -34,15 +34,7 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
               <th scope="col" className="px-2 maxsm:px-1 py-3">
                 No.
               </th>
-              <th scope="col" className="px-2 py-3 maxmd:hidden">
-                Cliente
-              </th>
-              <th scope="col" className="px-2 py-3 maxmd:hidden">
-                Tel
-              </th>
-              <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Recibió
-              </th>
+
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Estado
               </th>
@@ -50,7 +42,7 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 Total
               </th>
               <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Ubic.
+                Sucursal
               </th>
               <th scope="col" className="px-2 py-3 maxsm:hidden">
                 Fecha
@@ -61,15 +53,7 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
             {orders?.map((order: any, index: number) => (
               <tr className="bg-background" key={index}>
                 <td className="px-2 maxsm:px-2 py-2">{order.orderId}</td>
-                <td className="px-2 py-2 maxmd:hidden">
-                  {order?.customerName}
-                </td>
-                <td className="px-2 py-2 maxmd:hidden">{order?.phone}</td>
-                <td className="px-2 maxsm:px-0 py-2 ">
-                  <b>
-                    <FormattedPrice amount={order?.paymentInfo?.amountPaid} />
-                  </b>
-                </td>
+
                 <td
                   className={`px-2 maxsm:px-0 py-2 font-bold ${
                     order.orderStatus === "Apartado"
@@ -99,7 +83,7 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
                       : "text-slate-600"
                   }`}
                 >
-                  {order.branch}
+                  {order.branch.name}
                 </td>
                 <td className="px-2 py-2 maxsm:hidden">
                   {order?.createdAt && formatSpanishDate(order?.createdAt)}

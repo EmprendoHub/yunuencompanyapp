@@ -1,4 +1,5 @@
 import Order from "@/backend/models/Order";
+import User from "@/backend/models/User";
 import APIReportsFilters from "@/lib/APIReportsFilters";
 import dbConnect from "@/lib/db";
 import { NextResponse } from "next/server";
@@ -30,7 +31,13 @@ export const GET = async (request: any, res: any) => {
   }
   try {
     await dbConnect();
-    let orderQuery;
+    // Modify the query to populate user name based on `branch`
+    let orderQuery = Order.find({ orderStatus: { $ne: "cancelada" } }).populate(
+      {
+        path: "user", // Populates the user field
+        select: "name", // Only retrieve the user's name
+      }
+    );
     if (session?.user?.role === "manager") {
       orderQuery = Order.find({ orderStatus: { $ne: "cancelada" } });
     } else {
@@ -42,7 +49,12 @@ export const GET = async (request: any, res: any) => {
 
     // Apply descending order based on a specific field (e.g., createdAt)
     orderQuery = orderQuery.sort({ createdAt: -1 });
-
+    // Execute query and populate user based on the `branch` field
+    orderQuery = orderQuery.populate({
+      path: "branch", // assuming branch holds user _id as string
+      select: "name", // fetch only the name field from User
+      model: User, // Use User model to populate
+    });
     // Extract page and per_page from request URL
     const totalOrderCount = await Order.countDocuments();
 
