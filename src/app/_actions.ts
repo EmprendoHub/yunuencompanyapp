@@ -1003,6 +1003,7 @@ export async function getDashboard() {
 
     const startOfCurrentWeek = new Date(today);
     startOfCurrentWeek.setDate(today.getDate() - today.getDay());
+
     startOfCurrentWeek.setUTCHours(0, 0, 0, 0); // Set time to midnight
 
     // Clone the start of the current week to avoid mutating it
@@ -1056,7 +1057,7 @@ export async function getDashboard() {
       0,
       0,
       0,
-      0
+      0 + minusCstOffset
     );
 
     const endOfToday = new Date(
@@ -1066,8 +1067,10 @@ export async function getDashboard() {
       23,
       59,
       59,
-      999
+      999 + minusCstOffset
     );
+
+    console.log("startOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
 
     // Calculate yesterday's date
     const yesterday = new Date(today);
