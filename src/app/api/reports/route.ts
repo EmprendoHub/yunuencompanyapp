@@ -32,11 +32,11 @@ export const GET = async (request: any, res: any) => {
     await dbConnect();
     let orderQuery;
     if (session?.user?.role === "manager") {
-      orderQuery = Order.find({ orderStatus: { $ne: "Cancelado" } });
+      orderQuery = Order.find({ orderStatus: { $ne: "cancelada" } });
     } else {
       orderQuery = Order.find({
         user: session?.user?._id,
-        orderStatus: { $ne: "Cancelado" },
+        orderStatus: { $ne: "cancelada" },
       });
     }
 

@@ -987,7 +987,7 @@ export async function getDashboard() {
       0,
       0,
       0,
-      0
+      0 + minusCstOffset
     );
 
     // Set end of the current month
@@ -998,7 +998,7 @@ export async function getDashboard() {
       23, // 23 hours
       59, // 59 minutes
       59, // 59 seconds
-      999
+      999 + minusCstOffset
     );
 
     const startOfCurrentWeek = new Date(today);
@@ -1087,21 +1087,21 @@ export async function getDashboard() {
       .sort({ createdAt: -1 }) // Sort in descending order of creation date
       .limit(5);
 
-    let weeklyPaymentData: any = await Payment.aggregate([
+    let weeklyPaymentData: any = await Order.aggregate([
       {
         $match: {
-          pay_date: {
+          createdAt: {
             $gte: startOfLast7Days,
             $lt: endOfLast7Days,
           },
-          paymentIntent: "paid", // Add filter for paymentIntent
+          orderStatus: "Pagado", // Add filter for paymentIntent
         },
       },
       {
         $group: {
           // Group by day using the $dateToString operator
-          _id: { $dateToString: { format: "%m-%d-%Y", date: "$pay_date" } },
-          totalAmount: { $sum: "$amount" },
+          _id: { $dateToString: { format: "%m-%d-%Y", date: "$createdAt" } },
+          totalAmount: { $sum: "$paymentInfo.amountPaid" },
           count: { $sum: 1 },
         },
       },
@@ -1202,19 +1202,20 @@ export async function getDashboard() {
         },
       },
     ]);
-    dailyPaymentsTotals = await Payment.aggregate([
+    dailyPaymentsTotals = await Order.aggregate([
       {
         $match: {
-          pay_date: {
+          createdAt: {
             $gte: startOfToday,
             $lt: endOfToday,
           },
+          orderStatus: { $ne: "cancelada" },
         },
       },
       {
         $group: {
           _id: null,
-          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+          total: { $sum: "$paymentInfo.amountPaid" }, // Sum up the amount field for each payment
         },
       },
     ]);
@@ -1241,8 +1242,8 @@ export async function getDashboard() {
       {
         $match: {
           pay_date: {
-            $gte: yesterday,
-            $lt: endOfYesterday,
+            $gte: startOfToday,
+            $lt: endOfToday,
           },
         },
       },
@@ -1277,8 +1278,8 @@ export async function getDashboard() {
       {
         $match: {
           pay_date: {
-            $gte: startOfLastWeek,
-            $lt: endOfLastWeek,
+            $gte: startOfCurrentWeek,
+            $lt: endOfCurrentWeek,
           },
         },
       },
@@ -1295,8 +1296,8 @@ export async function getDashboard() {
       {
         $match: {
           pay_date: {
-            $gte: startOfLastMonth,
-            $lt: endOfLastMonth,
+            $gte: startOfMonth,
+            $lt: endOfMonth,
           },
         },
       },
@@ -1313,8 +1314,8 @@ export async function getDashboard() {
       {
         $match: {
           pay_date: {
-            $gte: startOfLastYear,
-            $lt: endOfLastYear,
+            $gte: startOfYear,
+            $lt: endOfYear,
           },
         },
       },
@@ -1358,19 +1359,20 @@ export async function getDashboard() {
       },
     ]);
 
-    totalPaymentsThisWeek = await Payment.aggregate([
+    totalPaymentsThisWeek = await Order.aggregate([
       {
         $match: {
-          pay_date: {
-            $gte: startOfLast7Days,
-            $lt: endOfLast7Days,
+          createdAt: {
+            $gte: startOfCurrentWeek,
+            $lt: endOfCurrentWeek,
           },
+          orderStatus: { $ne: "cancelada" },
         },
       },
       {
         $group: {
           _id: null,
-          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+          total: { $sum: "$paymentInfo.amountPaid" }, // Sum up the amount field for each payment
         },
       },
     ]);
@@ -1379,34 +1381,9 @@ export async function getDashboard() {
       {
         $match: {
           pay_date: {
-            $gte: startOfLast7Days,
-            $lt: endOfLast7Days,
+            $gte: startOfCurrentWeek,
+            $lt: endOfCurrentWeek,
           },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$amount" }, // Sum up the amount field for each payment
-        },
-      },
-    ]);
-
-    // Perform aggregation to get last weeks totals
-    let lastWeeksLayawayPaymentsTotals = await Payment.aggregate([
-      {
-        $match: {
-          $and: [
-            {
-              pay_date: {
-                $gte: startOfLastWeek,
-                $lt: endOfLastWeek,
-              },
-            },
-            {
-              paymentIntent: "partial",
-            },
-          ],
         },
       },
       {
@@ -1435,6 +1412,32 @@ export async function getDashboard() {
       },
     ]);
 
+    // Perform aggregation to get this month's totals
+    let monthlyOrderTotals = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+          orderStatus: { $ne: "cancelada" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$paymentInfo.amountPaid" }, // Sum up the amount field for each payment
+        },
+      },
+    ]);
+
+    console.log(
+      "monthlyOrderTotals",
+      monthlyOrderTotals,
+      startOfMonth,
+      endOfMonth
+    );
+
     monthlyExpensesTotals = await Expense.aggregate([
       {
         $match: {
@@ -1453,19 +1456,20 @@ export async function getDashboard() {
     ]);
 
     // Perform aggregation to get this year's totals
-    yearlyPaymentsTotals = await Payment.aggregate([
+    yearlyPaymentsTotals = await Order.aggregate([
       {
         $match: {
-          pay_date: {
+          createdAt: {
             $gte: startOfYear,
             $lt: endOfYear,
           },
+          orderStatus: { $ne: "cancelada" },
         },
       },
       {
         $group: {
           _id: null,
-          total: { $sum: "$amount" }, // Sum up the amount field for each payment
+          total: { $sum: "$paymentInfo.amountPaid" }, // Sum up the amount field for each payment
         },
       },
     ]);
@@ -1520,6 +1524,7 @@ export async function getDashboard() {
     yesterdayExpensesTotals = yesterdayExpensesTotals[0]?.total;
 
     monthlyPaymentsTotals = monthlyPaymentsTotals[0]?.total;
+    monthlyOrderTotals = monthlyOrderTotals[0]?.total;
     monthlyExpensesTotals = monthlyExpensesTotals[0]?.total;
     yearlyExpensesTotals = yearlyExpensesTotals[0]?.total;
 
@@ -1548,6 +1553,7 @@ export async function getDashboard() {
       totalExpensesThisWeek: totalExpensesThisWeek,
       monthlyExpensesTotals: monthlyExpensesTotals,
       monthlyPaymentsTotals: monthlyPaymentsTotals,
+      monthlyOrderTotals: monthlyOrderTotals,
       yearlyPaymentsTotals: yearlyPaymentsTotals,
       yearlyExpensesTotals: yearlyExpensesTotals,
       totalPostCount: totalPostCount,

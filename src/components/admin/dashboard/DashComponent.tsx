@@ -10,6 +10,7 @@ import { FaTags } from "react-icons/fa6";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { ChartOptions } from "chart.js/auto";
+import { CiMoneyBill } from "react-icons/ci";
 
 interface WeeklyDataItem {
   date: string; // or Date if `date` is a Date object
@@ -71,6 +72,7 @@ const DashComponent = ({ data }: { data: any }) => {
   const monthlyExpensesTotals = data?.monthlyExpensesTotals;
 
   const monthlyPaymentsTotals = data?.monthlyPaymentsTotals;
+  const monthlyOrderTotals = data?.monthlyOrderTotals;
 
   const yearlyPaymentsTotals = data?.yearlyPaymentsTotals;
   const yearlyExpensesTotals = data?.yearlyExpensesTotals;
@@ -172,10 +174,10 @@ const DashComponent = ({ data }: { data: any }) => {
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-emerald-700 flex items-center">
-                <HiArrowNarrowUp />
+                <CiMoneyBill />
                 <FormattedPrice amount={yesterdaysPaymentsTotals || 0} />
               </span>
-              <div className="text-card-foreground">Dia Anterior</div>
+              <div className="text-card-foreground">Neto</div>
             </div>
           </div>
           <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
@@ -192,10 +194,10 @@ const DashComponent = ({ data }: { data: any }) => {
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
+                <CiMoneyBill />
                 <FormattedPrice amount={lastWeeksPaymentsTotals || 0} />
               </span>
-              <div className="text-card-foreground">Semana Anterior</div>
+              <div className="text-card-foreground">Neto</div>
             </div>
           </div>
         </div>
@@ -208,17 +210,17 @@ const DashComponent = ({ data }: { data: any }) => {
                   Venta Mensual
                 </h3>
                 <p className="text-2xl  text-slate-700">
-                  <FormattedPrice amount={monthlyPaymentsTotals || 0} />
+                  <FormattedPrice amount={monthlyOrderTotals || 0} />
                 </p>
               </div>
               <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
+                <CiMoneyBill />
                 <FormattedPrice amount={lastMonthsPaymentsTotals || 0} />
               </span>
-              <div className="text-card-foreground">Mes Anterior</div>
+              <div className="text-card-foreground">Neto</div>
             </div>
           </div>
           <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
@@ -235,10 +237,10 @@ const DashComponent = ({ data }: { data: any }) => {
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
+                <CiMoneyBill />
                 <FormattedPrice amount={lastYearsPaymentsTotals || 0} />
               </span>
-              <div className="text-card-foreground">Año Anterior</div>
+              <div className="text-card-foreground">Neto</div>
             </div>
           </div>
         </div>
