@@ -1001,9 +1001,11 @@ export async function getDashboard() {
       999
     );
 
+    // Set start of the current week (Monday)
     const startOfCurrentWeek = new Date(today);
-    startOfCurrentWeek.setDate(today.getDate() - today.getDay());
-
+    const dayOfWeek = today.getDay(); // Sunday is 0, Monday is 1, etc.
+    const offset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Calculate offset for Monday
+    startOfCurrentWeek.setDate(today.getDate() - offset);
     startOfCurrentWeek.setUTCHours(0, 0, 0, 0); // Set time to midnight
 
     // Clone the start of the current week to avoid mutating it
@@ -1022,7 +1024,7 @@ export async function getDashboard() {
     startOfLast7Days.setUTCHours(0, 0, 0, 0); // Set to the start of the day
 
     const startOfLastWeek = new Date(today);
-    startOfLastWeek.setDate(today.getDate() - 8);
+    startOfLastWeek.setDate(today.getDate() - 7);
     startOfLastWeek.setUTCHours(0, 0, 0, 0); // Set time to midnight
 
     // Clone the start of the current week to avoid mutating it
