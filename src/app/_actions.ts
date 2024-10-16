@@ -979,6 +979,7 @@ export async function getDashboard() {
       59, // 59 seconds
       999
     );
+
     // Set start of the current month
     const startOfMonth = new Date(
       today.getFullYear(),
@@ -1035,14 +1036,23 @@ export async function getDashboard() {
     const startOfLastMonth = new Date(
       today.getFullYear(),
       today.getMonth() - 1,
-      1
+      1,
+      0,
+      0,
+      0
     );
     startOfLastMonth.setUTCHours(0, 0, 0, 0); // Set time to midnight in UTC
 
-    // Clone the start of the current week to avoid mutating it
-    const endOfLastMonth = new Date(startOfLastMonth);
-    endOfLastMonth.setDate(startOfLastMonth.getDate() + 30); // Add six days to get to the end of the week
-    endOfLastMonth.setUTCHours(23, 59, 59, 999); // Set time to the end of the day
+    // Set end of the last month
+    const endOfLastMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(), // First day of the current month, but setting day to 0 gives the last day of the previous month
+      0,
+      23,
+      59,
+      59,
+      999
+    );
 
     const startOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
     startOfLastYear.setUTCHours(0, 0, 0, 0); // Set time to midnight in UTC
@@ -1073,12 +1083,11 @@ export async function getDashboard() {
     );
 
     console.log("startOfToday", startOfToday, endOfToday);
-
     console.log("startOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
     console.log("startOfLastWeek", startOfLastWeek, endOfLastWeek);
     console.log("startOfMonth", startOfMonth, endOfMonth);
-
     console.log("startOfLastMonth", startOfLastMonth, endOfLastMonth);
+    console.log("startOfYear", startOfYear, endOfYear);
 
     // Calculate yesterday's date
     const yesterday = new Date(today);
