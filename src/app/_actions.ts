@@ -963,7 +963,7 @@ export async function getDashboard() {
     const minusCstOffset = -6 * 60 * 60 * 1000; // CST is UTC+6
 
     // Create a new date with the offset applied
-    const today = new Date(Date.now() + minusCstOffset);
+    const today = new Date(Date.now());
 
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight
     // Set start of the current year
@@ -987,7 +987,7 @@ export async function getDashboard() {
       0,
       0,
       0,
-      0 + minusCstOffset
+      0
     );
 
     // Set end of the current month
@@ -998,7 +998,7 @@ export async function getDashboard() {
       23, // 23 hours
       59, // 59 minutes
       59, // 59 seconds
-      999 + minusCstOffset
+      999
     );
 
     const startOfCurrentWeek = new Date(today);
