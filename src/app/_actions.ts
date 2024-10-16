@@ -1024,7 +1024,7 @@ export async function getDashboard() {
     startOfLast7Days.setUTCHours(0, 0, 0, 0); // Set to the start of the day
 
     const startOfLastWeek = new Date(today);
-    startOfLastWeek.setDate(today.getDate() - 7);
+    startOfLastWeek.setDate(startOfCurrentWeek.getDate() - 7);
     startOfLastWeek.setUTCHours(0, 0, 0, 0); // Set time to midnight
 
     // Clone the start of the current week to avoid mutating it
@@ -1169,6 +1169,7 @@ export async function getDashboard() {
             $gte: startOfToday, // Start of the day
             $lt: endOfToday, // End of the day
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       // Group documents by day
@@ -1256,6 +1257,7 @@ export async function getDashboard() {
             $gte: startOfToday,
             $lt: endOfToday,
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       {
@@ -1292,6 +1294,7 @@ export async function getDashboard() {
             $gte: startOfCurrentWeek,
             $lt: endOfCurrentWeek,
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       {
@@ -1310,6 +1313,7 @@ export async function getDashboard() {
             $gte: startOfMonth,
             $lt: endOfMonth,
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       {
@@ -1328,6 +1332,7 @@ export async function getDashboard() {
             $gte: startOfYear,
             $lt: endOfYear,
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       {
@@ -1413,6 +1418,7 @@ export async function getDashboard() {
             $gte: startOfMonth,
             $lt: endOfMonth,
           },
+          paymentIntent: { $ne: "cancelado" },
         },
       },
       {
