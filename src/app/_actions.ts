@@ -1002,7 +1002,7 @@ export async function getDashboard() {
     );
 
     const startOfCurrentWeek = new Date(today);
-    startOfCurrentWeek.setDate(today.getDate() - 1);
+    startOfCurrentWeek.setDate(today.getDate() - today.getDay());
 
     startOfCurrentWeek.setUTCHours(0, 0, 0, 0); // Set time to midnight
 
@@ -1074,6 +1074,8 @@ export async function getDashboard() {
 
     console.log("startOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
     console.log("startOfLastWeek", startOfLastWeek, endOfLastWeek);
+    console.log("startOfMonth", startOfMonth, endOfMonth);
+
     console.log("startOfLastMonth", startOfLastMonth, endOfLastMonth);
 
     // Calculate yesterday's date
