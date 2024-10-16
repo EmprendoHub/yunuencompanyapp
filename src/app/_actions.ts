@@ -1057,7 +1057,7 @@ export async function getDashboard() {
       0,
       0,
       0,
-      0 + minusCstOffset
+      0
     );
 
     const endOfToday = new Date(
@@ -1067,8 +1067,10 @@ export async function getDashboard() {
       23,
       59,
       59,
-      999 + minusCstOffset
+      999
     );
+
+    console.log("startOfToday", startOfToday, endOfToday);
 
     console.log("startOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
 
