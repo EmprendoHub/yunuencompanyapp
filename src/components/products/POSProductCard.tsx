@@ -77,7 +77,7 @@ const POSProductCard = ({ product }: { product: any }) => {
       initial={{ y: 30, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.0 }}
-      className="border-[1px] rounded-sm max-w-[150px] overflow-hidden relative "
+      className="border-[1px] rounded-sm max-w-[150px] overflow-hidden relative"
     >
       <div
         className="w-full h-full group overflow-hidden relative cursor-pointer"
@@ -91,7 +91,7 @@ const POSProductCard = ({ product }: { product: any }) => {
           height={350}
         />
       </div>
-      <div className="pt-3">
+      {/* <div className="pt-3">
         <input
           className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 text-xs w-full text-center"
           type="text"
@@ -99,7 +99,7 @@ const POSProductCard = ({ product }: { product: any }) => {
           value={discountRate}
           onChange={handleDiscountChange}
         />
-      </div>
+      </div> */}
     </motion.div>
   );
 };

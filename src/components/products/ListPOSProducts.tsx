@@ -22,7 +22,7 @@ const ListPOSProducts = ({
   );
 
   return (
-    <section className="py-4 flex flex-col justify-center items-center w-[80%] maxxlg:w-[60%] maxsm:w-full maxsm:mt-[400px]">
+    <section className="py-4 flex flex-col justify-center items-center w-[80%] maxxlg:w-[75%] maxsm:w-full maxsm:mt-[400px]  bg-white">
       <div className=" mx-auto flex justify-center items-center w-full">
         <div className="w-full justify-center items-center gap-x-5">
           <main className=" flex flex-row gap-4 maxsm:gap-6 flex-wrap items-center w-full pl-5">
