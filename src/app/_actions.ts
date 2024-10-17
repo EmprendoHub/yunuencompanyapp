@@ -1845,7 +1845,7 @@ export async function getEndOfDayReport(searchQuery: any) {
 
     // To see it properly in the log:
     // Aggregate payments with orders and expenses
-    const paymentQuery = await Payment.aggregate([
+    let paymentQuery = await Payment.aggregate([
       {
         $lookup: {
           from: "orders",
@@ -1865,22 +1865,36 @@ export async function getEndOfDayReport(searchQuery: any) {
         },
       },
       {
-        // Add a field to make TERMINAL amounts negative
         $addFields: {
-          amount: {
-            $cond: {
-              if: { $eq: ["$method", "TERMINAL"] },
-              then: { $multiply: ["$amount", -1] }, // Make the amount negative for TERMINAL
-              else: "$amount", // Keep the original amount for other methods
-            },
-          },
+          isTerminal: { $eq: ["$method", "TERMINAL"] }, // Mark if the payment method is TERMINAL
         },
       },
       {
-        $sort: { pay_date: -1 },
+        $group: {
+          _id: null,
+          totalAmount: {
+            $sum: {
+              $cond: {
+                if: { $eq: ["$isTerminal", false] }, // Exclude TERMINAL from the sum
+                then: "$amount",
+                else: 0, // Ignore TERMINAL in totalAmount sum
+              },
+            },
+          },
+          payments: { $push: "$$ROOT" }, // Keep all payments, including TERMINAL
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalAmount: 1,
+          payments: 1,
+        },
       },
     ]);
 
+    const paymentTotals = paymentQuery[0]?.totalAmount || 0;
+    paymentQuery = paymentQuery[0]?.payments;
     // Aggregate expenses with paymentIntent "pagado"
     const expenseQuery = await Expense.aggregate([
       {
@@ -1894,18 +1908,13 @@ export async function getEndOfDayReport(searchQuery: any) {
         $sort: { pay_date: -1 }, // Sort by expense date in descending order
       },
     ]);
-    // Calculate totals for payments and expenses
-    const paymentTotals = paymentQuery.reduce(
-      (total, payment) => total + payment.amount,
-      0
-    );
 
     const expenseTotals = expenseQuery.reduce(
       (total, expense) => total + expense.amount,
       0
     );
 
-    const itemCount = paymentQuery.length + expenseQuery.length;
+    const itemCount = paymentQuery?.length + expenseQuery.length;
 
     const dataPacket = {
       payments: paymentQuery,

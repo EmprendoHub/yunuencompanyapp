@@ -31,8 +31,8 @@ const POSCart = ({ userId }: { userId: string }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className="mt-4 mr-2 fixed top-5 right-2 maxsm:w-[80%] maxsm:top-0">
-      <section className="bg-gray-100">
+    <div className="mt-4 mr-2 flex top-5 right-2 w-1/3 maxsm:top-0">
+      <section className="bg-gray-100 w-full">
         <div className="mx-auto bg-background">
           <div className="flex flex-col gap-1">
             <section className="bg-background maxsm:hidden">
