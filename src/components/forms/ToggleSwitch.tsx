@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCheck, FaInstagram, FaStar, FaStore } from "react-icons/fa6";
+import { FaCheck, FaStar, FaStore } from "react-icons/fa6";
 import { SiMercadopago } from "react-icons/si";
 import { TbWorldWww } from "react-icons/tb";
 import { TiCancel } from "react-icons/ti";

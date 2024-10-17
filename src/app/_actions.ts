@@ -585,363 +585,6 @@ export async function payPOSDrawer(data: any) {
   }
 }
 
-export async function payPOSSocialsDrawer(data: any) {
-  try {
-    let {
-      items,
-      transactionNo,
-      payType,
-      amountReceived,
-      note,
-      email,
-      phone,
-      name,
-    } = Object.fromEntries(data);
-
-    await dbConnect();
-    let customer;
-    let customerEmail;
-    let customerPhone;
-    let customerName;
-    const session = await getServerSession(options);
-    const userId = session.user._id.toString();
-
-    if (email.length > 3) {
-      customerEmail = email;
-    } else {
-      if (phone.length > 3 || name.length > 3) {
-        customerEmail =
-          phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
-      } else {
-        customerEmail = "yunuencompany01@gmail.com";
-      }
-    }
-
-    if (name.length > 3) {
-      customerName = name;
-    } else {
-      customerName = "SOCIALS";
-    }
-
-    const query = { $or: [{ email: customerEmail }, { phone: customerPhone }] };
-    if (phone.length > 3) {
-      customerPhone = phone;
-      query.$or.push({ phone: phone });
-    } else {
-      customerPhone = "";
-    }
-
-    const customerExists = await Customer.findOne(query);
-
-    if (!customerExists) {
-      // Generate a random 64-byte token
-      const newCustomer = new Customer({
-        name: customerName,
-        phone: customerPhone,
-        email: customerEmail,
-      });
-      await newCustomer.save();
-      customer = newCustomer;
-    } else {
-      customer = customerExists;
-    }
-    items = JSON.parse(items);
-    const branchInfo = "Socials";
-    const ship_cost = 0;
-    const date = cstDateTime();
-
-    let paymentInfo;
-    let layAwayIntent;
-    let currentOrderStatus;
-    let payMethod;
-    let payIntent;
-
-    if (payType === "layaway") {
-      payIntent = "partial";
-    } else {
-      payIntent = "paid";
-    }
-
-    if (transactionNo === "EFECTIVO") {
-      payMethod = "EFECTIVO";
-    } else if (!isNaN(transactionNo)) {
-      payMethod = "TERMINAL";
-    }
-    if (payType === "layaway") {
-      paymentInfo = {
-        id: "partial",
-        status: "unpaid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "partial",
-      };
-      currentOrderStatus = "Apartado";
-      layAwayIntent = true;
-    } else {
-      paymentInfo = {
-        id: "paid",
-        status: "paid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "paid",
-      };
-      currentOrderStatus = "Pagado";
-      layAwayIntent = false;
-    }
-
-    const cartItems: any[] = [];
-    await Promise.all(
-      items?.map(async (item: any) => {
-        const variationId = item._id.toString();
-        const product = await Product.findOne({
-          "variations._id": variationId,
-        });
-
-        const variation = product.variations.find((variation: any) =>
-          variation._id.equals(variationId)
-        );
-
-        // Find the stock object for the specified branch
-        const stockForBranch = variation.stock.find(
-          (stockItem: { branch: any }) => stockItem.branch === userId
-        );
-
-        // Check if there is enough stock
-        if (!stockForBranch || stockForBranch.amount < item.quantity) {
-          return {
-            error: {
-              title: { _errors: ["Este producto no cuenta con existencias"] },
-            },
-          };
-        } else {
-          // Reduce the stock amount for the branch
-          stockForBranch.amount -= item.quantity;
-
-          // Reduce the overall product stock if needed
-          product.stock = product.stock.find(
-            (stockItem: { branch: any }) => stockItem.branch === userId
-          );
-          if (product.stock) {
-            product.stock.amount -= item.quantity;
-          }
-          cartItems.push({
-            product: product._id,
-            variation: variationId,
-            name: item.title,
-            color: item.color,
-            size: item.size,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image,
-          });
-          product.save();
-        }
-      })
-    );
-
-    let orderData = {
-      customer: customer._id,
-      phone: customer?.phone,
-      email: customer?.email,
-      customerName: customerName,
-      comment: note,
-      ship_cost,
-      createdAt: date,
-      branch: branchInfo,
-      paymentInfo,
-      orderItems: cartItems,
-      orderStatus: currentOrderStatus,
-      layaway: layAwayIntent,
-      affiliateId: "",
-    };
-
-    let newOrder = await new Order(orderData);
-    await newOrder.save();
-    const newOrderString = JSON.stringify(newOrder);
-
-    let paymentTransactionData = {
-      type: "sucursal",
-      paymentIntent: payIntent,
-      amount: amountReceived,
-      reference: transactionNo,
-      pay_date: date,
-      method: payMethod,
-      order: newOrder?._id,
-      customer: newOrder?.customer,
-    };
-    try {
-      const newPaymentTransaction = await new Payment(paymentTransactionData);
-
-      await newPaymentTransaction.save();
-    } catch (error: any) {
-      console.log("dBberror", error);
-    }
-
-    // send email after order is confirmed
-    if (
-      customerEmail.includes("@noemail.com") ||
-      customerEmail === "yunuencompany01@gmail.com"
-    ) {
-      console.log("did not send email");
-    } else {
-      try {
-        const subject = "¡Gracias por tu compra!";
-        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido yunuencompany para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
-        const bodyTwo = `Tu apoyo significa mucho para nosotros y nos comprometemos a brindarte la mejor experiencia posible. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en ponerte en contacto con nuestro equipo de atención al cliente. Estamos aquí para ayudarte en cualquier momento.`;
-        const title = "Recibo de compra";
-        const greeting = `Estimado/a ${customer?.name}`;
-        const senderName = "www.yunuencompany.com";
-        const bestRegards = "¡Que tengas un excelente día!";
-        const recipient_email = customer?.email;
-        const sender_email = "yunuencompany01@gmail.com";
-        const fromName = "yunuencompany";
-
-        var transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.GOOGLE_MAIL,
-            pass: process.env.GOOGLE_MAIL_PASS,
-          },
-        });
-
-        const formattedAmountPaid = formatter.format(
-          newOrder?.paymentInfo?.amountPaid || 0
-        );
-
-        const mailOption = {
-          from: `"${fromName}" ${sender_email}`,
-          to: recipient_email,
-          subject,
-          html: `
-        <!DOCTYPE html>
-        <html lang="es">
-        <body>
-        <div>
-        <p>${greeting}</p>
-        <div>${bodyOne}</div>
-        <p>${title}</p>
-        <table style="width: 100%; font-size: 0.875rem; text-align: left;">
-          <thead style="font-size: .7rem; color: #4a5568;  text-transform: uppercase;">
-            <tr>
-              <th style="padding: 0.75rem;">Nombre</th>
-              <th style="padding: 0.75rem;">Tamaño</th>
-              <th style="padding: 0.75rem;">Color</th>
-              <th style="padding: 0.75rem;">Cant.</th>
-              <th style="padding: 0.75rem;">Precio</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${newOrder?.orderItems
-              ?.map(
-                (item: any, index: number) =>
-                  `<tr style="background-color: #fff;" key="${index}">
-                <td style="padding: 0.75rem;">${item.name}</td>
-                <td style="padding: 0.75rem;">${item.size}</td>
-                <td style="padding: 0.75rem;">${item.color}</td>
-                <td style="padding: 0.75rem;">${item.quantity}</td>
-                <td style="padding: 0.75rem;">${item.price}</td>
-              </tr>`
-              )
-              .join("")}
-              <tr>
-              <div style="max-width: 100%; width: 100%; margin: 0 auto; background-color: #ffffff; display: flex; flex-direction: column; padding: 0.5rem;">
-        ${
-          newOrder?.orderStatus === "Apartado"
-            ? `<ul style="margin-bottom: .75rem; padding-left: 0px;">
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total de Artículos:</span>
-              <span style="color: #48bb78;">
-                ${await getQuantities(newOrder?.orderItems)} (Artículos)
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Sub-Total:</span>
-              <span>
-                ${(await subtotal(newOrder)) || 0}
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total:</span>
-              <span>
-                ${(await getTotal(newOrder?.orderItems)) || 0}
-              </span>
-            </li>
-            <li style="font-size: 1.25rem; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 0.75rem;">
-              <span>Abono:</span>
-              <span>
-                - ${formattedAmountPaid}
-              </span>
-            </li>
-            <li style="font-size: 1.25rem; color: #ff9900; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 0.25rem;">
-              <span>Pendiente:</span>
-              <span>
-                ${
-                  (await getPendingTotal(
-                    newOrder?.orderItems,
-                    newOrder?.paymentInfo?.amountPaid
-                  )) || 0
-                }
-                
-              </span>
-            </li>
-          </ul>`
-            : `<ul style="margin-bottom: 1.25rem;">
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Sub-Total:</span>
-              <span>
-                ${(await subtotal(newOrder)) || 0}
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total de Artículos:</span>
-              <span style="color: #086e4f;">
-                ${await getQuantities(newOrder?.orderItems)} (Artículos)
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Envió:</span>
-              <span>
-                ${newOrder?.ship_cost}
-              </span>
-            </li>
-            <li style="font-size: 1.875rem; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; margin-top: 1rem; padding-top: 0.75rem;">
-              <span>Total:</span>
-              <span>
-                ${formattedAmountPaid}
-                
-              </span>
-            </li>
-          </ul>`
-        }
-        </div>
-              </tr>
-          </tbody>
-        </table>
-        <div>${bodyTwo}</div>
-        <p>${senderName}</p>
-        <p>${bestRegards}</p>
-        </div>
-        </body>
-        </html>
-        `,
-        };
-
-        await transporter.sendMail(mailOption);
-      } catch (error: any) {
-        console.log(error);
-        throw Error(error);
-      }
-    }
-
-    revalidatePath("/admin/");
-    revalidatePath("/puntodeventa/");
-    return { newOrder: newOrderString };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
 export async function getDashboard() {
   try {
     await dbConnect();
@@ -1737,290 +1380,6 @@ export async function getPOSDashboard() {
           .sort({ createdAt: -1 }) // Sort in descending order of creation date
           .limit(5);
       }
-      if (session?.user?.role === "socials") {
-        orders = await Order.find({ orderStatus: { $ne: "Cancelado" } })
-          .sort({ createdAt: -1 }) // Sort in descending order of creation date
-          .limit(5);
-
-        dailyOrders = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfToday,
-                $lt: endOfToday,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems",
-          },
-          {
-            $group: {
-              _id: {
-                orderStatus: "$orderStatus",
-                orderId: "$orderId",
-                _id: "$_id",
-              },
-              total: { $sum: "$orderItems.price" },
-            },
-          },
-          {
-            $project: {
-              _id: "$_id._id",
-              total: 1,
-              orderStatus: "$_id.orderStatus",
-              orderId: "$_id.orderId",
-            },
-          },
-        ]);
-        dailyOrdersTotals = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfToday,
-                $lt: endOfToday,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems",
-          },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: "$orderItems.price" },
-            },
-          },
-        ]);
-
-        thisWeeksOrder = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfCurrentWeek,
-                $lt: today,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems", // Deconstruct the orderItems array
-          },
-          {
-            $group: {
-              _id: {
-                orderStatus: "$orderStatus",
-                orderId: "$orderId", // Include orderId in the _id
-                _id: "$_id", // Include _id in the _id
-              },
-              total: { $sum: "$orderItems.price" }, // Calculate the total sum of prices
-            },
-          },
-          {
-            $project: {
-              _id: "$_id._id", // Project the _id from _id
-              total: 1,
-              orderStatus: "$_id.orderStatus",
-              orderId: "$_id.orderId", // Project orderId
-            },
-          },
-        ]);
-        totalOrdersThisWeek = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfCurrentWeek,
-                $lt: today,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems", // Deconstruct the orderItems array
-          },
-          {
-            $group: {
-              _id: null, // Group all documents without any specific criteria
-              total: { $sum: "$orderItems.price" }, // Calculate the total sum of prices
-            },
-          },
-        ]);
-
-        products = await Product.find({ published: { $ne: "false" } })
-          .sort({ createdAt: -1 }) // Sort in descending order of creation date
-          .limit(5);
-      }
-    }
-
-    const totalOrderCount = await Order.countDocuments({
-      orderStatus: { $ne: "Cancelado" },
-    });
-    const totalProductCount = await Product.countDocuments({
-      published: { $ne: "false" },
-    });
-    const orderCountPreviousMonth = await getDocumentCountPreviousMonth(Order);
-
-    orders = JSON.stringify(orders);
-    dailyOrders = JSON.stringify(dailyOrders);
-
-    products = JSON.stringify(products);
-    thisWeeksOrder = JSON.stringify(thisWeeksOrder);
-    const thisWeekOrderTotals = totalOrdersThisWeek[0]?.total;
-    dailyOrdersTotals = dailyOrdersTotals[0]?.total;
-    return {
-      orders: orders,
-      dailyOrders: dailyOrders,
-      dailyOrdersTotals: dailyOrdersTotals,
-      thisWeeksOrder: thisWeeksOrder,
-      products: products,
-      totalOrderCount: totalOrderCount,
-      orderCountPreviousMonth: orderCountPreviousMonth,
-      totalProductCount: totalProductCount,
-      thisWeekOrderTotals: thisWeekOrderTotals,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getSocialsDashboard() {
-  try {
-    await dbConnect();
-    const session = await getServerSession(options);
-    let orders: any | undefined;
-    let todaysOrders: any | undefined;
-    let products: any | undefined;
-    let thisWeeksOrder: any | undefined;
-    let totalOrdersThisWeek: any | undefined;
-    let dailyOrders: any | undefined;
-    let dailyOrdersTotals: any | undefined;
-    const today = newCSTDate();
-    const startOfCurrentWeek = new Date(today);
-    startOfCurrentWeek.setDate(
-      startOfCurrentWeek.getDate() - startOfCurrentWeek.getDay()
-    );
-    const startOfToday = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-    const endOfToday = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1
-    );
-
-    if (session) {
-      if (session?.user?.role === "sucursal") {
-        orders = await Order.find({ orderStatus: { $ne: "Cancelado" } })
-          .sort({ createdAt: -1 }) // Sort in descending order of creation date
-          .limit(5);
-
-        dailyOrders = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfToday,
-                $lt: endOfToday,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems",
-          },
-          {
-            $group: {
-              _id: {
-                orderStatus: "$orderStatus",
-                orderId: "$orderId",
-                _id: "$_id",
-              },
-              total: { $sum: "$orderItems.price" },
-            },
-          },
-          {
-            $project: {
-              _id: "$_id._id",
-              total: 1,
-              orderStatus: "$_id.orderStatus",
-              orderId: "$_id.orderId",
-            },
-          },
-        ]);
-        dailyOrdersTotals = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfToday,
-                $lt: endOfToday,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems",
-          },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: "$orderItems.price" },
-            },
-          },
-        ]);
-
-        thisWeeksOrder = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfCurrentWeek,
-                $lt: today,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems", // Deconstruct the orderItems array
-          },
-          {
-            $group: {
-              _id: {
-                orderStatus: "$orderStatus",
-                orderId: "$orderId", // Include orderId in the _id
-                _id: "$_id", // Include _id in the _id
-              },
-              total: { $sum: "$orderItems.price" }, // Calculate the total sum of prices
-            },
-          },
-          {
-            $project: {
-              _id: "$_id._id", // Project the _id from _id
-              total: 1,
-              orderStatus: "$_id.orderStatus",
-              orderId: "$_id.orderId", // Project orderId
-            },
-          },
-        ]);
-        totalOrdersThisWeek = await Order.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: startOfCurrentWeek,
-                $lt: today,
-              },
-            },
-          },
-          {
-            $unwind: "$orderItems", // Deconstruct the orderItems array
-          },
-          {
-            $group: {
-              _id: null, // Group all documents without any specific criteria
-              total: { $sum: "$orderItems.price" }, // Calculate the total sum of prices
-            },
-          },
-        ]);
-
-        products = await Product.find({ published: { $ne: "false" } })
-          .sort({ createdAt: -1 }) // Sort in descending order of creation date
-          .limit(5);
-      }
     }
 
     const totalOrderCount = await Order.countDocuments({
@@ -2397,73 +1756,6 @@ export async function updateOneOrder(data: any) {
   }
 }
 
-export async function updateOneSocialsOrder(data: any) {
-  try {
-    let { transactionNo, paidOn, note, amount, orderId } =
-      Object.fromEntries(data);
-    let newOrderStatus;
-    let newOrderPaymentStatus;
-    // Define the model name with the suffix appended with the lottery ID
-    await dbConnect();
-    // Retrieve the dynamically created Ticket model
-    const order = await Order.findOne({ _id: orderId });
-    // Calculate total amount based on items
-    const date = cstDateTime();
-    const orderTotal = await getTotalFromItems(order?.orderItems);
-    if (order.paymentInfo.amountPaid + Number(amount) >= orderTotal) {
-      newOrderStatus = "Entregado";
-      newOrderPaymentStatus = "Pagado";
-    } else {
-      newOrderStatus = "Apartado";
-      newOrderPaymentStatus = "Pendiente";
-    }
-
-    let payMethod;
-    if (transactionNo === "EFECTIVO") {
-      payMethod = "EFECTIVO";
-    } else if (!isNaN(transactionNo)) {
-      payMethod = "TERMINAL";
-    } else {
-      payMethod = "EFECTIVO";
-    }
-    const updatedOrder = await Order.updateOne(
-      { _id: orderId },
-      {
-        orderStatus: newOrderStatus,
-        "paymentInfo.status": newOrderPaymentStatus,
-        $inc: { "paymentInfo.amountPaid": Number(amount) },
-      }
-    );
-
-    const lastOrder = await Order.findById(orderId);
-
-    let paymentTransactionData = {
-      type: "socials",
-      paymentIntent: "",
-      amount: amount,
-      comment: note,
-      reference: transactionNo,
-      pay_date: date,
-      method: payMethod,
-      order: lastOrder?._id,
-      user: lastOrder?.user,
-    };
-
-    try {
-      const newPaymentTransaction = await new Payment(paymentTransactionData);
-
-      await newPaymentTransaction.save();
-    } catch (error: any) {
-      console.log("dBberror", error);
-    }
-    revalidatePath(`/admin/pedidos`);
-    revalidatePath(`/admin/pedido/${lastOrder?._id}`);
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
 export async function changeOrderNoteStatus(data: any) {
   try {
     let { orderId, note, orderStatus } = Object.fromEntries(data);
@@ -2480,8 +1772,6 @@ export async function changeOrderNoteStatus(data: any) {
         updatedAt: date,
       }
     );
-    revalidatePath(`/socials/pedidos`);
-    revalidatePath(`/socials/pedido/${orderId}`);
     return {
       ok: true,
     };
@@ -2582,9 +1872,22 @@ export async function getEndOfDayReport(searchQuery: any) {
         },
       },
       {
+        // Add a field to make TERMINAL amounts negative
+        $addFields: {
+          amount: {
+            $cond: {
+              if: { $eq: ["$method", "TERMINAL"] },
+              then: { $multiply: ["$amount", -1] }, // Make the amount negative for TERMINAL
+              else: "$amount", // Keep the original amount for other methods
+            },
+          },
+        },
+      },
+      {
         $sort: { pay_date: -1 },
       },
     ]);
+
     // Aggregate expenses with paymentIntent "pagado"
     const expenseQuery = await Expense.aggregate([
       {
@@ -2693,48 +1996,6 @@ export async function getAllPOSBranches() {
   }
 }
 
-export async function getAllPOSSocialsOrder(searchQuery: any) {
-  try {
-    await dbConnect();
-    const session = await getServerSession(options);
-    let orderQuery: any;
-    if (session?.user?.role === "socials") {
-      orderQuery = Order.find({
-        $and: [{ branch: "socials" }, { orderStatus: { $ne: "Cancelado" } }],
-      }).populate("user");
-    }
-
-    const searchParams = new URLSearchParams(searchQuery);
-
-    const resPerPage = Number(searchParams.get("perpage")) || 10;
-    // Extract page and per_page from request URL
-    const page = Number(searchParams.get("page")) || 1;
-    // Apply descending order based on a specific field (e.g., createdAt)
-    orderQuery = orderQuery.sort({ createdAt: -1 });
-
-    // Apply search Filters including order_id and orderStatus
-    const apiOrderFilters: any = new APIOrderFilters(orderQuery, searchParams)
-      .searchAllFields()
-      .filter();
-    let ordersData = await apiOrderFilters.query;
-
-    const itemCount = ordersData.length;
-
-    apiOrderFilters.pagination(resPerPage, page);
-    ordersData = await apiOrderFilters.query.clone();
-    let orders = JSON.stringify(ordersData);
-
-    return {
-      orders: orders,
-      itemCount: itemCount,
-      resPerPage: resPerPage,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
 export async function getOneProduct(slug: any, id: any = "") {
   try {
     await dbConnect();
@@ -2788,25 +2049,6 @@ export async function getOneProductWithTrending(slug: string, id: string) {
     trendingProducts = JSON.stringify(trendingProducts);
     return { product: product, trendingProducts: trendingProducts };
     // return { product };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getHomeProductsData() {
-  try {
-    await dbConnect();
-    // Extract tag values from post.tags array
-    let trendingProducts: any = await Product.find({}).limit(100);
-    let editorsProducts: any = await Product.find({}).limit(10);
-
-    trendingProducts = JSON.stringify(trendingProducts);
-    editorsProducts = JSON.stringify(editorsProducts);
-    return {
-      trendingProducts: trendingProducts,
-      editorsProducts: editorsProducts,
-    };
   } catch (error: any) {
     console.log(error);
     throw Error(error);
@@ -2881,13 +2123,7 @@ export async function changeProductAvailability(productId: any, location: any) {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     let product = await Product.findOne({ _id: productId });
-    if (location === "MercadoLibre") {
-      if (product.availability.socials === true) {
-        product.availability.socials = false; // Remove from physical branch
-      } else {
-        product.availability.socials = true; // Add to physical branch
-      }
-    } else if (location === "Branch") {
+    if (location === "Branch") {
       if (product.availability.branch === true) {
         product.availability.branch = false; // Remove from physical branch
       } else {
@@ -2903,7 +2139,6 @@ export async function changeProductAvailability(productId: any, location: any) {
     // Save the product to persist the changes
     await product.save();
     revalidatePath("/admin/productos");
-    revalidatePath("/admin/pos/tienda");
     revalidatePath("/puntodeventa/tienda");
   } catch (error: any) {
     console.log(error);
@@ -3100,76 +2335,12 @@ export async function getAllPOSProduct(searchQuery: any) {
   }
 }
 
-export async function getAllPOSMercadoLibreProduct(searchQuery: any) {
-  try {
-    await dbConnect();
-    // Find the product that contains the variation with the specified variation ID
-    // let productQuery = Product.find({
-    //   $and: [{ stock: { $gt: 0 } }, { "availability.socials": true }],
-    // });
-    let productQuery = Product.find({
-      $and: [{ "availability.socials": true }],
-    });
-    const searchParams = new URLSearchParams(searchQuery);
-    const resPerPage = Number(searchParams.get("perpage")) || 20;
-    // Extract page and per_page from request URL
-    const page = Number(searchParams.get("page")) || 1;
-    productQuery = productQuery.sort({ createdAt: -1 });
-    // total number of documents in database
-    const productsCount = await Product.countDocuments();
-    // Apply search Filters
-    const apiProductFilters: any = new APIFilters(productQuery, searchParams)
-      .searchAllFields()
-      .filter();
-
-    let productsData = await apiProductFilters.query;
-
-    const filteredProductsCount = productsData.length;
-
-    apiProductFilters.pagination(resPerPage, page);
-    productsData = await apiProductFilters.query.clone();
-    let products = JSON.stringify(productsData);
-    const testUsersData = await TestUser.find({});
-    const testUsers = JSON.stringify(testUsersData);
-    revalidatePath("/admin/mercadolibre/producto");
-    return {
-      products: products,
-      testUsers: testUsers,
-      filteredProductsCount: filteredProductsCount,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
 export async function getAllPOSProductNoFilter() {
   try {
     await dbConnect();
     // Find the product that contains the variation with the specified variation ID
     let productsData = await Product.find({
       $and: [{ stock: { $gt: 0 } }, { "availability.branch": true }],
-    });
-
-    const filteredProductsCount = productsData.length;
-    let products = JSON.stringify(productsData);
-
-    return {
-      products: products,
-      filteredProductsCount: filteredProductsCount,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getAllPOSMercadoLibreProductNoFilter() {
-  try {
-    await dbConnect();
-    // Find the product that contains the variation with the specified variation ID
-    let productsData = await Product.find({
-      $and: [{ stock: { $gt: 0 } }, { "availability.socials": true }],
     });
 
     const filteredProductsCount = productsData.length;
@@ -3192,10 +2363,7 @@ export async function getAllProduct(searchQuery: any) {
     const session = await getServerSession(options);
 
     let productQuery: any;
-    if (
-      session &&
-      ["manager", "sucursal", "socials"].includes(session?.user?.role)
-    ) {
+    if (session && ["manager", "sucursal"].includes(session?.user?.role)) {
       productQuery = Product.find();
     } else {
       productQuery = Product.find({ published: true });
@@ -4030,7 +3198,6 @@ export async function addVariationProduct(data: any) {
   console.log(error);
   if (error) throw Error(error);
   revalidatePath("/admin/productos");
-  revalidatePath("/tienda");
 }
 
 export async function updateVariationProduct(data: any) {
@@ -4154,12 +3321,10 @@ export async function updateVariationProduct(data: any) {
   );
   if (error) throw Error(error);
   revalidatePath("/admin/productos");
-  revalidatePath("/tienda");
 }
 
 export async function updateRevalidateProduct() {
   revalidatePath("/admin/productos");
-  revalidatePath("/tienda");
 }
 
 export async function addProduct(data: any) {
@@ -4253,7 +3418,6 @@ export async function addProduct(data: any) {
   });
   if (error) throw Error(error);
   revalidatePath("/admin/productos");
-  revalidatePath("/tienda");
 }
 
 export async function resendEmail(data: any) {

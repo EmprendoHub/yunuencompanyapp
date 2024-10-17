@@ -14,16 +14,12 @@ const POSProductSearch = () => {
         router.push(`/admin/pos/productos/?keyword=${keyword}`);
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/seleccionar/?keyword=${keyword}`);
-      } else if (pathname.includes("socials")) {
-        router.push(`/socials/seleccionar/?keyword=${keyword}`);
       }
     } else {
       if (pathname.includes("admin")) {
         router.push("/admin/pos/productos");
       } else if (pathname.includes("puntodeventa")) {
         router.push(`/puntodeventa/seleccionar`);
-      } else if (pathname.includes("socials")) {
-        router.push(`/socials/seleccionar`);
       }
     }
   };

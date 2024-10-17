@@ -87,8 +87,6 @@ const AllPOSProductsComp: React.FC<AllPOSProductsCompProps> = ({
       router.push("/admin/pos/qr/generador");
     } else if (pathname.includes("puntodeventa")) {
       router.push("/puntodeventa/qr/generador");
-    } else if (pathname.includes("socials")) {
-      router.push("/socials/qr/generador");
     }
   };
 

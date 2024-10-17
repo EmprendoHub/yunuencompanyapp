@@ -30,8 +30,6 @@ const POSOrder = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("socials")) {
-    pathname = "socials";
   }
   const { updateOrder } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
@@ -149,7 +147,7 @@ const POSOrder = ({
             </h2>
           )}
         </div>
-        {order?.branch !== "Sucursal" && order?.branch !== "socials" ? (
+        {order?.branch !== "Sucursal" ? (
           <table className="w-full text-sm text-left flex flex-col maxsm:flex-row">
             <thead className="text-l text-gray-700 uppercase">
               <tr className="flex flex-row maxsm:flex-col">

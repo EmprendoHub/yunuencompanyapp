@@ -97,60 +97,6 @@ export default function UserLayout({ children }: { children: any }) {
           />
 
           <hr className="my-3 maxmd:my-1" />
-
-          <hr className="my-3 maxmd:my-1" />
-          <SideBarItem
-            icon={<LuReceipt size={20} />}
-            text={"POS"}
-            active={
-              pathname === "/admin/pos/productos" ||
-              pathname === "/admin/pos/qr/scanner" ||
-              pathname === "admin/pos/tienda" ||
-              (pathname === "/admin/pos/carrito" && true)
-            }
-            url={"/admin/pos/productos"}
-            alert
-            dropdownItems={[
-              {
-                text: "Tienda",
-                url: "/admin/pos/tienda",
-                active: pathname === "/admin/pos/tienda" ? "true" : "false",
-                icon: <LiaStoreAltSolid size={20} />,
-              },
-              {
-                text: "Socials",
-                url: "/admin/pos/socials",
-                active: pathname === "/admin/pos/socials" ? "true" : "false",
-                icon: <FaInstagram size={20} />,
-              },
-              {
-                text: "Caja",
-                url: "/admin/pos/carrito",
-                active: pathname === "/admin/pos/carrito" ? "true" : "false",
-                icon: <LiaCashRegisterSolid size={20} />,
-              },
-              {
-                text: "Scanner",
-                url: "/admin/pos/qr/scanner",
-                active: pathname === "/admin/pos/qr/scanner" ? "true" : "false",
-                icon: <BsQrCodeScan size={20} />,
-              },
-              {
-                text: "Precio",
-                url: "/admin/pos/qr/idscanner",
-                active:
-                  pathname === "/admin/pos/qr/idscanner" ? "true" : "false",
-                icon: <TbScanEye size={20} />,
-              },
-              {
-                text: "Etiquetas",
-                url: "/admin/pos/productos",
-                active: pathname === "/admin/pos/productos" ? "true" : "false",
-                icon: <MdOutlineFactCheck size={20} />,
-              },
-              // Add more dropdown items as needed
-            ]}
-          />
         </AdminSidebar>
         <div className="relative w-full mb-5 p-4 ">{children}</div>
       </div>

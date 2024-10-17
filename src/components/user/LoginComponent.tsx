@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { IoLogoGoogle } from "react-icons/io";
-import WhiteLogoComponent from "../logos/WhiteLogoComponent";
 import { useSelector } from "react-redux";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import Image from "next/image";
@@ -66,9 +64,6 @@ const LoginComponent = ({ cookie }: { cookie: any }) => {
         }
         if (res.ok) {
           toast("Iniciar ");
-          setTimeout(() => {
-            router.push("/tienda");
-          }, 200);
           return;
         }
       } catch (error) {

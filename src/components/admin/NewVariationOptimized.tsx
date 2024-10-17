@@ -524,8 +524,8 @@ const NewVariationOptimized = ({
       setValidationError(null);
 
       await updateRevalidateProduct();
-      if (pathname.includes("socials")) {
-        router.push("/socials/productos");
+      if (pathname.includes("puntodeventa")) {
+        router.push("/puntodeventa/productos");
       } else if (pathname.includes("admin")) {
         router.push("/admin/productos");
       }
@@ -550,20 +550,11 @@ const NewVariationOptimized = ({
                       enabled={featured}
                       setEnabled={setFeatured}
                     />
-                    <ToggleSwitch
-                      label="MercadoLibre"
-                      enabled={socialsAvailability}
-                      setEnabled={setSocialsAvailability}
-                    />
+
                     <ToggleSwitch
                       label="Sucursal"
                       enabled={branchAvailability}
                       setEnabled={setBranchAvailability}
-                    />
-                    <ToggleSwitch
-                      label="WWW"
-                      enabled={onlineAvailability}
-                      setEnabled={setOnlineAvailability}
                     />
                   </div>
                 </div>

@@ -60,8 +60,6 @@ const POSModalScannerComponent = ({
                 router.push("/admin/pos/qr/idscanner");
               } else if (pathname.includes("puntodeventa")) {
                 router.push("/puntodeventa/qr/idscanner");
-              } else if (pathname.includes("socials")) {
-                router.push("/socials/qr/idscanner");
               }
             }
           });

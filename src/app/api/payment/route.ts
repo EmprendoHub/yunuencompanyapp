@@ -415,7 +415,6 @@ export async function POST(req: any, res: any) {
 
     revalidatePath("/admin/");
     revalidatePath("/puntodeventa/");
-    revalidatePath("/socials/");
     const responseData = {
       message: "Nuevo pedido",
       newOrder: newOrderString,

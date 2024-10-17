@@ -54,8 +54,6 @@ const EditVariationProduct = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("socials")) {
-    pathname = "socials";
   }
   const searchParams = useSearchParams();
   const searchValue = searchParams.get("callback");

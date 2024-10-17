@@ -26,8 +26,6 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
     pathname = "/admin/pos";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "/puntodeventa";
-  } else if (getPathname.includes("socials")) {
-    pathname = "/socials";
   }
   const shipAmount = 0;
   const layawayAmount = Number(amountTotal) * 0.3;

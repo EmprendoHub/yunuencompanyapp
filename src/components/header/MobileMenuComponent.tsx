@@ -13,13 +13,7 @@ import { signOut, useSession } from "next-auth/react";
 import MiniMenuComponent from "./MiniMenuComponent";
 import DarkModeLogo from "../logos/WhiteLogoNoLink";
 
-const navLinks = [
-  { title: "Inicio", url: "/" },
-  { title: "Blog", url: "/blog" },
-  { title: "Nosotros", url: "/acerca" },
-  { title: "Contacto", url: "/contacto" },
-  { title: "Tienda", url: "/tienda" },
-];
+const navLinks = [{ title: "Inicio", url: "/" }];
 
 const MobileMenuComponent = () => {
   const [open, setOpen] = useState(false);

@@ -51,11 +51,6 @@ const SuccessPage = async ({ searchParams }: { searchParams: any }) => {
                   iniciar tu session.
                 </button>
               </Link>
-              <Link href={"/tienda"}>
-                <button className="bg-black text-slate-100 hover:text-foreground w-44 h-12 rounded-full text-base font-semibold hover:bg-gray-200 duration-500">
-                  Explorar Tienda
-                </button>
-              </Link>
             </div>
           </div>
         ) : (

@@ -67,10 +67,7 @@ export async function POST(request: any, res: any) {
 export async function PUT(request: any, res: any) {
   const token: any = await getToken({ req: request });
   const name = await request.headers.get("name");
-  if (
-    (token && token.user.role === "manager") ||
-    token.user.role === "socials"
-  ) {
+  if (token && token.user.role === "manager") {
     const url = await mc.presignedPutObject("yunuencompany", name, 900);
     const response = NextResponse.json({
       message: "Las imágenes se subieron con éxito.",

@@ -24,8 +24,6 @@ const PayCartComp = ({
     pathname = "admin";
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
-  } else if (getPathname.includes("socials")) {
-    pathname = "socials";
   }
   const dispatch = useDispatch();
   const router = useRouter();

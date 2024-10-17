@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { AiOutlineClose } from "react-icons/ai";
 import styles from "./boxfilterstyle.module.scss";
 import { getPriceQueryParams } from "@/backend/helpers";
-import Search from "../layout/Search";
 
 const AllFiltersComponent = ({
   allBrands,
@@ -93,9 +92,6 @@ const AllFiltersComponent = ({
         </div>
         {/* Search Filter */}
 
-        <Search SetIsActive={SetIsActive} />
-        {/* Price Filter */}
-
         <div className="flex flex-col w-full p-4 border border-muted bg-background rounded shadow-sm my-3">
           <h3 className=" mb-2 text-foreground text-xs">Precio ($)</h3>
 
@@ -176,7 +172,7 @@ const AllFiltersComponent = ({
         <div className="p-5 pt-4 sm:p-1 border border-muted bg-background rounded shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-700">Marca</h3>
           <ul className="space-y-1">
-            {allBrands?.map((brand:any, index:number) => (
+            {allBrands?.map((brand: any, index: number) => (
               <li key={index}>
                 <div className={`box  py-[1px]  ${styles.box}`}>
                   <input

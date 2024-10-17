@@ -46,6 +46,7 @@ export const GET = async (request: any, res: any) => {
           "orderDetails.branch": "Sucursal",
           "orderDetails.paymentInfo.paymentIntent": "paid",
           pay_date: { $gte: startOfDay, $lte: endOfDay },
+          method: { $ne: "TERMINAL" },
         },
       },
       {

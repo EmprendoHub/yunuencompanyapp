@@ -3,7 +3,6 @@ import styles from "./filterstyle.module.scss";
 import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import FilterMenuComponent from "./FilterMenuComponent";
 import { CiShare2 } from "react-icons/ci";
 import { toast } from "../ui/use-toast";
 
@@ -56,16 +55,6 @@ const MobileFilterComponet = ({
           </div>
         </div>
       </div>
-      <AnimatePresence mode="wait">
-        {isActive && (
-          <FilterMenuComponent
-            allBrands={allBrands}
-            allCategories={allCategories}
-            SetIsActive={SetIsActive}
-            isActive={isActive}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 };

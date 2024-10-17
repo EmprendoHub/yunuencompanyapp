@@ -158,7 +158,7 @@ const AboutUsComponent = () => {
               "En yunuencompany, valoramos la importancia de una experiencia de compra sin complicaciones."
             }
             btnText={"Visitar Tienda"}
-            btnUrl={`/tienda`}
+            btnUrl={`#`}
           />
         </div>
       </section>

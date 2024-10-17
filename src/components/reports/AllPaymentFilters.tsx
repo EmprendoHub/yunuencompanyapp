@@ -9,7 +9,7 @@ import "react-clock/dist/Clock.css";
 import "./paymentstyle.scss";
 
 const AllPaymentFilters = () => {
-  const allStores = ["Todas", "Socials", "Sucursal", "WWW"];
+  const allStores = ["Todas", "Sucursal", "WWW"];
   const fullyPaid = ["Todos", "Apartado", "Pagado", "Entregado"];
   const [store, setStore] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
