@@ -2,7 +2,6 @@ import {
   formatCorteDate,
   formatSimpleDate,
   formatSpanishDate,
-  getTotalFromItems,
 } from "@/backend/helpers";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import React, { useRef } from "react";
@@ -75,7 +74,7 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 </td>
 
                 <td className="px-2 maxsm:px-0 py-2 ">
-                  {formatSimpleDate(payment?.pay_date)}
+                  {formatSpanishDate(payment?.pay_date)}
                 </td>
               </tr>
             ))}
@@ -93,7 +92,7 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 </td>
 
                 <td className="px-2 maxsm:px-0 py-2 ">
-                  {formatSimpleDate(expense?.pay_date)}
+                  {formatSpanishDate(expense?.pay_date)}
                 </td>
               </tr>
             ))}

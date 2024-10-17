@@ -725,13 +725,6 @@ export async function getDashboard() {
       999
     );
 
-    console.log("startOfToday", startOfToday, endOfToday);
-    console.log("startOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
-    console.log("startOfLastWeek", startOfLastWeek, endOfLastWeek);
-    console.log("startOfMonth", startOfMonth, endOfMonth);
-    console.log("startOfLastMonth", startOfLastMonth, endOfLastMonth);
-    console.log("startOfYear", startOfYear, endOfYear);
-
     // Calculate yesterday's date
     const yesterday = new Date(today);
     // Set start and end of yesterday

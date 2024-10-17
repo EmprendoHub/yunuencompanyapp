@@ -63,49 +63,6 @@ const AdminProducts = ({
     });
   };
 
-  const deactivateOnlineHandler = (product_id: any, active: boolean) => {
-    const location = "Online";
-    let title: string;
-    let text: string;
-    let confirmBtn: string;
-    let successTitle: string;
-    let successText: string;
-    let icon: SweetAlertIcon;
-    let confirmBtnColor: string;
-    if (active === true) {
-      icon = "warning";
-      title = "Estas seguro(a)?";
-      text =
-        "¡Estas a punto de desactivar a este producto en el Sitio Web y quedara sin acceso!";
-      confirmBtn = "¡Sí, desactivar producto!";
-      confirmBtnColor = "#CE7E00";
-      successTitle = "Desactivar!";
-      successText = "El producto ha sido desactivado.";
-    } else {
-      icon = "success";
-      title = "Estas seguro(a)?";
-      text = "¡Estas a punto de Activar a este producto en el Sitio Web!";
-      confirmBtn = "¡Sí, Activar producto!";
-      confirmBtnColor = "#228B22";
-      successTitle = "Reactivado!";
-      successText = "El producto ha sido Activado.";
-    }
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: icon,
-      showCancelButton: true,
-      confirmButtonColor: confirmBtnColor,
-      cancelButtonColor: "#000",
-      confirmButtonText: confirmBtn,
-      cancelButtonText: "No, cancelar!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changeProductAvailability(product_id, location);
-      }
-    });
-  };
-
   const deactivateBranchHandler = (product_id: any, active: boolean) => {
     const location = "Branch";
     let title: string;
@@ -220,9 +177,6 @@ const AdminProducts = ({
                 Precio
               </th>
 
-              <th scope="col" className="w-full px-1 py-3 ">
-                Exst.
-              </th>
               <th scope="col" className="w-full px-1 py-3 text-center">
                 ...
               </th>
@@ -273,9 +227,6 @@ const AdminProducts = ({
                   </b>
                 </td>
 
-                <td className="w-full px-1 py-0 ">
-                  {product?.stock[0].amount}
-                </td>
                 <td className="w-full px-1 py-0 flex flex-row items-center gap-x-1">
                   <Link
                     href={`/${pathname}/productos/variacion/${product?.slug}?&callback=${currentPage}`}
@@ -283,24 +234,6 @@ const AdminProducts = ({
                   >
                     <FaPencilAlt className="maxsm:text-[10px]" />
                   </Link>
-
-                  <button
-                    onClick={() =>
-                      deactivateOnlineHandler(
-                        product?._id,
-                        product?.availability?.online
-                      )
-                    }
-                    className="p-2 inline-block text-foreground hover:text-card-foreground bg-background shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer "
-                  >
-                    <TbWorldWww
-                      className={` ${
-                        product?.availability?.online === true
-                          ? "text-green-800 maxsm:text-[10px]"
-                          : "text-slate-400 maxsm:text-[10px]"
-                      }`}
-                    />
-                  </button>
 
                   <button
                     onClick={() =>

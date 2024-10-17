@@ -16,7 +16,7 @@ class APIReportsFilters {
     const searchConditions: Record<string, any> = {};
 
     if (paid) {
-      searchConditions["orderStatus"] = { $regex: paid, $options: "i" };
+      searchConditions["affiliateId"] = { $regex: paid, $options: "i" };
     }
 
     if (branch) {

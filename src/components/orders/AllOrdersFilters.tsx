@@ -2,76 +2,55 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCalendar } from "react-icons/fa6";
-import DateTimePicker from "react-datetime-picker";
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-import "react-clock/dist/Clock.css";
+import { DatePicker } from "@/components/ui/DatePicker";
 import "./orderstyle.scss";
 
-const AllOrdersFilters = () => {
-  const allStores = ["Todas", "Sucursal", "WWW"];
-  const fullyPaid = ["Todos", "Apartado", "Pagado", "Entregado"];
-  const [store, setStore] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+interface Branch {
+  _id: string;
+  name: string;
+}
+
+interface AllOrdersFiltersProps {
+  branches: Branch[];
+}
+
+const AllOrdersFilters: React.FC<AllOrdersFiltersProps> = ({ branches }) => {
+  const fullyPaid = ["Todos", "EFECTIVO", "TERMINAL"];
+  const [store, setStore] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
   const router = useRouter();
-  let queryParams: any;
+  const [isSending, setIsSending] = useState(false);
 
-  function onStartDateChangeDate(date: any) {
-    setStartDate(date);
-  }
-
-  function onEndDateChangeDate(date: any) {
-    setEndDate(date);
-  }
+  let queryParams: URLSearchParams;
 
   function handleClick() {
     if (typeof window !== "undefined") {
       queryParams = new URLSearchParams(window.location.search);
     }
-
     if (store === "" || store === "Todas") {
-      //delete filter
       queryParams.delete("branch");
     } else {
-      //set query filter
-      if (queryParams.has("branch")) {
-        queryParams.set("branch", store);
-      } else {
-        queryParams.append("branch", store);
-      }
+      queryParams.set("branch", store);
     }
+
     if (paymentMethod === "" || paymentMethod === "Todos") {
-      //delete filter
       queryParams.delete("paid");
     } else {
-      //set query filter
-      if (queryParams.has("paid")) {
-        queryParams.set("paid", paymentMethod);
-      } else {
-        queryParams.append("paid", paymentMethod);
-      }
+      queryParams.set("paid", paymentMethod);
     }
-    if (startDate === "") {
-      //delete filter
+
+    if (startDate) {
+      queryParams.set("min", startDate.toISOString());
+    } else {
       queryParams.delete("min");
-    } else {
-      if (queryParams.has("min")) {
-        queryParams.set("min", startDate);
-      } else {
-        queryParams.append("min", startDate);
-      }
     }
-    if (endDate === "") {
-      //delete filter
-      queryParams.delete("max");
+
+    if (endDate) {
+      queryParams.set("max", endDate.toISOString());
     } else {
-      if (queryParams.has("max")) {
-        queryParams.set("max", endDate);
-      } else {
-        queryParams.append("max", endDate);
-      }
+      queryParams.delete("max");
     }
 
     const path = window.location.pathname + "?" + queryParams.toString();
@@ -80,42 +59,35 @@ const AllOrdersFilters = () => {
 
   return (
     <div className="w-full print:hidden">
-      <div className=" mb-2  w-full text-start h-full px-4 py-2 inline-block text-2xl text-gray-800  shadow-sm border border-gray-200 rounded-md font-EB_Garamond ">
+      <div className="mb-2 w-full text-start h-full px-4 py-2 inline-block text-2xl text-gray-800 shadow-sm border border-gray-200 rounded-md font-EB_Garamond">
         Generar Reporte
       </div>
       <div className="min-w-full flex items-center justify-start h-full">
-        {/* Date Filter */}
         <div className="flex flex-col w-2/3 py-4 border border-gray-200 bg-background rounded shadow-sm">
-          <h3 className=" mb-2 text-foreground flex items-center">
+          <h3 className="mb-2 text-foreground flex items-center">
             Fechas <FaCalendar />
           </h3>
-
           <div className="flex items-center gap-x-2 text-foreground">
-            <div className="mb-4 flex flex-row maxmd:flex-col gap-2 items-center">
-              <DateTimePicker
-                className={"appearance-none rounded-md"}
-                onChange={onStartDateChangeDate}
-                value={startDate}
-                locale={"es-MX"}
-                disableClock={true}
+            <div className="mb-4 flex flex-row gap-2 items-center">
+              <DatePicker
+                className="appearance-none rounded-md"
+                onChange={setStartDate}
+                selected={startDate}
               />
-              <DateTimePicker
-                className={"appearance-none rounded-md"}
-                onChange={onEndDateChangeDate}
-                value={endDate}
-                locale={"es-MX"}
-                disableClock={true}
+              <DatePicker
+                className="appearance-none rounded-md"
+                onChange={setEndDate}
+                selected={endDate}
               />
             </div>
           </div>
         </div>
-        {/* Payment Type Filter */}
+        {/* Payment Method Filter */}
         <div className="p-5 pt-4 w-1/3 mb-2 sm:p-1 border border-gray-200 bg-background rounded shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-700">Estado</h3>
-
           <div className="relative w-full">
             <select
-              className="flex relative appearance-none border border-gray-300 bg-gray-100 rounded-md py-2 px-3 focus:outline-none cursor-pointer focus:border-gray-400 w-full z-10 bg-opacity-0"
+              className="relative appearance-none border border-gray-300 bg-gray-100 rounded-md py-2 px-3 focus:outline-none cursor-pointer focus:border-gray-400 w-full"
               name="paymentMethod"
               onChange={(e) => setPaymentMethod(e.target.value)}
               value={paymentMethod}
@@ -126,57 +98,42 @@ const AllOrdersFilters = () => {
                 </option>
               ))}
             </select>
-
-            <i className="absolute inset-y-0 right-0 p-2 text-gray-400 z-0">
-              <svg
-                width="22"
-                height="22"
-                className="fill-current"
-                viewBox="0 0 20 20"
-              >
-                <path d="M7 10l5 5 5-5H7z"></path>
-              </svg>
-            </i>
           </div>
         </div>
         {/* Store Filter */}
         <div className="p-5 pt-4 w-1/3 sm:p-1 border border-gray-200 bg-background rounded shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-700">Tienda</h3>
-
           <div className="relative w-full">
             <select
-              className="relative flex appearance-none border border-gray-300 bg-gray-100 rounded-md py-2 px-3 mb-2 focus:outline-none cursor-pointer focus:border-gray-400 w-full z-10 bg-opacity-0"
+              className="relative appearance-none border border-gray-300 bg-gray-100 rounded-md py-2 px-3 mb-2 focus:outline-none cursor-pointer focus:border-gray-400 w-full"
               name="store"
               onChange={(e) => setStore(e.target.value)}
               value={store}
             >
-              {allStores.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
+              {branches.map((opt) => (
+                <option key={opt._id} value={opt._id}>
+                  {opt.name}
                 </option>
               ))}
             </select>
-
-            <i className="absolute inset-y-0 right-0 p-2 text-gray-400 z-0">
-              <svg
-                width="22"
-                height="22"
-                className="fill-current"
-                viewBox="0 0 20 20"
-              >
-                <path d="M7 10l5 5 5-5H7z"></path>
-              </svg>
-            </i>
           </div>
         </div>
 
-        <button
-          type="button"
-          className="px-4 py-2 mt-5 inline-block text-white border border-transparent  rounded-md bg-black w-1/6"
-          onClick={handleClick}
-        >
-          Reporte
-        </button>
+        {!isSending ? (
+          <div className="flex flex-row items-center justify-between w-full gap-2">
+            <button
+              type="button"
+              className="px-4 py-2 mt-5 inline-block text-white border border-transparent rounded-md bg-black w-full"
+              onClick={handleClick}
+            >
+              Generar
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-row items-center justify-center w-full gap-2">
+            <div className="loader flex self-center" />
+          </div>
+        )}
       </div>
     </div>
   );

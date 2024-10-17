@@ -8,9 +8,11 @@ import AllOrders from "./AllOrders";
 const FilterOrdersComponent = ({
   data,
   itemCount,
+  branches,
 }: {
   data: any;
   itemCount: any;
+  branches: any;
 }) => {
   const [isActive, SetIsActive] = useState(false);
   const pathname = usePathname();
@@ -24,7 +26,7 @@ const FilterOrdersComponent = ({
 
   return (
     <div className={` overflow-y-auto px-5 py-5`}>
-      <AllOrdersFilters />
+      <AllOrdersFilters branches={branches} />
       <AllOrders data={data} itemCount={itemCount} />
     </div>
   );

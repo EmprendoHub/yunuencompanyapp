@@ -36,7 +36,10 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
               </th>
 
               <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Estado
+                Pago
+              </th>
+              <th scope="col" className="px-2 maxsm:px-0 py-3">
+                Tipo
               </th>
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Total
@@ -68,6 +71,17 @@ const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
                   }`}
                 >
                   {order.orderStatus}
+                </td>
+                <td
+                  className={`px-2 maxsm:px-0 py-2 font-bold ${
+                    order.affiliateId === "TERMINAL"
+                      ? "text-amber-700"
+                      : order.affiliateId === "EFECTIVO"
+                      ? "text-green-800"
+                      : "text-slate-600"
+                  }`}
+                >
+                  {order.affiliateId}
                 </td>
                 <td className="px-2 maxsm:px-0 py-2 ">
                   <b>

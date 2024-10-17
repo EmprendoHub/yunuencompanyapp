@@ -149,19 +149,10 @@ export async function PUT(request: any, res: any) {
     const payload = await request.formData();
     let {
       title,
-      description,
-      category,
-      tags,
       featured,
       branchAvailability,
-      socialsAvailability,
-      onlineAvailability,
       mainImage,
-      brand,
-      gender,
       variations,
-      salePrice,
-      salePriceEndDate,
       branchId,
       updatedAt,
       _id,
@@ -183,31 +174,6 @@ export async function PUT(request: any, res: any) {
 
     const user = { _id: token?.user?._id };
 
-    let colors: any[] = [];
-    variations = JSON.parse(variations, (key, value) => {
-      if (key === "color") {
-        const color = {
-          value: value,
-          label: value,
-        };
-        const exists = colors.some(
-          (c) => c.value === value || c.label === value
-        );
-        if (!exists) {
-          colors.push(color);
-        }
-      }
-      if (!isNaN(value) && value !== "" && !Array.isArray(value)) {
-        if (key !== "size") {
-          return Number(value);
-        }
-      }
-      return value;
-    });
-
-    tags = JSON.parse(tags);
-    const sale_price = Number(salePrice);
-    const sale_price_end_date = salePriceEndDate;
     const images = [{ url: mainImage }];
 
     // Update stock structure
@@ -219,9 +185,7 @@ export async function PUT(request: any, res: any) {
     updatedAt = new Date(updatedAt);
 
     const availability = {
-      socials: socialsAvailability,
       branch: branchAvailability,
-      online: onlineAvailability,
     };
 
     // Update variations structure
@@ -236,19 +200,11 @@ export async function PUT(request: any, res: any) {
         type: "variation",
         title,
         slug,
-        description,
         featured,
         availability,
-        brand,
-        gender,
-        category,
-        tags,
         images,
-        colors,
         variations: updatedVariations,
         stock,
-        sale_price,
-        sale_price_end_date,
         updatedAt,
         user,
       }
