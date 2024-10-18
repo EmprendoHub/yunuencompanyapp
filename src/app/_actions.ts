@@ -1604,20 +1604,17 @@ export async function getOneOrder(id: any) {
     await dbConnect();
 
     let order = await Order.findOne({ _id: id });
-    let deliveryAddress = await Address.findOne(order.shippingInfo);
     let orderPayments: any = await Payment.find({ order: order._id });
     let customer = await Customer.findOne({ email: order.email });
 
     // convert to string
     order = JSON.stringify(order);
-    deliveryAddress = JSON.stringify(deliveryAddress);
     orderPayments = JSON.stringify(orderPayments);
     customer = JSON.stringify(customer);
 
     return {
       order: order,
       customer: customer,
-      deliveryAddress: deliveryAddress,
       orderPayments: orderPayments,
     };
     // return { product };
@@ -1634,25 +1631,10 @@ export async function getAllOrder(searchQuery: any) {
 
     const session = await getServerSession(options);
     let orderQuery;
-    if (
-      session?.user?.role === "manager" ||
-      session?.user?.role === "sucursal"
-    ) {
-      orderQuery = Order.find({ orderStatus: { $ne: "Cancelado" } }).populate(
-        "user"
-      );
-    } else if (session?.user?.role === "afiliado") {
-      const affiliate = await Affiliate.findOne({ user: session?.user?._id });
-      orderQuery = Order.find({
-        affiliateId: affiliate?._id.toString(),
-        orderStatus: { $ne: "Cancelado" },
-      }).populate("user");
-    } else {
-      orderQuery = Order.find({
-        user: session?.user?._id,
-        orderStatus: { $ne: "Cancelado" },
-      }).populate("user");
-    }
+
+    orderQuery = Order.find({ orderStatus: { $ne: "Cancelado" } }).populate(
+      "user"
+    );
 
     const searchParams = new URLSearchParams(searchQuery);
     const resPerPage = Number(searchParams.get("perpage")) || 10;

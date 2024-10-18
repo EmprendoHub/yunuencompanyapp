@@ -27,14 +27,9 @@ interface Order {
 interface POSReceiptOneOrderProps {
   order: Order;
   id: string;
-  deliveryAddress: any;
 }
 
-const POSReceiptOneOrder = ({
-  order,
-  id,
-  deliveryAddress,
-}: POSReceiptOneOrderProps) => {
+const POSReceiptOneOrder = ({ order, id }: POSReceiptOneOrderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const printTriggerRef = useRef<HTMLButtonElement>(null); // Referencing the print trigger button

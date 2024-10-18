@@ -46,11 +46,8 @@ const PayCartComp = ({
 
   const totalAmountCalc = Number(amountTotal);
   let amountPlaceHolder: any;
-  if (payType === "layaway") {
-    amountPlaceHolder = layawayAmount;
-  } else {
-    amountPlaceHolder = totalAmountCalc;
-  }
+
+  amountPlaceHolder = totalAmountCalc;
   const [amountReceived, setAmountReceived] = useState(amountPlaceHolder);
 
   const handleAmountReceived = async (inputValue: any) => {
@@ -68,7 +65,6 @@ const PayCartComp = ({
       ).toString();
       setTransactionNo(newTransactionNo); // Still update the state, but don't rely on it immediately
     }
-
     // Pass the updated transactionNo directly to handleCheckout
     handleCheckout(newTransactionNo);
   };
@@ -125,7 +121,7 @@ const PayCartComp = ({
         <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg relative">
           <section className=" p-6 w-full">
             <h1 className="text-2xl maxmd:text-5xl font-semibold text-foreground mb-4 font-EB_Garamond text-center uppercase">
-              {payType === "layaway" ? "Apartar" : "Pagar"}
+              {"Pagar"}
             </h1>
 
             <div className="flex flex-col items-center gap-1 ">
@@ -181,7 +177,7 @@ const PayCartComp = ({
                     Cancelar
                   </div>
                   <button
-                    onClick={() => handleCheckout("layaway")}
+                    onClick={() => handleCheckout("EFECTIVO")}
                     className="my-2 w-[100%] px-4 py-6 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-row items-center justify-center gap-1 text-2xl"
                   >
                     <FaCircleCheck className="text-xl" /> PAGAR

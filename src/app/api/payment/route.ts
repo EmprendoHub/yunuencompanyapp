@@ -84,41 +84,24 @@ export async function POST(req: any, res: any) {
     let paymentInfo;
     let layAwayIntent;
     let currentOrderStatus;
-    let payMethod;
-    let payIntent;
-
-    if (payType === "layaway") {
-      payIntent = "partial";
-    } else {
-      payIntent = "paid";
-    }
+    let payMethod = transactionNo;
+    let payIntent = "paid";
 
     if (transactionNo === "EFECTIVO") {
       payMethod = "EFECTIVO";
-    } else if (!isNaN(transactionNo)) {
+    } else {
       payMethod = "TERMINAL";
     }
-    if (payType === "layaway") {
-      paymentInfo = {
-        id: "partial",
-        status: "unpaid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "partial",
-      };
-      currentOrderStatus = "Apartado";
-      layAwayIntent = true;
-    } else {
-      paymentInfo = {
-        id: "paid",
-        status: "paid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "paid",
-      };
-      currentOrderStatus = "Pagado";
-      layAwayIntent = false;
-    }
+
+    paymentInfo = {
+      id: "paid",
+      status: "paid",
+      amountPaid: amountReceived,
+      taxPaid: 0,
+      paymentIntent: "paid",
+    };
+    currentOrderStatus = "Pagado";
+    layAwayIntent = false;
 
     const cartItems: any[] = [];
     await Promise.all(
