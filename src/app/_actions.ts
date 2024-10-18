@@ -44,6 +44,7 @@ import Expense from "@/backend/models/Expense";
 import APIExpenseFilters from "@/lib/APIExpensesFilters";
 import { DateTime } from "luxon";
 import mongoose from "mongoose";
+import APIReportsFilters from "@/lib/APIReportsFilters";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -116,6 +117,79 @@ async function subtotal(order: any) {
   let sub: any = order?.paymentInfo?.amountPaid - order?.ship_cost;
   sub = formatter.format(sub);
   return sub;
+}
+
+async function getTotalValueOfItems(orders: any) {
+  let totalValue = 0;
+  orders.forEach((order: any) => {
+    if (order.orderItems && order.orderItems.length > 0) {
+      const orderTotal = order.orderItems.reduce(
+        (sum: any, item: any) => sum + item.quantity * item.price,
+        0
+      );
+      totalValue += orderTotal;
+    }
+  });
+  return totalValue;
+}
+
+export async function generateReports(searchParams: any) {
+  const session = await getServerSession(options);
+
+  if (!session || session.user.role !== "manager") {
+    throw new Error("You are not authorized");
+  }
+
+  try {
+    await dbConnect();
+
+    let orderQuery = Order.find({ orderStatus: { $ne: "cancelada" } })
+      .populate({
+        path: "user",
+        select: "name",
+      })
+      .populate({
+        path: "branch",
+        select: "name",
+        model: User,
+      });
+
+    const apiReportsFilters: any = new APIReportsFilters(
+      orderQuery,
+      new URLSearchParams(searchParams)
+    )
+      .searchAllFields()
+      .filter();
+
+    let filteredOrdersData = await apiReportsFilters.query;
+
+    const paymentTotals = filteredOrdersData.reduce(
+      (total: number, order: any) => total + order.paymentInfo.amountPaid,
+      0
+    );
+
+    const orderTotals = await getTotalValueOfItems(filteredOrdersData);
+    const itemCount = filteredOrdersData.length;
+
+    filteredOrdersData.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    const dataObject = {
+      orders: { orders: filteredOrdersData },
+      totalOrderCount: itemCount,
+      itemCount,
+      paymentTotals,
+      orderTotals,
+    };
+    const dataString = JSON.stringify(dataObject);
+
+    return dataString;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Orders loading error");
+  }
 }
 
 export async function updateUserMercadoToken(tokenData: any) {
@@ -1971,9 +2045,7 @@ export async function getAllPOSBranches() {
 
     const branches = JSON.stringify(allBranches);
 
-    return {
-      branches: branches,
-    };
+    return branches;
   } catch (error: any) {
     console.log(error);
     throw Error(error);

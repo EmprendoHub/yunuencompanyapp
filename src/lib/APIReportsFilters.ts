@@ -1,4 +1,3 @@
-import { newCSTDate } from "@/backend/helpers";
 import { Query } from "mongoose"; // Import Query type from mongoose
 
 class APIReportsFilters {
@@ -82,8 +81,6 @@ class APIReportsFilters {
       0,
       0
     );
-    console.log("startOfToday", startOfToday);
-    console.log("endOfToday", endOfToday);
 
     const defaultOutput = {
       createdAt: {
@@ -91,7 +88,6 @@ class APIReportsFilters {
         $gte: startOfToday,
       },
     };
-    console.log("output", output.createdAt, output, defaultOutput);
 
     this.query = this.query.find(output.createdAt ? output : defaultOutput);
 

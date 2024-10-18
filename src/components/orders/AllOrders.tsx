@@ -4,7 +4,9 @@ import React, { useRef } from "react";
 import { FaPrint } from "react-icons/fa6";
 import ReactToPrint from "react-to-print";
 
-const AllOrders = ({ data, itemCount }: { data: any; itemCount: number }) => {
+const AllOrders = ({ dataString }: { dataString: string }) => {
+  const data = JSON.parse(dataString);
+  const itemCount = data.orders.itemCount;
   const orders = data.orders.orders;
   const ordersTotals = data.orderTotals;
   const paymentTotals = data.paymentTotals;

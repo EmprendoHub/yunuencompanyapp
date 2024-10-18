@@ -30,7 +30,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     setDate(selected);
   }, [selected]);
 
-  // Change the type of newDate to accept Date | undefined, and convert undefined to null.
   const handleDateChange = (newDate: Date | undefined) => {
     const convertedDate = newDate ?? null;
     setDate(convertedDate);
@@ -55,8 +54,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date ?? undefined} // Convert null to undefined
-          onSelect={handleDateChange} // Update the event handler to handle Date | undefined
+          selected={date ?? undefined}
+          onSelect={handleDateChange}
           initialFocus
         />
       </PopoverContent>
