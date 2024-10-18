@@ -13,7 +13,7 @@ const ProductDetailsPage = async ({ params }: { params: any }) => {
   const nextAuthSessionToken = nextCookies.get(cookieName);
   const currentCookies = `${cookieName}=${nextAuthSessionToken?.value}`;
   const branchData = await getAllPOSBranches();
-  const branches = JSON.parse(branchData.branches);
+  const branches = JSON.parse(branchData);
   const data = await getOneProduct(params.slug, false);
   const product = JSON.parse(data.product);
 

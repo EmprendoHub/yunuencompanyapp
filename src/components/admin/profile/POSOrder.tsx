@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import AuthContext from "@/context/AuthContext";
@@ -13,13 +13,11 @@ import { toast } from "sonner";
 
 const POSOrder = ({
   order,
-  deliveryAddress,
   id,
   orderPayments,
   customer,
 }: {
   order: any;
-  deliveryAddress: any;
   id: any;
   orderPayments: any;
   customer: any;
@@ -147,63 +145,21 @@ const POSOrder = ({
             </h2>
           )}
         </div>
-        {order?.branch !== "Sucursal" ? (
-          <table className="w-full text-sm text-left flex flex-col maxsm:flex-row">
-            <thead className="text-l text-gray-700 uppercase">
-              <tr className="flex flex-row maxsm:flex-col">
-                <th scope="col" className="w-1/6 px-6 py-2">
-                  Domicilio
-                </th>
-                <th scope="col" className="w-1/6 maxsm:w-full px-6 py-2">
-                  Ciudad
-                </th>
-                <th scope="col" className="w-1/6 maxsm:w-full px-6 py-2">
-                  Entidad
-                </th>
-                <th scope="col" className="w-1/6 maxsm:w-full px-6 py-2">
-                  Código Postal
-                </th>
-                <th scope="col" className="w-1/6 maxsm:w-full px-6 py-2">
-                  Tel
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-background flex flex-row maxsm:flex-col">
-                <td className="w-1/6 maxsm:w-full px-6 py-2">
-                  {deliveryAddress?.street}
-                </td>
-                <td className="w-1/6 maxsm:w-full px-6 py-2">
-                  {deliveryAddress?.city}
-                </td>
-                <td className="w-1/6 maxsm:w-full px-6 py-2">
-                  {deliveryAddress?.province}
-                </td>
-                <td className="w-1/6 maxsm:w-full px-6 py-2">
-                  {deliveryAddress?.zip_code}
-                </td>
-                <td className="w-1/6 maxsm:w-full px-6 py-2">
-                  {deliveryAddress?.phone}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        ) : (
-          <div className="w-full flex maxsm:flex-col gap-3 justify-between">
-            <div className="flex items-center gap-1 tracking-wide text-gray-600 pl-4">
-              <FaComment size={20} />
-              <em className="text-blue-800">{order?.comment}</em>
-            </div>
-            <div>
-              <div
-                onClick={() => setShowModal(true)}
-                className="bg-black flex gap-1 items-center text-white rounded-sm px-6 py-2 cursor-pointer"
-              >
-                <FaCloudUploadAlt /> Actualizar
-              </div>
+
+        <div className="w-full flex maxsm:flex-col gap-3 justify-between">
+          <div className="flex items-center gap-1 tracking-wide text-gray-600 pl-4">
+            <FaComment size={20} />
+            <em className="text-blue-800">{order?.comment}</em>
+          </div>
+          <div>
+            <div
+              onClick={() => setShowModal(true)}
+              className="bg-black flex gap-1 items-center text-white rounded-sm px-6 py-2 cursor-pointer"
+            >
+              <FaCloudUploadAlt /> Actualizar
             </div>
           </div>
-        )}
+        </div>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg px-5">
         <table className="w-full text-sm text-left">

@@ -5,15 +5,7 @@ import { getOrderItemsQuantities, getTotalFromItems } from "@/backend/helpers";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "react-redux";
 
-const OneOrder = ({
-  order,
-  session,
-  deliveryAddress,
-}: {
-  order: any;
-  session: any;
-  deliveryAddress: any;
-}) => {
+const OneOrder = ({ order, session }: { order: any; session: any }) => {
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE__KEY!);
   const { affiliateInfo } = useSelector((state: any) => state.compras);
 
@@ -91,37 +83,6 @@ const OneOrder = ({
             {order?.orderStatus}
           </h2>
         </div>
-
-        <table className="w-full text-sm text-left">
-          <thead className="text-l text-gray-700 uppercase">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Domicilio
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Ciudad
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Entidad
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Código Postal
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Tel
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-background">
-              <td className="px-6 py-2">{deliveryAddress?.street}</td>
-              <td className="px-6 py-2">{deliveryAddress?.city}</td>
-              <td className="px-6 py-2">{deliveryAddress?.province}</td>
-              <td className="px-6 py-2">{deliveryAddress?.zip_code}</td>
-              <td className="px-6 py-2">{deliveryAddress?.phone}</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-5">
         <table className="w-full text-sm text-left">
