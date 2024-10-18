@@ -63,7 +63,7 @@ const POSOrders = ({
                 No.
               </th>
               <th scope="col" className="px-2 py-3 maxmd:hidden">
-                Cliente
+                Tipo
               </th>
 
               <th scope="col" className="px-2 maxsm:px-0 py-3">
@@ -93,11 +93,22 @@ const POSOrders = ({
                     {order.orderId}
                   </Link>
                 </td>
-                <td className="px-2 py-2 maxmd:hidden">
-                  {order?.customerName}
-                </td>
+                <td className="px-2 py-2 maxmd:hidden">{order?.affiliateId}</td>
                 <td className="px-6 maxsm:px-0 py-2 ">
-                  <b>
+                  <b
+                    className={
+                      order.affiliateId === "EFECTIVO"
+                        ? "text-emerald-700"
+                        : order.affiliateId === "TERMINAL"
+                        ? "text-blue-700"
+                        : ""
+                    }
+                  >
+                    {order.affiliateId === "EFECTIVO"
+                      ? "+"
+                      : order.affiliateId === "TERMINAL"
+                      ? "+"
+                      : ""}
                     <FormattedPrice amount={order?.paymentInfo?.amountPaid} />
                   </b>
                 </td>
