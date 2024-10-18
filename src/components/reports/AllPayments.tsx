@@ -52,7 +52,7 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 Cantidad
               </th>
               <th scope="col" className="px-2 maxsm:px-0 py-3">
-                Venta/Gasto
+                Venta #
               </th>
               <th scope="col" className="px-2 maxsm:px-0 py-3">
                 Fecha
@@ -65,7 +65,14 @@ const AllPayments = ({ data, itemCount }: { data: any; itemCount: number }) => {
                 <td className="px-2 maxsm:px-2 py-2">{payment.method}</td>
 
                 <td className="px-2 maxsm:px-0 py-2 ">
-                  <b>
+                  <b
+                    className={
+                      payment.method === "EFECTIVO"
+                        ? "text-emerald-700"
+                        : "text-red-500"
+                    }
+                  >
+                    {payment.method === "EFECTIVO" ? "+" : "-"}
                     <FormattedPrice amount={payment?.amount} />
                   </b>
                 </td>

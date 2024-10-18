@@ -25,6 +25,9 @@ const PayCartComp = ({
   } else if (getPathname.includes("puntodeventa")) {
     pathname = "puntodeventa";
   }
+
+  console.log("paytype", payType);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const [transactionNo, setTransactionNo] = useState("EFECTIVO");
@@ -41,8 +44,6 @@ const PayCartComp = ({
     (acc: any, cartItem: any) => acc + cartItem.quantity * cartItem.price,
     0
   );
-
-  const layawayAmount = Number(amountTotal) * 0.3;
 
   const totalAmountCalc = Number(amountTotal);
   let amountPlaceHolder: any;
@@ -108,9 +109,7 @@ const PayCartComp = ({
       const data = await result.json();
       const order = JSON.parse(data.newOrder);
       setValidationError(null);
-      dispatch(savePOSOrder({ order: order }));
       dispatch(resetPOSCart());
-      setAmountReceived(0);
       router.push(`/${pathname}/recibo/${order._id}`);
     }
   };
@@ -120,10 +119,6 @@ const PayCartComp = ({
       {!savingPayment ? (
         <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg relative">
           <section className=" p-6 w-full">
-            <h1 className="text-2xl maxmd:text-5xl font-semibold text-foreground mb-4 font-EB_Garamond text-center uppercase">
-              {"Pagar"}
-            </h1>
-
             <div className="flex flex-col items-center gap-1 ">
               {validationError?.title && (
                 <p className="text-sm text-red-400">

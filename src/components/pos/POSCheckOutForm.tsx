@@ -28,7 +28,6 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
     pathname = "/puntodeventa";
   }
   const shipAmount = 0;
-  const layawayAmount = Number(amountTotal) * 0.3;
   const handleCheckout = async (payType: React.SetStateAction<string>) => {
     setPayType(payType);
     setShowModal(true);
@@ -64,12 +63,6 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
               (Artículos)
             </span>
           </li>
-          {/* <li className="text-sm flex justify-between text-gray-600  mb-1">
-            <span>Envió:</span>
-            <span>
-              <FormattedPrice amount={shipAmount} />
-            </span>
-          </li> */}
           <li className="text-lg font-bold border-t flex justify-between mt-3 maxsm:mt-1 ">
             <span className="text-base maxsm:text-[14px]">Total:</span>
             <span className="text-base maxsm:text-[14px]">
@@ -82,7 +75,7 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
           <div className="flex flex-col items-center gap-1">
             <div className="flex gap-5 w-full">
               <button
-                onClick={() => handleCheckout("total")}
+                onClick={() => handleCheckout("EFECTIVO")}
                 className="bg-emerald-700 w-full text-slate-100 py-6 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-black hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
               >
                 Pagar

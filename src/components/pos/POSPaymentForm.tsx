@@ -13,7 +13,6 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
       acc + cartItem.quantity * cartItem.price,
     0
   );
-  const layawayAmount = Number(amountTotal) * 0.3;
   const totalAmountCalc = Number(amountTotal);
   const handleCheckout = async (payType: React.SetStateAction<string>) => {
     setPayType(payType);
@@ -59,18 +58,7 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
               </div>
             </div>
           </li>
-          <li>
-            <div className="border-b-[1px] border-b-slate-300 py-2">
-              <div className="flex items-center justify-between">
-                <p className=" font-medium  font-EB_Garamond">
-                  Apártalo por solo
-                </p>
-                <p>
-                  <FormattedPrice amount={layawayAmount} />
-                </p>
-              </div>
-            </div>
-          </li>
+
           <li className=" font-bold border-t flex justify-between mt-3 pt-3  text-4xl">
             <span>Total:</span>
             <span>
@@ -80,14 +68,8 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
         </ul>
 
         <div className="flex flex-row flex-wrap items-center gap-3">
-          {/* <button
-            onClick={() => handleCheckout("layaway")}
-            className="text-4xl text-slate-100 bg-violet-950 mt-4 py-5 px-6 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer w-full uppercase rounded-md"
-          >
-            Apartar
-          </button> */}
           <button
-            onClick={() => handleCheckout("total")}
+            onClick={() => handleCheckout("EFECTIVO")}
             className="bg-black w-full text-slate-100 mt-4 py-5 uppercase text-4xl px-12 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer  rounded-md"
           >
             Pagar
