@@ -23,8 +23,7 @@ export const GET = async (request: any, res: any) => {
   const sessionRaw = await request.headers.get("session");
   const session = JSON.parse(sessionRaw);
   const token = await request.headers.get("cookie");
-
-  if (!token) {
+  if (!token || session.user.role !== "manager") {
     // Not Signed in
     const notAuthorized = "You are not authorized no no no";
     return new Response(JSON.stringify(notAuthorized), {

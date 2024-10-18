@@ -1,3 +1,4 @@
+import { newCSTDate } from "@/backend/helpers";
 import { Query } from "mongoose"; // Import Query type from mongoose
 
 class APIReportsFilters {
@@ -60,8 +61,39 @@ class APIReportsFilters {
         output[key] = queryCopy[key];
       }
     }
+    const today = new Date();
 
-    this.query = this.query.find(output);
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      0,
+      0,
+      0,
+      0
+    );
+
+    const endOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1,
+      0,
+      0,
+      0,
+      0
+    );
+    console.log("startOfToday", startOfToday);
+    console.log("endOfToday", endOfToday);
+
+    const defaultOutput = {
+      createdAt: {
+        $lte: endOfToday,
+        $gte: startOfToday,
+      },
+    };
+    console.log("output", output.createdAt, output, defaultOutput);
+
+    this.query = this.query.find(output.createdAt ? output : defaultOutput);
 
     return this;
   }
