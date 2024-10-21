@@ -61,6 +61,8 @@ const EditVariationProduct = ({
 
   const [variations, setVariations] = useState(product?.variations);
 
+  console.log("variations", variations);
+
   const handlePriceChange = (index: number, newPrice: string) => {
     const newVariations = [...variations];
     newVariations[index].price = newPrice;
@@ -73,10 +75,29 @@ const EditVariationProduct = ({
     setVariations(newVariations);
   };
 
-  const handleStockChange = (index: number, newStock: string) => {
-    const newVariations = [...variations];
-    newVariations[index].stock = newStock;
-    setVariations(newVariations);
+  const handleStockChange = (
+    variationIndex: number,
+    branchId: string,
+    newStock: string
+  ) => {
+    const updatedVariations = [...variations];
+    const variationStockIndex = updatedVariations[
+      variationIndex
+    ].stock.findIndex((stockItem: any) => stockItem.branch === branchId);
+
+    if (variationStockIndex >= 0) {
+      // Update the existing stock for the branch
+      updatedVariations[variationIndex].stock[variationStockIndex].amount =
+        parseInt(newStock);
+    } else {
+      // Add new stock for the branch
+      updatedVariations[variationIndex].stock.push({
+        branch: branchId,
+        amount: parseInt(newStock),
+      });
+    }
+
+    setVariations(updatedVariations);
   };
 
   // generate a pre-signed URL for use in uploading that file:
@@ -383,27 +404,36 @@ const EditVariationProduct = ({
             <div className="w-full main-variation flex maxsm:flex-col items-center">
               <div className="flex flex-col items-center gap-3 w-2/3  maxsm:w-full">
                 <div className="mb-4 w-full">
-                  {variations[0]?.stock.map((branchStock: any) => (
-                    <div className="relative" key={branchStock.branch}>
-                      <label className="block mb-1 font-EB_Garamond">
-                        {" "}
-                        Existencias {branchStock.branch}
-                      </label>
-                      <div className="col-span-2">
-                        <input
-                          type="number"
-                          className="appearance-none border border-gray-300 bg-gray-100 rounded-md pl-2 remove-arrow focus:outline-none focus:border-gray-400 w-full"
-                          placeholder="1"
-                          min="1"
-                          value={branchStock?.amount}
-                          onChange={(e) => handleStockChange(0, e.target.value)}
-                          name="stock"
-                        />
-                        {validationError?.stock && (
-                          <p className="text-sm text-red-400">
-                            {validationError.stock._errors.join(", ")}
-                          </p>
-                        )}
+                  {variations.map((variation: any, variationIndex: number) => (
+                    <div key={variationIndex}>
+                      <h3>{variation.title}</h3>
+                      <div>
+                        {branches.map((branch: any) => (
+                          <div key={branch._id}>
+                            <label
+                              htmlFor={`stock-${variationIndex}-${branch._id}`}
+                            >
+                              Stock for {branch.name}:
+                            </label>
+                            <input
+                              id={`stock-${variationIndex}-${branch._id}`}
+                              type="number"
+                              value={
+                                variation.stock.find(
+                                  (stockItem: any) =>
+                                    stockItem.branch === branch._id
+                                )?.amount || ""
+                              }
+                              onChange={(e) =>
+                                handleStockChange(
+                                  variationIndex,
+                                  branch._id,
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}

@@ -32,7 +32,7 @@ export async function POST(request: any, res: any) {
     } = Object.fromEntries(payload);
 
     let slug = generateUrlSafeTitle(title);
-
+    variations = JSON.parse(variations);
     let slugExists = await Product.findOne({ slug });
 
     while (slugExists) {
@@ -44,28 +44,9 @@ export async function POST(request: any, res: any) {
     }
 
     const user = { _id: token?.user?._id };
+    console.log("variations", variations.stock);
 
     let colors: any[] = [];
-    variations = JSON.parse(variations, (key, value) => {
-      if (key === "color") {
-        const color = {
-          value: value,
-          label: value,
-        };
-        const exists = colors.some(
-          (c) => c.value === value || c.label === value
-        );
-        if (!exists) {
-          colors.push(color);
-        }
-      }
-      if (!isNaN(value) && value !== "" && !Array.isArray(value)) {
-        if (key !== "size") {
-          return Number(value);
-        }
-      }
-      return value;
-    });
 
     tags = JSON.parse(tags);
     const sale_price = Number(salePrice);
@@ -73,10 +54,12 @@ export async function POST(request: any, res: any) {
     const images = [{ url: mainImage }];
 
     // Update stock structure
-    const stock = variations.map((variation: any) => ({
-      amount: variation.stock,
-      branch: branchId,
+    const stock = variations[0].stock.map((stock: any) => ({
+      amount: stock.amount,
+      branch: stock.branch,
     }));
+
+    console.log(stock, "stock", variations);
 
     createdAt = newCSTDate();
 
@@ -85,12 +68,6 @@ export async function POST(request: any, res: any) {
       branch: branchAvailability,
       online: onlineAvailability,
     };
-
-    // Update variations structure
-    const updatedVariations = variations.map((variation: any) => ({
-      ...variation,
-      stock: [{ amount: variation.stock, branch: branchId }],
-    }));
 
     const newProduct = new Product({
       type: "variation",
@@ -105,7 +82,7 @@ export async function POST(request: any, res: any) {
       tags,
       images,
       colors,
-      variations: updatedVariations,
+      variations: variations,
       stock,
       sale_price,
       sale_price_end_date,
@@ -157,6 +134,7 @@ export async function PUT(request: any, res: any) {
       updatedAt,
       _id,
     } = Object.fromEntries(payload);
+    variations = JSON.parse(variations);
 
     let slug = generateUrlSafeTitle(title);
     let slugExists = await Product.findOne({
@@ -177,10 +155,10 @@ export async function PUT(request: any, res: any) {
     const images = [{ url: mainImage }];
 
     // Update stock structure
-    const stock = variations.map((variation: any) => ({
-      amount: variation.stock,
-      branch: branchId,
-    }));
+    // const stock = variations.map((variation: any) => ({
+    //   amount: variation.stock,
+    //   branch: branchId,
+    // }));
 
     updatedAt = new Date(updatedAt);
 
@@ -194,6 +172,9 @@ export async function PUT(request: any, res: any) {
       stock: [{ amount: variation.stock, branch: branchId }],
     }));
 
+    console.log("updatedVariations", updatedVariations);
+    console.log("variations", variations);
+
     await Product.updateOne(
       { _id },
       {
@@ -203,8 +184,7 @@ export async function PUT(request: any, res: any) {
         featured,
         availability,
         images,
-        variations: updatedVariations,
-        stock,
+        variations: variations,
         updatedAt,
         user,
       }
@@ -216,6 +196,7 @@ export async function PUT(request: any, res: any) {
 
     return response;
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         error: "Error al actualizar Producto",

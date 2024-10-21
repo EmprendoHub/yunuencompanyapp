@@ -681,7 +681,6 @@ export async function getDashboard() {
 
     // Create a new date with the offset applied
     const today = new Date(Date.now() + minusCstOffset);
-    console.log("today", today);
 
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight
     // Set start of the current year
@@ -812,13 +811,6 @@ export async function getDashboard() {
       59,
       59,
       999
-    );
-
-    console.log(
-      "startOfLast7Days",
-      startOfLast7Days,
-      "endOfLast7Days",
-      endOfLast7Days
     );
 
     orders = await Order.find({ orderStatus: { $ne: "cancelada" } })
@@ -2337,7 +2329,7 @@ export async function getAllPOSProduct(searchQuery: any) {
 
     // Extract search parameters
     const searchParams = new URLSearchParams(searchQuery);
-    const resPerPage = Number(searchParams.get("perpage")) || 20;
+    const resPerPage = Number(searchParams.get("perpage")) || 40;
     const page = Number(searchParams.get("page")) || 1;
     const skip = (page - 1) * resPerPage;
 
@@ -2354,7 +2346,14 @@ export async function getAllPOSProduct(searchQuery: any) {
       },
       {
         $addFields: {
-          numericTitle: { $toInt: "$title" },
+          // Try to convert the title to a number, if it's not numeric assign null
+          numericTitle: {
+            $cond: {
+              if: { $regexMatch: { input: "$title", regex: /^[0-9]+$/ } }, // Check if the title is a number
+              then: { $toInt: "$title" }, // Convert to number
+              else: null, // Otherwise assign null
+            },
+          },
           branchStock: {
             $filter: {
               input: "$stock",
@@ -2365,7 +2364,10 @@ export async function getAllPOSProduct(searchQuery: any) {
         },
       },
       {
-        $sort: { numericTitle: -1 },
+        $sort: {
+          numericTitle: -1, // Sort numeric titles in descending order
+          title: 1, // Sort non-numeric titles alphabetically after numeric titles
+        },
       },
       {
         $skip: skip,
@@ -2384,6 +2386,7 @@ export async function getAllPOSProduct(searchQuery: any) {
 
     // Execute the query
     let productsData = await productQuery;
+    console.log("productsData", productsData[0]);
 
     // Convert the product data to a JSON string
     let products = JSON.stringify(productsData);
