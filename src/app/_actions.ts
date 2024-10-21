@@ -680,7 +680,7 @@ export async function getDashboard() {
     const minusCstOffset = -6 * 60 * 60 * 1000; // CST is UTC+6
 
     // Create a new date with the offset applied
-    const today = new Date(Date.now());
+    const today = new Date(Date.now() + minusCstOffset);
     console.log("today", today);
 
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight
