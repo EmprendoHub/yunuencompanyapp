@@ -24,8 +24,6 @@ const POSProductCard = ({ product }: { product: any }) => {
   const router = useRouter();
   let pathname: string;
 
-  console.log("product", product);
-
   const [variation, setVariation] = useState<ProductVariation>({
     _id: product?.variations[0]?._id || "",
     size: product?.variations[0]?.size || "",
@@ -66,8 +64,6 @@ const POSProductCard = ({ product }: { product: any }) => {
       );
     }
     setDiscountRate("");
-
-    console.log("updatedVariation", updatedVariation);
 
     dispatch(addToPOSCart(updatedVariation));
     toast(`${product?.title.substring(0, 15)}... se agregó al carrito`);

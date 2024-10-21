@@ -2386,7 +2386,6 @@ export async function getAllPOSProduct(searchQuery: any) {
 
     // Execute the query
     let productsData = await productQuery;
-    console.log("productsData", productsData[0]);
 
     // Convert the product data to a JSON string
     let products = JSON.stringify(productsData);

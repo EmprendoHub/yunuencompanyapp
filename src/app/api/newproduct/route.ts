@@ -44,7 +44,6 @@ export async function POST(request: any, res: any) {
     }
 
     const user = { _id: token?.user?._id };
-    console.log("variations", variations.stock);
 
     let colors: any[] = [];
 
@@ -58,8 +57,6 @@ export async function POST(request: any, res: any) {
       amount: stock.amount,
       branch: stock.branch,
     }));
-
-    console.log(stock, "stock", variations);
 
     createdAt = newCSTDate();
 
@@ -155,25 +152,16 @@ export async function PUT(request: any, res: any) {
     const images = [{ url: mainImage }];
 
     // Update stock structure
-    // const stock = variations.map((variation: any) => ({
-    //   amount: variation.stock,
-    //   branch: branchId,
-    // }));
+    const stock = variations[0].stock.map((stock: any) => ({
+      amount: stock.amount,
+      branch: stock.branch,
+    }));
 
     updatedAt = new Date(updatedAt);
 
     const availability = {
       branch: branchAvailability,
     };
-
-    // Update variations structure
-    const updatedVariations = variations.map((variation: any) => ({
-      ...variation,
-      stock: [{ amount: variation.stock, branch: branchId }],
-    }));
-
-    console.log("updatedVariations", updatedVariations);
-    console.log("variations", variations);
 
     await Product.updateOne(
       { _id },
@@ -185,6 +173,7 @@ export async function PUT(request: any, res: any) {
         availability,
         images,
         variations: variations,
+        stock,
         updatedAt,
         user,
       }
@@ -196,7 +185,6 @@ export async function PUT(request: any, res: any) {
 
     return response;
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         error: "Error al actualizar Producto",
