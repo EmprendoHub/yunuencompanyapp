@@ -681,6 +681,7 @@ export async function getDashboard() {
 
     // Create a new date with the offset applied
     const today = new Date(Date.now());
+    console.log("today", today);
 
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight
     // Set start of the current year
@@ -811,6 +812,13 @@ export async function getDashboard() {
       59,
       59,
       999
+    );
+
+    console.log(
+      "startOfLast7Days",
+      startOfLast7Days,
+      "endOfLast7Days",
+      endOfLast7Days
     );
 
     orders = await Order.find({ orderStatus: { $ne: "cancelada" } })
