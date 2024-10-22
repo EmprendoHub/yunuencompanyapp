@@ -10,7 +10,7 @@ import { FaTags } from "react-icons/fa6";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { ChartOptions } from "chart.js/auto";
-import { CiMoneyBill } from "react-icons/ci";
+import { CiMoneyBill, CiPercent } from "react-icons/ci";
 
 interface WeeklyDataItem {
   date: string; // or Date if `date` is a Date object
@@ -220,6 +220,12 @@ const DashComponent = ({ data }: { data: any }) => {
                 <CiMoneyBill />
                 <FormattedPrice amount={lastMonthsPaymentsTotals || 0} />
               </span>
+              <span className="text-green-700 flex items-center">
+                %
+                {(
+                  (lastMonthsPaymentsTotals / monthlyOrderTotals) * 100 || 0
+                ).toFixed(2)}
+              </span>
               <div className="text-card-foreground">Neto</div>
             </div>
           </div>
@@ -239,6 +245,12 @@ const DashComponent = ({ data }: { data: any }) => {
               <span className="text-green-700 flex items-center">
                 <CiMoneyBill />
                 <FormattedPrice amount={lastYearsPaymentsTotals || 0} />
+              </span>
+              <span className="text-green-700 flex items-center">
+                %
+                {(
+                  (lastYearsPaymentsTotals / yearlyPaymentsTotals) * 100 || 0
+                ).toFixed(2)}
               </span>
               <div className="text-card-foreground">Neto</div>
             </div>
