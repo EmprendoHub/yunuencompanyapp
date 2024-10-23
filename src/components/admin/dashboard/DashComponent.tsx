@@ -212,168 +212,196 @@ const DashComponent = ({ data }: { data: any }) => {
 
   return (
     <div className="p-1 md:mx-auto  text-card-foreground">
-      {/* Ventas */}
+      {/* Ventas y Gastos*/}
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full">
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
-            <div className="flex justify-between ">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Ventas del Dia
+        <div className="maxmd:w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start w-3/4">
+          {/* Ventas */}
+
+          <div className="flex flex-col bg-card shadow-lg w-full rounded-md p-2">
+            <div className="flex flex-col justify-between gap-2">
+              <div className="flex items-center justify-between border-b-2 border-slate-400 pb-2">
+                <h3 className="text-card-foreground text-xl uppercase flex items-center gap-2">
+                  <MdAttachMoney className="bg-black text-white rounded-full text-3xl p-1 shadow-lg" />
+                  Ventas
                 </h3>
-                <p className="text-2xl  text-card-foreground">
+                <div className="flex items-center gap-2">
+                  <div className="text-card-foreground text-xs text-teal-600">
+                    Neto
+                  </div>
+                  <MdAttachMoney className="bg-teal-600 text-white rounded-full text-3xl p-1 shadow-lg" />
+                </div>
+              </div>
+              {/* sales totals */}
+              {/* daily */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">del Dia: </p>{" "}
                   <FormattedPrice amount={dailyPaymentsTotals || 0} />
-                </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-700 flex items-center">
+                    <CiMoneyBill />
+                    <FormattedPrice amount={yesterdaysPaymentsTotals || 0} />
+                  </span>
+                  <span className="text-green-700 flex items-center">
+                    %
+                    {(
+                      (yesterdaysPaymentsTotals / dailyPaymentsTotals) * 100 ||
+                      0
+                    ).toFixed(2)}
+                  </span>
+                </div>
               </div>
-              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-emerald-700 flex items-center">
-                <CiMoneyBill />
-                <FormattedPrice amount={yesterdaysPaymentsTotals || 0} />
-              </span>
-              <div className="text-card-foreground">Neto</div>
-            </div>
-          </div>
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Venta Semanal
-                </h3>
-                <p className="text-2xl  text-slate-700">
+              {/* weekly */}
+              <div className="flex justify-between items-center gap-2  text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">Semanal: </p>{" "}
                   <FormattedPrice amount={totalPaymentsThisWeek || 0} />
-                </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-700 flex items-center">
+                    <CiMoneyBill />
+                    <FormattedPrice amount={lastWeeksPaymentsTotals || 0} />
+                  </span>
+                  <span className="text-green-700 flex items-center">
+                    %
+                    {(
+                      (lastWeeksPaymentsTotals / totalPaymentsThisWeek) * 100 ||
+                      0
+                    ).toFixed(2)}
+                  </span>
+                </div>
               </div>
-              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <CiMoneyBill />
-                <FormattedPrice amount={lastWeeksPaymentsTotals || 0} />
-              </span>
-              <div className="text-card-foreground">Neto</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Venta Mensual
-                </h3>
-                <p className="text-2xl  text-slate-700">
+              {/* monthly */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">Mensual: </p>{" "}
                   <FormattedPrice amount={monthlyOrderTotals || 0} />
-                </p>
+                </div>
+                <span className="text-emerald-700 flex items-center">
+                  <CiMoneyBill />
+                  <FormattedPrice amount={lastMonthsPaymentsTotals || 0} />
+                </span>
+                <span className="text-green-700 flex items-center">
+                  %
+                  {(
+                    (lastMonthsPaymentsTotals / monthlyOrderTotals) * 100 || 0
+                  ).toFixed(2)}
+                </span>
               </div>
-              <MdAttachMoney className="bg-teal-600 text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <CiMoneyBill />
-                <FormattedPrice amount={lastMonthsPaymentsTotals || 0} />
-              </span>
-              <span className="text-green-700 flex items-center">
-                %
-                {(
-                  (lastMonthsPaymentsTotals / monthlyOrderTotals) * 100 || 0
-                ).toFixed(2)}
-              </span>
-              <div className="text-card-foreground">Neto</div>
-            </div>
-          </div>
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Venta Anual
-                </h3>
-                <p className="text-2xl  text-slate-700">
+              {/* yearly */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">del Año: </p>{" "}
                   <FormattedPrice amount={yearlyPaymentsTotals || 0} />
-                </p>
+                </div>
+                <span className="text-emerald-700 flex items-center">
+                  <CiMoneyBill />
+                  <FormattedPrice amount={lastYearsPaymentsTotals || 0} />
+                </span>
+                <span className="text-green-700 flex items-center">
+                  %
+                  {(
+                    (lastYearsPaymentsTotals / yearlyPaymentsTotals) * 100 || 0
+                  ).toFixed(2)}
+                </span>
               </div>
-              <MdAttachMoney className=" bg-teal-600 text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <CiMoneyBill />
-                <FormattedPrice amount={lastYearsPaymentsTotals || 0} />
-              </span>
-              <span className="text-green-700 flex items-center">
-                %
-                {(
-                  (lastYearsPaymentsTotals / yearlyPaymentsTotals) * 100 || 0
-                ).toFixed(2)}
-              </span>
-              <div className="text-card-foreground">Neto</div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* Gastos */}
-      <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-5">
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
-            <div className="flex justify-between ">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Gastos del Dia
+          {/* Gastos */}
+          <div className="flex flex-col bg-card shadow-lg w-full rounded-md p-2">
+            <div className="flex flex-col justify-between  gap-2">
+              <div className="flex items-center justify-between border-b-2 border-slate-400 pb-2 ">
+                <h3 className="text-red-400 text-xl uppercase flex items-center gap-2 ">
+                  <MdAttachMoney className="bg-red-400 text-white rounded-full text-3xl p-1 shadow-lg" />
+                  Gastos
                 </h3>
-                <p className="text-2xl  text-card-foreground">
+                <div className="flex items-center gap-2">
+                  <MdAttachMoney className="bg-red-400 text-white rounded-full text-3xl p-1 shadow-lg" />
+                </div>
+              </div>
+              {/* expense totals */}
+              {/* daily */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">del Dia: </p>{" "}
                   <FormattedPrice amount={dailyExpensesTotals || 0} />
-                </p>
+                </div>
               </div>
-              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-          </div>
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Gastos Semanal
-                </h3>
-                <p className="text-2xl  text-slate-700">
+              {/* weekly */}
+              <div className="flex justify-between items-center gap-2  text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">Semanal: </p>{" "}
                   <FormattedPrice amount={totalExpensesThisWeek || 0} />
-                </p>
+                </div>
               </div>
-              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
+              {/* monthly */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">Mensual: </p>{" "}
+                  <FormattedPrice amount={monthlyExpensesTotals || 0} />
+                </div>
+              </div>
+              {/* yearly */}
+              <div className="flex justify-between items-center gap-2 text-sm">
+                <div className="text-xl  text-card-foreground flex items-center">
+                  <p className="text-xs">del Año: </p>{" "}
+                  <FormattedPrice amount={yearlyExpensesTotals || 0} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Gastos Mensual
-                </h3>
-                <p className="text-2xl  text-slate-700">
-                  <FormattedPrice amount={monthlyExpensesTotals || 0} />
-                </p>
+        {/* totales productos y ventas */}
+        <div className="flex-col flex gap-4 justify-start w-1/4 maxmd:w-full">
+          <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
+            <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
+              <div className="flex justify-between">
+                <div className="">
+                  <h3 className="text-card-foreground text-sm uppercase">
+                    Ventas Totales
+                  </h3>
+                  <p className="text-2xl text-slate-700">{totalOrderCount}</p>
+                </div>
+                <FaTags className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
               </div>
-              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <div className="flex  gap-2 text-sm">
+                <span className="text-green-700 flex items-center">
+                  <HiArrowNarrowUp />
+                  {orderCountPreviousMonth}
+                </span>
+                <div className="text-card-foreground">Mes Anterior</div>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Gastos Anual
-                </h3>
-                <p className="text-2xl  text-slate-700">
-                  <FormattedPrice amount={yearlyExpensesTotals || 0} />
-                </p>
+
+          <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
+            <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
+              <div className="flex justify-between">
+                <div className="">
+                  <h3 className="text-card-foreground text-sm uppercase">
+                    Total de Productos
+                  </h3>
+                  <p className="text-2xl  text-slate-700">
+                    {totalProductsSoldThisMonth}
+                  </p>
+                </div>
+                <GiClothes className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
               </div>
-              <MdAttachMoney className=" bg-red-400 text-white rounded-full text-3xl p-1 shadow-lg" />
+              <div className="flex  gap-2 text-sm">
+                <span className="text-green-700 flex items-center">
+                  <HiArrowNarrowUp />
+                  {productsCountPreviousMonth}
+                </span>
+                <div className="text-card-foreground">Mes Anterior</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
       {/* Weekly Charts */}
-      <div className="w-full min-h-[300px] bg-card p-5  mt-4 relative">
+      <div className="w-full min-h-[300px] bg-card p-5  mt-4 flex flex-col">
         {/* Chart to display daily totals for the last 7 days */}
         <h2>Ventas y Gastos Semanales</h2>
 
@@ -406,51 +434,6 @@ const DashComponent = ({ data }: { data: any }) => {
             options={options}
             className="w-full"
           />
-        </div>
-      </div>
-      <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-4">
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Ventas Totales
-                </h3>
-                <p className="text-2xl text-slate-700">{totalOrderCount}</p>
-              </div>
-              <FaTags className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
-                {orderCountPreviousMonth}
-              </span>
-              <div className="text-card-foreground">Mes Anterior</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col p-1 dark:bg-card gap-4 w-full rounded-md shadow-lg bg-card">
-            <div className="flex justify-between">
-              <div className="">
-                <h3 className="text-card-foreground text-sm uppercase">
-                  Total de Productos
-                </h3>
-                <p className="text-2xl  text-slate-700">
-                  {totalProductsSoldThisMonth}
-                </p>
-              </div>
-              <GiClothes className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
-            </div>
-            <div className="flex  gap-2 text-sm">
-              <span className="text-green-700 flex items-center">
-                <HiArrowNarrowUp />
-                {productsCountPreviousMonth}
-              </span>
-              <div className="text-card-foreground">Mes Anterior</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
