@@ -662,8 +662,6 @@ export async function payPOSDrawer(data: any) {
 export async function getDashboard() {
   try {
     await dbConnect();
-    let orders;
-    let products;
     let thisWeeksOrder;
     let totalPaymentsThisWeek;
     let totalExpensesThisWeek;
@@ -674,6 +672,8 @@ export async function getDashboard() {
     let monthlyExpensesTotals;
     let yearlyExpensesTotals;
     let yearlyPaymentsTotals;
+    let monthlyOrderBranchTotals;
+    let weeklyOrderBranchTotals;
 
     const cstOffset = 6 * 60 * 60 * 1000; // CST is UTC+6
 
@@ -812,10 +812,6 @@ export async function getDashboard() {
       59,
       999
     );
-
-    orders = await Order.find({ orderStatus: { $ne: "cancelada" } })
-      .sort({ createdAt: -1 }) // Sort in descending order of creation date
-      .limit(5);
 
     let weeklyPaymentData: any = await Order.aggregate([
       {
@@ -977,24 +973,6 @@ export async function getDashboard() {
             $lt: endOfToday,
           },
           paymentIntent: { $ne: "cancelado" },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$amount" }, // Sum up the amount field for each payment
-        },
-      },
-    ]);
-
-    // Perform aggregation to get yesterday's totals
-    let yesterdayExpensesTotals = await Expense.aggregate([
-      {
-        $match: {
-          pay_date: {
-            $gte: yesterday,
-            $lt: endOfYesterday,
-          },
         },
       },
       {
@@ -1220,9 +1198,174 @@ export async function getDashboard() {
       },
     ]);
 
-    products = await Product.find({ published: { $ne: "false" } })
-      .sort({ createdAt: -1 }) // Sort in descending order of creation date
-      .limit(5);
+    // Perform aggregation to sum up all orderItems quantities for valid orders
+    let totalProductsSoldThisMonth = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+          orderStatus: { $ne: "cancelada" },
+        },
+      },
+      {
+        $unwind: "$orderItems", // Unwind the orderItems array
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$orderItems.quantity" }, // Sum up the quantity field in orderItems
+        },
+      },
+    ]);
+
+    monthlyOrderBranchTotals = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+          orderStatus: { $ne: "cancelada" },
+        },
+      },
+      {
+        $group: {
+          _id: "$branch", // Group by the 'branch' field
+          totalAmountPaid: { $sum: "$paymentInfo.amountPaid" },
+        },
+      },
+      {
+        $addFields: { branchObjectId: { $toObjectId: "$_id" } }, // Convert string 'branch' to ObjectId
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "branchObjectId", // Use the converted ObjectId
+          foreignField: "_id",
+          as: "branchInfo",
+        },
+      },
+      {
+        $unwind: "$branchInfo",
+      },
+      {
+        $project: {
+          _id: 1,
+          totalAmountPaid: 1,
+          branchName: "$branchInfo.name",
+        },
+      },
+    ]);
+
+    weeklyOrderBranchTotals = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfCurrentWeek,
+            $lt: endOfCurrentWeek,
+          },
+          orderStatus: { $ne: "cancelada" },
+        },
+      },
+      {
+        $group: {
+          _id: "$branch", // Group by the 'branch' field
+          totalAmountPaid: { $sum: "$paymentInfo.amountPaid" },
+        },
+      },
+      {
+        $addFields: { branchObjectId: { $toObjectId: "$_id" } }, // Convert string 'branch' to ObjectId
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "branchObjectId", // Use the converted ObjectId
+          foreignField: "_id",
+          as: "branchInfo",
+        },
+      },
+      {
+        $unwind: "$branchInfo",
+      },
+      {
+        $project: {
+          _id: 1,
+          totalAmountPaid: 1,
+          branchName: "$branchInfo.name",
+        },
+      },
+    ]);
+
+    let weekByWeekPaymentData: any = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfLastMonth, // Adjust this range if you want more than just the last 60 days
+            $lt: endOfMonth,
+          },
+          orderStatus: "Pagado", // Add filter for paymentIntent
+        },
+      },
+      {
+        $group: {
+          // Group by week and year using $isoWeek and $isoWeekYear to avoid mixing weeks from different years
+          _id: {
+            week: { $isoWeek: "$createdAt" }, // Extract the ISO week number
+            year: { $isoWeekYear: "$createdAt" }, // Extract the ISO week year
+          },
+          totalAmount: { $sum: "$paymentInfo.amountPaid" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Optional: Remove the _id field
+          week: "$_id.week", // Keep the week number
+          year: "$_id.year", // Keep the year
+          total: "$totalAmount", // Rename totalAmount to Total
+          count: 1, // Include the count field as is
+        },
+      },
+      {
+        $sort: { year: 1, week: 1 }, // Sort by year and week in ascending order
+      },
+    ]);
+
+    let weekByWeekExpenseData: any = await Expense.aggregate([
+      {
+        $match: {
+          pay_date: {
+            $gte: startOfLastMonth,
+            $lt: endOfMonth,
+          },
+          expenseIntent: "pagado", // Add filter for paymentIntent
+        },
+      },
+      {
+        $group: {
+          // Group by week and year using $isoWeek and $isoWeekYear to avoid mixing weeks from different years
+          _id: {
+            week: { $isoWeek: "$pay_date" }, // Extract the ISO week number
+            year: { $isoWeekYear: "$pay_date" }, // Extract the ISO week year
+          },
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Optional: Remove the _id field
+          date: "$_id", // Rename _id to date
+          total: "$totalAmount", // Rename totalAmount to Total
+          count: 1, // Include the count field as is
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date in ascending order
+      },
+    ]);
 
     const totalOrderCount = await Order.countDocuments({
       orderStatus: { $ne: "Cancelado" },
@@ -1231,18 +1374,19 @@ export async function getDashboard() {
     const totalCustomerCount = await Customer.countDocuments({
       name: { $ne: "SUCURSAL" },
     });
-    const totalProductCount = await Product.countDocuments({
-      published: { $ne: "false" },
-    });
+
     const orderCountPreviousMonth = await getDocumentCountPreviousMonth(Order);
 
-    orders = JSON.stringify(orders);
     dailyOrders = JSON.stringify(dailyOrders);
-    products = JSON.stringify(products);
     weeklyPaymentData = JSON.stringify(weeklyPaymentData);
     weeklyExpenseData = JSON.stringify(weeklyExpenseData);
     dailyData = JSON.stringify(dailyData);
     thisWeeksOrder = JSON.stringify(thisWeeksOrder);
+    monthlyOrderBranchTotals = JSON.stringify(monthlyOrderBranchTotals);
+    weeklyOrderBranchTotals = JSON.stringify(weeklyOrderBranchTotals);
+    weekByWeekPaymentData = JSON.stringify(weekByWeekPaymentData);
+    weekByWeekExpenseData = JSON.stringify(weekByWeekExpenseData);
+
     totalPaymentsThisWeek = totalPaymentsThisWeek[0]?.total;
     totalExpensesThisWeek = totalExpensesThisWeek[0]?.total;
 
@@ -1250,8 +1394,7 @@ export async function getDashboard() {
     dailyExpensesTotals = dailyExpensesTotals[0]?.total;
 
     yesterdaysPaymentsTotals = yesterdaysPaymentsTotals[0]?.total;
-    yesterdayExpensesTotals = yesterdayExpensesTotals[0]?.total;
-
+    totalProductsSoldThisMonth = totalProductsSoldThisMonth[0]?.total;
     monthlyPaymentsTotals = monthlyPaymentsTotals[0]?.total;
     monthlyOrderTotals = monthlyOrderTotals[0]?.total;
     monthlyExpensesTotals = monthlyExpensesTotals[0]?.total;
@@ -1266,18 +1409,19 @@ export async function getDashboard() {
       dailyData: dailyData,
       weeklyPaymentData: weeklyPaymentData,
       weeklyExpenseData: weeklyExpenseData,
-      orders: orders,
+      weekByWeekExpenseData: weekByWeekExpenseData,
+      weekByWeekPaymentData: weekByWeekPaymentData,
       dailyOrders: dailyOrders,
+      monthlyOrderBranchTotals: monthlyOrderBranchTotals,
+      weeklyOrderBranchTotals: weeklyOrderBranchTotals,
       dailyPaymentsTotals: dailyPaymentsTotals,
       dailyExpensesTotals: dailyExpensesTotals,
       yesterdaysPaymentsTotals: yesterdaysPaymentsTotals,
-      yesterdayExpensesTotals: yesterdayExpensesTotals,
       thisWeeksOrder: thisWeeksOrder,
-      products: products,
+      totalProductsSoldThisMonth: totalProductsSoldThisMonth,
       totalOrderCount: totalOrderCount,
       totalCustomerCount: totalCustomerCount,
       orderCountPreviousMonth: orderCountPreviousMonth,
-      totalProductCount: totalProductCount,
       totalPaymentsThisWeek: totalPaymentsThisWeek,
       totalExpensesThisWeek: totalExpensesThisWeek,
       monthlyExpensesTotals: monthlyExpensesTotals,

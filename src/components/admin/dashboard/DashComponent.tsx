@@ -1,16 +1,13 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
-import { MdAttachMoney, MdOutlineSavings } from "react-icons/md";
-import { IoArrowRedoSharp } from "react-icons/io5";
+import { MdAttachMoney } from "react-icons/md";
 import { HiArrowNarrowUp } from "react-icons/hi";
 import { GiClothes } from "react-icons/gi";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { FaTags } from "react-icons/fa6";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { ChartOptions } from "chart.js/auto";
-import { CiMoneyBill, CiPercent } from "react-icons/ci";
+import { CiMoneyBill } from "react-icons/ci";
 
 interface WeeklyDataItem {
   date: string; // or Date if `date` is a Date object
@@ -20,6 +17,11 @@ interface WeeklyDataItem {
 const DashComponent = ({ data }: { data: any }) => {
   const weeklyPaymentData = JSON.parse(data?.weeklyPaymentData);
   const weeklyExpenseData = JSON.parse(data?.weeklyExpenseData);
+  const weekByWeekPaymentData = JSON.parse(data?.weekByWeekPaymentData);
+  const weekByWeekExpenseData = JSON.parse(data?.weekByWeekExpenseData);
+  const monthlyOrderBranchTotals = JSON.parse(data?.monthlyOrderBranchTotals);
+  const weeklyOrderBranchTotals = JSON.parse(data?.weeklyOrderBranchTotals);
+
   const sortedPaymentData = weeklyPaymentData
     .map((item: WeeklyDataItem, index: number) => ({ index, item }))
     .sort(
@@ -55,12 +57,9 @@ const DashComponent = ({ data }: { data: any }) => {
   // Prepare the labels and data for the chart
   const expenseChartLabels = sortedExpenseData.map((data: any) => data.date);
   const expenseChartData = sortedExpenseData.map((data: any) => data.Total);
-  const products = JSON.parse(data?.products);
-  const orders = JSON.parse(data?.orders);
-
+  const totalProductsSoldThisMonth = data?.totalProductsSoldThisMonth;
   const orderCountPreviousMonth = data?.orderCountPreviousMonth;
   const totalOrderCount = data?.totalOrderCount;
-  const totalProductCount = data?.totalProductCount;
   const productsCountPreviousMonth = data?.productsCountPreviousMonth;
   const totalPaymentsThisWeek = data?.totalPaymentsThisWeek;
   const totalExpensesThisWeek = data?.totalExpensesThisWeek;
@@ -68,7 +67,6 @@ const DashComponent = ({ data }: { data: any }) => {
   const dailyExpensesTotals = data?.dailyExpensesTotals;
   const dailyPaymentsTotals = data?.dailyPaymentsTotals;
   const yesterdaysPaymentsTotals = data?.yesterdaysPaymentsTotals;
-  const yesterdayExpensesTotals = data?.yesterdayExpensesTotals;
   const monthlyExpensesTotals = data?.monthlyExpensesTotals;
 
   const monthlyPaymentsTotals = data?.monthlyPaymentsTotals;
@@ -85,56 +83,95 @@ const DashComponent = ({ data }: { data: any }) => {
     labels: paymentChartLabels,
     datasets: [
       {
-        label: "Total del dia",
+        label: "Ventas",
         data: paymentChartData,
         backgroundColor: [
-          "rgba(255, 99, 132, 0.5)",
-          "rgba(54, 162, 235, 0.5)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.5)",
-          "rgba(153, 102, 255, 0.5)",
-          "rgba(255, 159, 64, 0.5)",
-          "rgba(131, 201, 139, 0.5)", // Example colors for 7 data points
+          "rgba(131, 181, 139, 0.5)", // Example colors for 7 data points
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(131, 201, 139, 1)", // Example border colors for 7 data points
+          "rgba(131, 181, 139, 1)", // Example border colors for 7 data points
         ],
+        borderWidth: 1,
+      },
+      {
+        label: "Gastos",
+        data: expenseChartData,
+        backgroundColor: ["rgba(255, 99, 132, 0.5)"],
+        borderColor: ["rgba(255, 99, 132, 1)"],
         borderWidth: 1,
       },
     ],
   };
 
-  const weeklyExpenseDataWithColors = {
-    labels: expenseChartLabels,
+  const weeklyByWeekPaymentDataWithColors = {
+    labels: weekByWeekPaymentData.map(
+      (order: { week: string }) => "Semana " + order.week
+    ),
     datasets: [
       {
-        label: "Total del dia",
-        data: expenseChartData,
+        label: "Ventas",
+        data: weekByWeekPaymentData.map(
+          (order: { total: number }) => order.total
+        ),
         backgroundColor: [
-          "rgba(255, 99, 132, 0.5)",
-          "rgba(54, 162, 235, 0.5)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.5)",
-          "rgba(153, 102, 255, 0.5)",
-          "rgba(255, 159, 64, 0.5)",
-          "rgba(131, 201, 139, 0.5)", // Example colors for 7 data points
+          "rgba(131, 181, 139, 0.5)", // Example colors for 7 data points
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(131, 201, 139, 1)", // Example border colors for 7 data points
+          "rgba(131, 181, 139, 1)", // Example border colors for 7 data points
         ],
         borderWidth: 1,
+      },
+      {
+        label: "Gastos",
+        data: weekByWeekExpenseData.map(
+          (order: { total: number }) => order.total
+        ),
+
+        backgroundColor: ["rgba(255, 99, 132, 0.5)"],
+        borderColor: ["rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const monthlyStoreSalesData = {
+    labels: monthlyOrderBranchTotals.map(
+      (order: { branchName: string }) => order.branchName
+    ),
+    datasets: [
+      {
+        label: "Ventas Tiendas",
+        data: monthlyOrderBranchTotals.map(
+          (order: { totalAmountPaid: number }) => order.totalAmountPaid
+        ),
+        backgroundColor: [
+          "rgba(134, 65, 134, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(121, 171, 101, 0.5)",
+        ],
+        borderColor: [
+          "rgba(134, 65, 134)",
+          "rgb(54, 162, 235)",
+          "rgb(121, 171, 101)",
+        ],
+        hoverOffset: 4,
+      },
+    ],
+  };
+
+  const weeklyStoreSalesData = {
+    labels: weeklyOrderBranchTotals.map(
+      (order: { branchName: string }) => order.branchName
+    ),
+    datasets: [
+      {
+        label: "Ventas Tiendas",
+        data: weeklyOrderBranchTotals.map(
+          (order: { totalAmountPaid: number }) => order.totalAmountPaid
+        ),
+        backgroundColor: ["rgb(54, 102, 235, 0.5)", "rgb(54, 162, 235, 0.5)"],
+        borderColor: ["rgb(54, 102, 235)", "rgb(54, 162, 235)"],
+        hoverOffset: 4,
       },
     ],
   };
@@ -156,8 +193,26 @@ const DashComponent = ({ data }: { data: any }) => {
     },
   };
 
+  const pieOptions: ChartOptions<"pie"> = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: "top" as const, // Correct the type to match expected values
+      },
+      title: {
+        display: true,
+      },
+    },
+  };
+
   return (
     <div className="p-1 md:mx-auto  text-card-foreground">
+      {/* Ventas */}
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full">
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
           <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
@@ -170,7 +225,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={dailyPaymentsTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-blue-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-emerald-700 flex items-center">
@@ -213,7 +268,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={monthlyOrderTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className="bg-teal-600 text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -239,7 +294,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={yearlyPaymentsTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className=" bg-orange-500 text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className=" bg-teal-600 text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
             <div className="flex  gap-2 text-sm">
               <span className="text-green-700 flex items-center">
@@ -257,6 +312,7 @@ const DashComponent = ({ data }: { data: any }) => {
           </div>
         </div>
       </div>
+      {/* Gastos */}
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-5">
         <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
           <div className="flex flex-col p-1 bg-card shadow-lg gap-4 w-full rounded-md">
@@ -269,7 +325,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={dailyExpensesTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-blue-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
           </div>
           <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md">
@@ -282,7 +338,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={totalExpensesThisWeek || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
           </div>
         </div>
@@ -298,7 +354,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={monthlyExpensesTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className="bg-red-400  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
           </div>
           <div className="flex flex-col p-1 bg-card shadow-lg dark:bg-card gap-4 w-full rounded-md ">
@@ -311,23 +367,45 @@ const DashComponent = ({ data }: { data: any }) => {
                   <FormattedPrice amount={yearlyExpensesTotals || 0} />
                 </p>
               </div>
-              <MdAttachMoney className=" bg-orange-500 text-white rounded-full text-3xl p-1 shadow-lg" />
+              <MdAttachMoney className=" bg-red-400 text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
           </div>
         </div>
       </div>
-      <div className="w-full min-h-[400px] bg-card p-5  mt-4">
+      {/* Weekly Charts */}
+      <div className="w-full min-h-[300px] bg-card p-5  mt-4 relative">
         {/* Chart to display daily totals for the last 7 days */}
-        <div className="chart-container h-[400px] maxsm:h-[200px]">
-          <h2>Ventas de la semana</h2>
-          <Bar data={weeklyPaymentDataWithColors} options={options} />
+        <h2>Ventas y Gastos Semanales</h2>
+
+        <div className="chart-container h-[300px] maxsm:h-[200px] flex items-center justify-between">
+          <Bar
+            data={weeklyPaymentDataWithColors}
+            options={options}
+            className="w-full"
+          />
+          <Pie
+            data={weeklyStoreSalesData}
+            options={pieOptions}
+            className="max-w-[400px] max-h-[400px]"
+          />
         </div>
       </div>
-      <div className="w-full min-h-[400px] bg-card p-5  mt-4">
+      {/* Monthly Charts */}
+      <div className="w-full min-h-[300px] bg-card p-5  mt-4 relative">
         {/* Chart to display daily totals for the last 7 days */}
-        <div className="chart-container h-[400px] maxsm:h-[200px]">
-          <h2>Gastos de la semana</h2>
-          <Bar data={weeklyExpenseDataWithColors} options={options} />
+        <h2>Ventas y Gastos Mensuales</h2>
+
+        <div className="chart-container h-[300px] maxsm:h-[200px] flex items-center justify-between">
+          <Pie
+            data={monthlyStoreSalesData}
+            options={pieOptions}
+            className="max-w-[400px] max-h-[400px]"
+          />
+          <Bar
+            data={weeklyByWeekPaymentDataWithColors}
+            options={options}
+            className="w-full"
+          />
         </div>
       </div>
       <div className="flex-row maxsm:flex-col flex gap-4 justify-start w-full mt-4">
@@ -359,7 +437,9 @@ const DashComponent = ({ data }: { data: any }) => {
                 <h3 className="text-card-foreground text-sm uppercase">
                   Total de Productos
                 </h3>
-                <p className="text-2xl  text-slate-700">{totalProductCount}</p>
+                <p className="text-2xl  text-slate-700">
+                  {totalProductsSoldThisMonth}
+                </p>
               </div>
               <GiClothes className="bg-indigo-600  text-white rounded-full text-3xl p-1 shadow-lg" />
             </div>
@@ -370,100 +450,6 @@ const DashComponent = ({ data }: { data: any }) => {
               </span>
               <div className="text-card-foreground">Mes Anterior</div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-row maxsm:flex-col gap-4 py-3 mx-auto justify-start">
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col w-full shadow-md p-5 rounded-md bg-card">
-            <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Ventas recientes</h1>
-              <button>
-                <Link href={"/admin/pedidos"}>Ver todos</Link>
-              </button>
-            </div>
-            <table>
-              <thead>
-                <tr className="flex justify-between mb-4">
-                  <th>No.</th>
-                  <th>Status</th>
-                  <th>Cliente</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              {orders &&
-                orders.map((order: any) => (
-                  <tbody key={order._id} className="divide-y">
-                    <tr className=" flex justify-between text-sm dark:border-gray-700 dark:bg-card mb-4">
-                      <td>{order.orderId}</td>
-                      <td>
-                        {order.orderStatus === "Apartado" ? (
-                          <MdOutlineSavings />
-                        ) : order.orderStatus === "Pagado" ? (
-                          <MdAttachMoney />
-                        ) : (
-                          order.orderStatus
-                        )}
-                      </td>
-                      <td>{order.customerName.substring(0, 11)}...</td>
-                      <td>
-                        <Link href={`/admin/pedido/${order._id}`}>
-                          <IoArrowRedoSharp className=" text-teal-800 " />
-                        </Link>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-            </table>
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row maxmd:flex-col gap-4 justify-start items-start">
-          <div className="flex flex-col w-full shadow-md p-5 rounded-md bg-card">
-            <div className="flex justify-between py-3 text-base font-black font-EB_Garamond">
-              <h1>Productos Recientes</h1>
-              <button>
-                <Link href={"/admin/productos"}>Ver Todos</Link>
-              </button>
-            </div>
-            <table>
-              <thead>
-                <tr className="flex justify-between mb-4">
-                  <th>Img.</th>
-                  <th>Nombre</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              {products &&
-                products.map((product: any) => (
-                  <tbody key={product._id} className="divide-y">
-                    <tr className=" flex justify-between dark:border-gray-700 dark:bg-card mb-2">
-                      <td>
-                        <Image
-                          src={
-                            product?.images[0].url ||
-                            "/images/avatar_placeholder.jpg"
-                          }
-                          alt="producto"
-                          width={400}
-                          height={400}
-                          className="w-5 h-5 rounded-md bg-gray-500"
-                        />
-                      </td>
-                      <td>
-                        <p className="line-clamp-2 capitalize text-[12px]">
-                          {product.title.substring(0, 12)}...
-                        </p>
-                      </td>
-                      <td>
-                        <Link href={`/admin/productos/editar/${product.slug}`}>
-                          <IoArrowRedoSharp className=" text-indigo-700 " />
-                        </Link>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-            </table>
           </div>
         </div>
       </div>
