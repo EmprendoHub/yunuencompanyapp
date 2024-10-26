@@ -30,8 +30,6 @@ const PayCartComp = ({
     pathname = "puntodeventa";
   }
 
-  console.log("paytype", payType);
-
   const dispatch = useDispatch();
   const router = useRouter();
   const [transactionNo, setTransactionNo] = useState("EFECTIVO");
