@@ -2509,7 +2509,7 @@ export async function getAllPOSProduct(searchQuery: any) {
       },
       {
         $sort: {
-          numericTitle: -1, // Sort numeric titles in descending order
+          numericTitle: 1, // Sort numeric titles in descending order
           title: 1, // Sort non-numeric titles alphabetically after numeric titles
         },
       },

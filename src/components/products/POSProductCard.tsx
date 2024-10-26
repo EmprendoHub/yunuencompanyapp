@@ -79,7 +79,7 @@ const POSProductCard = ({ product }: { product: any }) => {
       initial={{ y: 30, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.0 }}
-      className="border-[1px] rounded-sm max-w-[150px] overflow-hidden relative"
+      className="border-[1px] rounded-sm max-w-[130px] overflow-hidden relative"
     >
       <div
         className="w-full h-full group overflow-hidden relative cursor-pointer"
@@ -88,9 +88,9 @@ const POSProductCard = ({ product }: { product: any }) => {
         <Image
           src={product?.images[0].url}
           alt="product image"
-          className=" ease-in-out duration-500 w-full h-full object-cover group-hover:scale-110 rounded-t-sm"
-          width={350}
-          height={350}
+          className=" ease-in-out duration-200 w-full h-full object-cover group-hover:scale-110 rounded-t-sm"
+          width={300}
+          height={300}
         />
       </div>
       {/* <div className="pt-3">

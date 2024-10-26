@@ -35,16 +35,9 @@ const POSCart = ({ userId }: { userId: string }) => {
       <section className="bg-gray-100 w-full">
         <div className="mx-auto bg-background">
           <div className="flex flex-col gap-1">
-            <section className="bg-background maxsm:hidden">
-              <div className="mx-auto px-4">
-                <h2 className="text-base font-semibold font-EB_Garamond">
-                  {productsPOS?.length || 0} Artículos(s) en carrito
-                </h2>
-              </div>
-            </section>
-            <main className="w-full maxsm:h-40 h-80 overflow-y-scroll">
+            <main className="w-full maxsm:h-40 h-80 overflow-y-scroll border-gray-200 border rounded">
               {/* Items */}
-              <article className="border border-gray-200 shadow-sm rounded mb-1 p-2 bg-gray-100">
+              <article className="border  shadow-sm rounded mb-1 p-2 bg-card">
                 {productsPOS?.length > 0 &&
                   productsPOS?.map((cartItem: CartItem, index: number) => (
                     <div key={index}>
@@ -52,7 +45,7 @@ const POSCart = ({ userId }: { userId: string }) => {
                         <div className="w-full maxsm:hidden">
                           <figure className="flex gap-1 leading-5">
                             <div>
-                              <div className="block w-12 h-12 rounded border border-gray-300 overflow-hidden">
+                              <div className="block w-12 h-12 rounded border  overflow-hidden">
                                 <Image
                                   src={cartItem.image}
                                   alt={cartItem.title}
@@ -73,9 +66,9 @@ const POSCart = ({ userId }: { userId: string }) => {
                               }
                               className="cursor-pointer"
                             >
-                              <FiChevronLeft className="w-8 h-8 maxsm:w-4 maxsm:h-4" />
+                              <FiChevronLeft className="w-10 h-10 maxsm:w-4 maxsm:h-4 mr-5" />
                             </span>
-                            <span className="text-base maxsm:text-[12px]">
+                            <span className="text-2xl maxsm:text-[12px]">
                               {cartItem.quantity}
                             </span>
                             <span
@@ -89,20 +82,11 @@ const POSCart = ({ userId }: { userId: string }) => {
                               }
                               className="cursor-pointer"
                             >
-                              <FiChevronRight className="w-8 h-8 maxsm:w-4 maxsm:h-4" />
+                              <FiChevronRight className="w-10 h-10 maxsm:w-4 maxsm:h-4 mx-5" />
                             </span>
                           </div>
                         </div>
-                        <div className="w-full">
-                          <div className="leading-5">
-                            <p className="font-semibold not-italic maxsm:text-xs">
-                              ${(cartItem.price * cartItem.quantity).toFixed(2)}
-                            </p>
-                            <p className="text-gray-400 text-[12px] maxsm:hidden leading-tight">
-                              ${cartItem.price} x articulo
-                            </p>
-                          </div>
-                        </div>
+
                         <div className="flex-auto">
                           <div className="float-right">
                             <span
@@ -111,7 +95,7 @@ const POSCart = ({ userId }: { userId: string }) => {
                               }
                               className="text-red-400 hover:text-red-600 cursor-pointer duration-300"
                             >
-                              <AiOutlineClose className="w-6 h-6 maxsm:w-4 maxsm:h-4" />
+                              <AiOutlineClose className="w-5 h-5 maxsm:w-4 maxsm:h-4 " />
                             </span>
                           </div>
                         </div>

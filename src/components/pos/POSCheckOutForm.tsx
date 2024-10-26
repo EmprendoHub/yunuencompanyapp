@@ -8,6 +8,7 @@ import Link from "next/link";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { usePathname } from "next/navigation";
 import POSModal from "../modals/POSModal";
+import { DollarSign } from "lucide-react";
 
 const POSCheckOutForm = ({ userId }: { userId: string }) => {
   const { data: session } = useSession();
@@ -52,10 +53,8 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
             </span>
           </li>
           <li className="text-sm flex justify-between text-gray-600 mb-1 maxsm:mb-0">
-            <span className="text-base maxsm:text-[12px]">
-              Total de Artículos:
-            </span>
-            <span className="text-blue-500 text-base maxsm:text-[12px]">
+            <span className="text-xl maxsm:text-[12px]">Artículos:</span>
+            <span className="text-blue-500 text-xl maxsm:text-[12px]">
               {productsPOS?.reduce(
                 (acc: any, cartItem: any) => acc + cartItem.quantity,
                 0
@@ -64,8 +63,8 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
             </span>
           </li>
           <li className="text-lg font-bold border-t flex justify-between mt-3 maxsm:mt-1 ">
-            <span className="text-base maxsm:text-[14px]">Total:</span>
-            <span className="text-base maxsm:text-[14px]">
+            <span className="text-2xl maxsm:text-[14px]">Total:</span>
+            <span className="text-2xl maxsm:text-[14px]">
               <FormattedPrice amount={totalAmountCalc} />
             </span>
           </li>
@@ -76,9 +75,9 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
             <div className="flex gap-5 w-full">
               <button
                 onClick={() => handleCheckout("EFECTIVO")}
-                className="bg-emerald-700 w-full text-slate-100 py-6 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-black hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md"
+                className="bg-emerald-700 w-full text-slate-100 py-10 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-black hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md flex items-center gap-2 justify-center"
               >
-                Pagar
+                <DollarSign /> Pagar
               </button>
             </div>
           </div>

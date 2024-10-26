@@ -35,7 +35,7 @@ const CustomerSidebar = ({ children }: { children: any }) => {
           />
           <button
             onClick={() => setExpandSidebar((currentState) => !currentState)}
-            className="p-1.5 rounded-lg bg-gray-50"
+            className="p-1.5 rounded-lg bg-card"
           >
             {expandSidebar ? (
               <BsChevronBarLeft size={20} />

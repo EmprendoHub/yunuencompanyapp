@@ -25,11 +25,10 @@ const ListPOSProducts = ({
     <section className="py-4 flex flex-col justify-center items-center w-full maxsm:mt-[400px]  bg-white">
       <div className=" mx-auto flex justify-center items-center w-full">
         <div className="w-full justify-center items-center gap-x-5">
-          <main className=" flex flex-row gap-4 maxsm:gap-6 flex-wrap items-center justify-center w-full pl-5">
+          <main className=" flex flex-row gap-2 maxsm:gap-3 flex-wrap items-center justify-center w-full ">
             {filteredProducts &&
               filteredProducts
                 ?.slice()
-                .reverse()
                 .map((product: any, index: number) => (
                   <POSProductCard product={product} key={index} />
                 ))}

@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ValidationError } from "./EditVariationProduct";
+import { SiMercadopago } from "react-icons/si";
+import { DollarSign } from "lucide-react";
+import ExitIcon from "../icons/ExitIcon";
 
 const PayCartComp = ({
   setShowModal,
@@ -129,7 +132,7 @@ const PayCartComp = ({
                 <label className="block mb-1"> Referencia </label>
                 <input
                   type="text"
-                  className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
+                  className="appearance-none border bg-card rounded-md py-2 px-3 border-gray-300 focus:outline-none hover:outline-none focus:border-gray-400 hover:border-gray-400 w-full text-center font-bold "
                   placeholder="8971654687687"
                   onChange={(e) => setTransactionNo(e.target.value)}
                   name="transactionNo"
@@ -144,7 +147,7 @@ const PayCartComp = ({
                   placeholder="$0.00"
                   value={amountReceived}
                   onChange={(e) => handleAmountReceived(e.target.value)}
-                  className="text-5xl text-center outline-none w-full appearance-none border bg-gray-100 rounded-md py-2  border-gray-300 focus:outline-none focus:border-gray-400:outline-none focus:border-gray-400 hover:border-gray-400"
+                  className="text-5xl text-center outline-none w-full appearance-none border bg-card rounded-md py-2  border-gray-300 focus:outline-none focus:border-gray-400:outline-none focus:border-gray-400 hover:border-gray-400"
                   name="amount"
                 />
                 {validationError?.amount && (
@@ -153,29 +156,27 @@ const PayCartComp = ({
                   </p>
                 )}
               </div>
-
-              {/* Add MercadoPago button */}
-              <button
-                onClick={handleMercadoPago}
-                className="my-2 w-[100%] px-4 py-6 text-center text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 flex flex-row items-center justify-center gap-1 text-2xl"
+              <div
+                onClick={() => setShowModal(false)}
+                className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[20%] flex flex-row items-center justify-center gap-1 cursor-pointer absolute top-0 right-1"
               >
-                <FaCircleCheck className="text-xl" /> MercadoPago
-              </button>
-
+                <ExitIcon />
+              </div>
               {!savingPayment && (
-                <div className="flex flex-row flex-wrap items-center gap-3 w-full">
-                  <div
-                    onClick={() => setShowModal(false)}
-                    className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[20%] flex flex-row items-center justify-center gap-1 cursor-pointer absolute top-0 right-1"
+                <div className="flex flex-row  items-center gap-3 w-full">
+                  {/* Add MercadoPago button */}
+                  <button
+                    onClick={handleMercadoPago}
+                    className="my-2 w-[35%] px-4 py-10 text-center text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 flex flex-col items-center justify-center gap-1 text-l"
                   >
-                    <FaCircleExclamation className="text-xl" />
-                    Cancelar
-                  </div>
+                    <SiMercadopago className="text-2xl" /> MercadoPago
+                  </button>
+
                   <button
                     onClick={() => handleCheckout("EFECTIVO")}
-                    className="my-2 w-[100%] px-4 py-6 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-row items-center justify-center gap-1 text-2xl"
+                    className="my-2 w-[65%] px-4 py-10 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-col items-center justify-center gap-1 text-2xl"
                   >
-                    <FaCircleCheck className="text-xl" /> PAGAR
+                    <DollarSign className="text-xl" /> EFECTIVO
                   </button>
                 </div>
               )}

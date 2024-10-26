@@ -16,11 +16,12 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   //pagination
   let page = parseInt(searchParams.page, 20);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 20;
+  const perPage = 40;
   const totalPages = Math.ceil(data.filteredProductsCount / perPage);
   const pageNumbers = [];
   const offsetNumber = 3;
   const products = JSON.parse(data?.products);
+
   const filteredProductsCount = data?.filteredProductsCount;
   for (let i = page - offsetNumber; i <= page + offsetNumber; i++) {
     if (i >= 1 && i <= totalPages) {

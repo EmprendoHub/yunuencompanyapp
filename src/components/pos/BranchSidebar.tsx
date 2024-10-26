@@ -36,7 +36,7 @@ const BranchSidebar = ({ children }: { children: any }) => {
           />
           <button
             onClick={() => setExpandSidebar((currentState) => !currentState)}
-            className="p-1.5 rounded-lg bg-gray-50"
+            className="p-1.5 rounded-lg bg-card"
           >
             {expandSidebar ? (
               <BsChevronBarLeft size={20} />
@@ -127,9 +127,7 @@ export function SideBarItem({
   return (
     <li
       className={`relative flex flex-col items-center justify-center py-8 px-3 maxmd:pr-1 my-2 font-medium rounded-md cursor-pointer gap-x-1 transition-colors group ${
-        active
-          ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-primary"
-          : "hover:bg-indigo-50 text-gray-600"
+        active ? "bg-card text-primary" : "hover:bg-card text-gray-500"
       }`}
       onClick={handleDropdownToggle}
     >
