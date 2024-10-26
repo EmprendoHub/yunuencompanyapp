@@ -439,7 +439,7 @@ export async function payPOSDrawer(data: any) {
       orderItems: cartItems,
       orderStatus: currentOrderStatus,
       layaway: layAwayIntent,
-      affiliateId: "",
+      affiliateId: payMethod,
     };
 
     let newOrder = await new Order(orderData);
