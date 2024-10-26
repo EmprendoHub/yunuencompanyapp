@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { createContext, useContext, useState } from "react";
 import { BsChevronBarLeft, BsChevronBarRight } from "react-icons/bs";
-import { FiMoreVertical, FiLogOut } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import AuthContext from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { SidebarContextType } from "./AdminSidebar";
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);

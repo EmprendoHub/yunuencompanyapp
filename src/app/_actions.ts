@@ -307,6 +307,7 @@ export async function payPOSDrawer(data: any) {
       payType,
       amountReceived,
       note,
+      pathname,
       email,
       phone,
       name,
@@ -314,27 +315,11 @@ export async function payPOSDrawer(data: any) {
 
     await dbConnect();
     let customer;
-    let customerEmail;
-    let customerPhone;
-    let customerName;
+    let customerEmail = "yunuencompany01@gmail.com";
+    let customerPhone = "";
+    let customerName = "SUCURSAL";
     const session = await getServerSession(options);
     const userId = session.user._id.toString();
-    if (email.length > 3) {
-      customerEmail = email;
-    } else {
-      if (phone.length > 3 || name.length > 3) {
-        customerEmail =
-          phone + name.replace(/\s/g, "").substring(0, 8) + "@noemail.com";
-      } else {
-        customerEmail = "yunuencompany01@gmail.com";
-      }
-    }
-
-    if (name.length > 3) {
-      customerName = name;
-    } else {
-      customerName = "PUBLICO GENERAL";
-    }
 
     const query = { $or: [{ email: customerEmail }, { phone: customerPhone }] };
     if (phone.length > 3) {
@@ -369,38 +354,23 @@ export async function payPOSDrawer(data: any) {
     let payMethod;
     let payIntent;
 
-    if (payType === "layaway") {
-      payIntent = "partial";
-    } else {
-      payIntent = "paid";
-    }
+    payIntent = "paid";
 
     if (transactionNo === "EFECTIVO") {
       payMethod = "EFECTIVO";
     } else if (!isNaN(transactionNo)) {
       payMethod = "TERMINAL";
     }
-    if (payType === "layaway") {
-      paymentInfo = {
-        id: "partial",
-        status: "unpaid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "partial",
-      };
-      currentOrderStatus = "Apartado";
-      layAwayIntent = true;
-    } else {
-      paymentInfo = {
-        id: "paid",
-        status: "paid",
-        amountPaid: amountReceived,
-        taxPaid: 0,
-        paymentIntent: "paid",
-      };
-      currentOrderStatus = "Pagado";
-      layAwayIntent = false;
-    }
+
+    paymentInfo = {
+      id: "paid",
+      status: "paid",
+      amountPaid: amountReceived,
+      taxPaid: 0,
+      paymentIntent: "paid",
+    };
+    currentOrderStatus = "Pagado";
+    layAwayIntent = false;
 
     const cartItems: any[] = [];
     await Promise.all(
@@ -492,162 +462,6 @@ export async function payPOSDrawer(data: any) {
       await newPaymentTransaction.save();
     } catch (error: any) {
       console.log("dBberror", error);
-    }
-
-    // send email after order is confirmed
-    if (
-      customerEmail.includes("@noemail.com") ||
-      customerEmail === "yunuencompany01@gmail.com"
-    ) {
-      console.log("did not send email");
-    } else {
-      try {
-        const subject = "¡Gracias por tu compra!";
-        const bodyOne = `Queríamos expresarte nuestro más sincero agradecimiento por haber elegido yunuencompany para realizar tu compra reciente. Nos complace enormemente saber que confías en nuestros productos/servicios.`;
-        const bodyTwo = `Tu apoyo significa mucho para nosotros y nos comprometemos a brindarte la mejor experiencia posible. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en ponerte en contacto con nuestro equipo de atención al cliente. Estamos aquí para ayudarte en cualquier momento.`;
-        const title = "Recibo de compra";
-        const greeting = `Estimado/a ${customer?.name}`;
-        const senderName = "www.yunuencompany.com";
-        const bestRegards = "¡Que tengas un excelente día!";
-        const recipient_email = customer?.email;
-        const sender_email = "yunuencompany01@gmail.com";
-        const fromName = "yunuencompany";
-
-        var transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.GOOGLE_MAIL,
-            pass: process.env.GOOGLE_MAIL_PASS,
-          },
-        });
-
-        const formattedAmountPaid = formatter.format(
-          newOrder?.paymentInfo?.amountPaid || 0
-        );
-
-        const mailOption = {
-          from: `"${fromName}" ${sender_email}`,
-          to: recipient_email,
-          subject,
-          html: `
-        <!DOCTYPE html>
-        <html lang="es">
-        <body>
-        <div>
-        <p>${greeting}</p>
-        <div>${bodyOne}</div>
-        <p>${title}</p>
-        <table style="width: 100%; font-size: 0.875rem; text-align: left;">
-          <thead style="font-size: .7rem; color: #4a5568;  text-transform: uppercase;">
-            <tr>
-              <th style="padding: 0.75rem;">Nombre</th>
-              <th style="padding: 0.75rem;">Tamaño</th>
-              <th style="padding: 0.75rem;">Color</th>
-              <th style="padding: 0.75rem;">Cant.</th>
-              <th style="padding: 0.75rem;">Precio</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${newOrder?.orderItems
-              ?.map(
-                (item: any, index: number) =>
-                  `<tr style="background-color: #fff;" key="${index}">
-                <td style="padding: 0.75rem;">${item.name}</td>
-                <td style="padding: 0.75rem;">${item.size}</td>
-                <td style="padding: 0.75rem;">${item.color}</td>
-                <td style="padding: 0.75rem;">${item.quantity}</td>
-                <td style="padding: 0.75rem;">${item.price}</td>
-              </tr>`
-              )
-              .join("")}
-              <tr>
-              <div style="max-width: 100%; width: 100%; margin: 0 auto; background-color: #ffffff; display: flex; flex-direction: column; padding: 0.5rem;">
-        ${
-          newOrder?.orderStatus === "Apartado"
-            ? `<ul style="margin-bottom: .75rem; padding-left: 0px;">
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total de Artículos:</span>
-              <span style="color: #48bb78;">
-                ${await getQuantities(newOrder?.orderItems)} (Artículos)
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Sub-Total:</span>
-              <span>
-                ${(await subtotal(newOrder)) || 0}
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total:</span>
-              <span>
-                ${(await getTotal(newOrder?.orderItems)) || 0}
-              </span>
-            </li>
-            <li style="font-size: 1.25rem; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 0.75rem;">
-              <span>Abono:</span>
-              <span>
-                - ${formattedAmountPaid}
-              </span>
-            </li>
-            <li style="font-size: 1.25rem; color: #ff9900; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 0.25rem;">
-              <span>Pendiente:</span>
-              <span>
-                ${
-                  (await getPendingTotal(
-                    newOrder?.orderItems,
-                    newOrder?.paymentInfo?.amountPaid
-                  )) || 0
-                }
-                
-              </span>
-            </li>
-          </ul>`
-            : `<ul style="margin-bottom: 1.25rem;">
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Sub-Total:</span>
-              <span>
-                ${(await subtotal(newOrder)) || 0}
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Total de Artículos:</span>
-              <span style="color: #086e4f;">
-                ${await getQuantities(newOrder?.orderItems)} (Artículos)
-              </span>
-            </li>
-            <li style="display: flex; justify-content: space-between; gap: 0.75rem; color: #4a5568; margin-bottom: 0.25rem;">
-              <span>Envió:</span>
-              <span>
-                ${newOrder?.ship_cost}
-              </span>
-            </li>
-            <li style="font-size: 1.875rem; font-weight: bold; border-top: 1px solid #cbd5e0; display: flex; justify-content: space-between; gap: 0.75rem; margin-top: 1rem; padding-top: 0.75rem;">
-              <span>Total:</span>
-              <span>
-                ${formattedAmountPaid}
-                
-              </span>
-            </li>
-          </ul>`
-        }
-        </div>
-              </tr>
-          </tbody>
-        </table>
-        <div>${bodyTwo}</div>
-        <p>${senderName}</p>
-        <p>${bestRegards}</p>
-        </div>
-        </body>
-        </html>
-        `,
-        };
-
-        await transporter.sendMail(mailOption);
-      } catch (error: any) {
-        console.log(error);
-        throw Error(error);
-      }
     }
 
     revalidatePath("/admin/");

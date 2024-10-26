@@ -9,6 +9,7 @@ import { ValidationError } from "./EditVariationProduct";
 import { SiMercadopago } from "react-icons/si";
 import { DollarSign } from "lucide-react";
 import ExitIcon from "../icons/ExitIcon";
+import { payPOSDrawer } from "@/app/_actions";
 
 const PayCartComp = ({
   setShowModal,
@@ -101,16 +102,19 @@ const PayCartComp = ({
     formData.append("payType", payType);
     formData.append("pathname", userId);
 
-    const result: any = await fetch(`/api/payment`, {
-      method: "POST",
-      body: formData,
-    });
+    // const result: any = await fetch(`/api/payment`, {
+    //   method: "POST",
+    //   body: formData,
+    // });
+
+    const result: any = await payPOSDrawer(formData);
+    const newOrderJson = JSON.parse(result.newOrder);
+
     if (result?.error) {
       console.log(result?.error);
       setValidationError(result.error);
     } else {
-      const data = await result.json();
-      const order = JSON.parse(data.newOrder);
+      const order = JSON.parse(result.newOrder);
       setValidationError(null);
       dispatch(resetPOSCart());
       router.push(`/${pathname}/recibo/${order._id}`);
