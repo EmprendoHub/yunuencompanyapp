@@ -690,7 +690,7 @@ export async function getDashboard() {
       },
     ]);
 
-    const last7DaysArray = Array.from({ length: 7 }, (_, i) =>
+    const last7DaysArray = Array.from({ length: 8 }, (_, i) =>
       format(subDays(startOfToday, i), "MM-dd-yyyy")
     ).reverse(); // Ascending order
 

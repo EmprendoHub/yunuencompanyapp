@@ -21,7 +21,6 @@ const DashComponent = ({ data }: { data: any }) => {
   const weekByWeekExpenseData = JSON.parse(data?.weekByWeekExpenseData);
   const monthlyOrderBranchTotals = JSON.parse(data?.monthlyOrderBranchTotals);
   const weeklyOrderBranchTotals = JSON.parse(data?.weeklyOrderBranchTotals);
-  console.log("weeklyExpenseData", weeklyExpenseData);
 
   const sortedPaymentData = weeklyPaymentData
     .map((item: WeeklyDataItem, index: number) => ({ index, item }))
