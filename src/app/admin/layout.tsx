@@ -1,17 +1,23 @@
 "use client";
 import AdminSidebar, { SideBarItem } from "@/components/admin/AdminSidebar";
 import { usePathname } from "next/navigation";
-import { TbDeviceIpadDollar, TbReport, TbScanEye } from "react-icons/tb";
+import {
+  TbDeviceIpadDollar,
+  TbNewSection,
+  TbReport,
+  TbScanEye,
+} from "react-icons/tb";
 import { PiUserListLight } from "react-icons/pi";
 import { CiGrid31 } from "react-icons/ci";
 import { TfiDashboard } from "react-icons/tfi";
 import { MdOutlineFactCheck, MdOutlinePostAdd } from "react-icons/md";
 import { LuReceipt } from "react-icons/lu";
 import { LiaCashRegisterSolid, LiaStoreAltSolid } from "react-icons/lia";
-import { GiClothes } from "react-icons/gi";
+import { GiClothes, GiExpense, GiVineWhip } from "react-icons/gi";
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
 import Link from "next/link";
+import { Recycle } from "lucide-react";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -79,6 +85,38 @@ export default function UserLayout({ children }: { children: any }) {
                 active:
                   pathname === "/admin/productos/nuevo" ? "true" : "false",
                 icon: <FaCartPlus size={20} />,
+              },
+              // Add more dropdown items as needed
+            ]}
+          />
+          <SideBarItem
+            icon={<GiExpense size={20} />}
+            text={"Gastos"}
+            active={
+              pathname === "/admin/gastos" || pathname === "/admin/gastos/nuevo"
+                ? "true"
+                : "false"
+            }
+            url={"/admin/gastos"}
+            alert
+            dropdownItems={[
+              {
+                text: "Gastos",
+                url: "/admin/gastos",
+                active: pathname === "/admin/gastos" ? "true" : "false",
+                icon: <GiExpense size={20} />,
+              },
+              {
+                text: "Auto",
+                url: "/admin/auto",
+                active: pathname === "/admin/auto" ? "true" : "false",
+                icon: <Recycle size={20} />,
+              },
+              {
+                text: "Nuevo",
+                url: "/admin/gastos/nuevo",
+                active: pathname === "/admin/gastos/nuevo" ? "true" : "false",
+                icon: <TbNewSection size={20} />,
               },
               // Add more dropdown items as needed
             ]}

@@ -1,8 +1,6 @@
 "use client";
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import AllOrdersFilters from "./AllOrdersFilters";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AllOrders from "./AllOrders";
 import { generateReports } from "@/app/_actions";
 

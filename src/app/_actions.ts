@@ -1987,6 +1987,50 @@ export async function getAllPOSOExpenses(searchQuery: any) {
   }
 }
 
+export async function getAllExpenses(searchQuery: any) {
+  try {
+    await dbConnect();
+    const session = await getServerSession(options);
+    let expenseQuery: any;
+
+    expenseQuery = Expense.find({
+      $and: [{ expenseIntent: { $ne: "cancelado" } }],
+    }).populate("user");
+
+    const searchParams = new URLSearchParams(searchQuery);
+
+    const resPerPage = Number(searchParams.get("perpage")) || 10;
+    // Extract page and per_page from request URL
+    const page = Number(searchParams.get("page")) || 1;
+    // Apply descending expense based on a specific field (e.g., createdAt)
+    expenseQuery = expenseQuery.sort({ pay_date: -1 });
+
+    // Apply search Filters including expense_id and expenseStatus
+    const apiExpenseFilters: any = new APIExpenseFilters(
+      expenseQuery,
+      searchParams
+    )
+      .searchAllFields()
+      .filter();
+    let expensesData = await apiExpenseFilters.query;
+
+    const itemCount = expensesData.length;
+
+    apiExpenseFilters.pagination(resPerPage, page);
+    expensesData = await apiExpenseFilters.query.clone();
+    let expenses = JSON.stringify(expensesData);
+
+    return {
+      expenses: expenses,
+      itemCount: itemCount,
+      resPerPage: resPerPage,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
 export async function getAllPOSBranches() {
   try {
     await dbConnect();

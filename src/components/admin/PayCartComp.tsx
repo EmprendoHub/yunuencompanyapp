@@ -100,7 +100,6 @@ const PayCartComp = ({
     } else {
       finalTransactionNo = transactionNo;
     }
-    console.log(finalTransactionNo, "transactionNo", payType, "paytype");
 
     const formData = new FormData();
     const items = JSON.stringify(productsPOS);
