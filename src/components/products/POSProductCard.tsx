@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addToPOSCart, applyDiscount } from "@/redux/shoppingSlice";
-import { toast } from "sonner";
 import { useState } from "react";
+import { toast } from "../ui/use-toast";
+import { title } from "process";
 
 // Define TypeScript interfaces
 interface ProductVariation {
@@ -19,10 +19,7 @@ interface ProductVariation {
 }
 
 const POSProductCard = ({ product }: { product: any }) => {
-  const getPathname = usePathname();
   const [discountRate, setDiscountRate] = useState<string>(""); // State for discount percentage
-  const router = useRouter();
-  let pathname: string;
 
   const [variation, setVariation] = useState<ProductVariation>({
     _id: product?.variations[0]?._id || "",
@@ -32,12 +29,6 @@ const POSProductCard = ({ product }: { product: any }) => {
     stock: product?.variations[0]?.stock || 0,
     image: product?.variations[0]?.image || "",
   });
-
-  if (getPathname.includes("admin")) {
-    pathname = "admin/pos";
-  } else if (getPathname.includes("puntodeventa")) {
-    pathname = "puntodeventa";
-  }
 
   const dispatch = useDispatch();
 
@@ -66,7 +57,14 @@ const POSProductCard = ({ product }: { product: any }) => {
     setDiscountRate("");
 
     dispatch(addToPOSCart(updatedVariation));
-    toast(`${product?.title.substring(0, 15)}... se agregó al carrito`);
+    toast({
+      title: `${product?.title} se agregó al carrito`,
+      duration: 2000,
+      style: {
+        backgroundColor: "#3f7c49", // Customize background color here
+        color: "#ffffff", // Customize text color here
+      },
+    });
   };
 
   const handleDiscountChange = (e: any) => {
@@ -75,14 +73,9 @@ const POSProductCard = ({ product }: { product: any }) => {
   };
 
   return (
-    <motion.div
-      initial={{ y: 30, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      transition={{ duration: 1.0 }}
-      className="border-[1px] rounded-sm max-w-[130px] overflow-hidden relative"
-    >
+    <div className="max-w-[130px] overflow-hidden relative ">
       <div
-        className="w-full h-full group overflow-hidden relative cursor-pointer"
+        className="w-full h-full group overflow-hidden relative cursor-pointer active:border-[10px] active:border-accent rounded-sm "
         onClick={handleClick}
       >
         <Image
@@ -93,16 +86,18 @@ const POSProductCard = ({ product }: { product: any }) => {
           height={300}
         />
       </div>
-      {/* <div className="pt-3">
-        <input
-          className="p-2 border-black border-b font-playfair-display appearance-none bg-white bg-opacity-0 text-xs w-full text-center"
-          type="text"
-          placeholder="Descuento %"
-          value={discountRate}
-          onChange={handleDiscountChange}
-        />
-      </div> */}
-    </motion.div>
+      {product?.title === "1500" && (
+        <div className="pt-3">
+          <input
+            className="p-2 border-black border-b font-playfair-display appearance-none bg-white text-red-700 bg-opacity-0 text-xs w-full text-center"
+            type="text"
+            placeholder="Descuento %"
+            value={discountRate}
+            onChange={handleDiscountChange}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 

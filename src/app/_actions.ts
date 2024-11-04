@@ -301,17 +301,8 @@ export const getAffiliateDashboard = async (
 
 export async function payPOSDrawer(data: any) {
   try {
-    let {
-      items,
-      transactionNo,
-      payType,
-      amountReceived,
-      note,
-      pathname,
-      email,
-      phone,
-      name,
-    } = Object.fromEntries(data);
+    let { items, transactionNo, payType, amountReceived, note } =
+      Object.fromEntries(data);
 
     await dbConnect();
     let customer;
@@ -321,15 +312,7 @@ export async function payPOSDrawer(data: any) {
     const session = await getServerSession(options);
     const userId = session.user._id.toString();
 
-    const query = { $or: [{ email: customerEmail }, { phone: customerPhone }] };
-    if (phone.length > 3) {
-      customerPhone = phone;
-      query.$or.push({ phone: phone });
-    } else {
-      customerPhone = "";
-    }
-
-    const customerExists = await Customer.findOne(query);
+    const customerExists = await Customer.findOne({ email: customerEmail });
 
     if (!customerExists) {
       // Generate a random 64-byte token
@@ -351,16 +334,10 @@ export async function payPOSDrawer(data: any) {
     let paymentInfo;
     let layAwayIntent;
     let currentOrderStatus;
-    let payMethod;
+    let payMethod = payType;
     let payIntent;
 
     payIntent = "paid";
-
-    if (transactionNo === "EFECTIVO") {
-      payMethod = "EFECTIVO";
-    } else if (!isNaN(transactionNo)) {
-      payMethod = "TERMINAL";
-    }
 
     paymentInfo = {
       id: "paid",
@@ -1881,6 +1858,7 @@ export async function getEndOfDayReport(searchQuery: any) {
       {
         $addFields: {
           isTerminal: { $eq: ["$method", "TERMINAL"] }, // Mark if the payment method is TERMINAL
+          isTransfer: { $eq: ["$method", "TRANSFERENCIA"] }, // Mark if the payment method is TRANSFER
         },
       },
       {
@@ -1889,7 +1867,12 @@ export async function getEndOfDayReport(searchQuery: any) {
           totalAmount: {
             $sum: {
               $cond: {
-                if: { $eq: ["$isTerminal", false] }, // Exclude TERMINAL from the sum
+                if: {
+                  $and: [
+                    { $eq: ["$isTerminal", false] },
+                    { $eq: ["$isTransfer", false] },
+                  ],
+                },
                 then: "$amount",
                 else: 0, // Ignore TERMINAL in totalAmount sum
               },

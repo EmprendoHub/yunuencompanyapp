@@ -101,12 +101,16 @@ const POSOrders = ({
                         ? "text-emerald-700"
                         : order.affiliateId === "TERMINAL"
                         ? "text-blue-700"
+                        : order.affiliateId === "TRANSFERENCIA"
+                        ? "text-orange-700"
                         : ""
                     }
                   >
                     {order.affiliateId === "EFECTIVO"
                       ? "+"
                       : order.affiliateId === "TERMINAL"
+                      ? "+"
+                      : order.affiliateId === "TRANSFERENCIA"
                       ? "+"
                       : ""}
                     <FormattedPrice amount={order?.paymentInfo?.amountPaid} />

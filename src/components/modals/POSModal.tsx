@@ -10,14 +10,10 @@ const backdropVariants = {
 const POSModal = ({
   showModal,
   setShowModal,
-  isPaid,
-  payType,
   userId,
 }: {
   showModal: any;
   setShowModal: any;
-  payType: any;
-  isPaid?: any;
   userId: string;
 }) => {
   return (
@@ -30,12 +26,7 @@ const POSModal = ({
           initial="initial"
           animate="animate"
         >
-          <PayCartComp
-            setShowModal={setShowModal}
-            isPaid={isPaid}
-            payType={payType}
-            userId={userId}
-          />
+          <PayCartComp setShowModal={setShowModal} userId={userId} />
         </motion.div>
       )}
     </AnimatePresence>

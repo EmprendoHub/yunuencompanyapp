@@ -17,7 +17,7 @@ const AllOrdersFilters: React.FC<AllOrdersFiltersProps> = ({
   const branches = JSON.parse(branchData);
   const allBranches: any = { _id: 0, name: "Todas" };
   branches.unshift(allBranches);
-  const fullyPaid = ["Todos", "EFECTIVO", "TERMINAL"];
+  const fullyPaid = ["Todos", "EFECTIVO", "TERMINAL", "TRANSFERENCIA"];
   const [store, setStore] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(new Date());

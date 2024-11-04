@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 const POSPaymentForm = ({ userId }: { userId: string }) => {
   const [showModal, setShowModal] = useState(false);
-  const [payType, setPayType] = useState("");
   const { productsPOS }: any = useSelector((state: any) => state.compras);
   const amountTotal = productsPOS?.reduce(
     (acc: number, cartItem: { quantity: number; price: number }) =>
@@ -14,8 +13,7 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
     0
   );
   const totalAmountCalc = Number(amountTotal);
-  const handleCheckout = async (payType: React.SetStateAction<string>) => {
-    setPayType(payType);
+  const handleCheckout = async () => {
     setShowModal(true);
   };
 
@@ -24,7 +22,6 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
       <POSModal
         showModal={showModal}
         setShowModal={setShowModal}
-        payType={payType}
         userId={userId}
       />
       <div className=" bg-background flex flex-col p-2">
@@ -69,7 +66,7 @@ const POSPaymentForm = ({ userId }: { userId: string }) => {
 
         <div className="flex flex-row flex-wrap items-center gap-3">
           <button
-            onClick={() => handleCheckout("EFECTIVO")}
+            onClick={() => handleCheckout()}
             className="bg-black w-full text-slate-100 mt-4 py-5 uppercase text-4xl px-12 hover:bg-slate-200 hover:text-foreground duration-300 ease-in-out cursor-pointer  rounded-md"
           >
             Pagar

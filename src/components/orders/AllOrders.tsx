@@ -77,7 +77,9 @@ const AllOrders = ({ dataString }: { dataString: string }) => {
                 <td
                   className={`px-2 maxsm:px-0 py-2 font-bold ${
                     order.affiliateId === "TERMINAL"
-                      ? "text-amber-700"
+                      ? "text-blue-700"
+                      : order.affiliateId === "TRANSFERENCIA"
+                      ? "text-orange-800"
                       : order.affiliateId === "EFECTIVO"
                       ? "text-green-800"
                       : "text-slate-600"

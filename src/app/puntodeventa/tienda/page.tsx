@@ -14,9 +14,9 @@ const TiendaPage = async ({ searchParams }: { searchParams: any }) => {
   const userId = session.user._id;
   const data = await getAllPOSProduct(searchParams);
   //pagination
-  let page = parseInt(searchParams.page, 20);
+  let page = parseInt(searchParams.page, 50);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 40;
+  const perPage = 50;
   const totalPages = Math.ceil(data.filteredProductsCount / perPage);
   const pageNumbers = [];
   const offsetNumber = 3;

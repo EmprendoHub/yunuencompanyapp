@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { AiOutlineUser } from "react-icons/ai";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { usePathname } from "next/navigation";
 import POSModal from "../modals/POSModal";
@@ -19,18 +16,10 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
     0
   );
   const getPathname = usePathname();
-  let pathname;
   const [showModal, setShowModal] = useState(false);
-  const [payType, setPayType] = useState("");
 
-  if (getPathname.includes("admin")) {
-    pathname = "/admin/pos";
-  } else if (getPathname.includes("puntodeventa")) {
-    pathname = "/puntodeventa";
-  }
   const shipAmount = 0;
-  const handleCheckout = async (payType: React.SetStateAction<string>) => {
-    setPayType(payType);
+  const handleCheckout = async () => {
     setShowModal(true);
   };
   const totalAmountCalc = Number(amountTotal) + Number(shipAmount);
@@ -40,7 +29,6 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
       <POSModal
         showModal={showModal}
         setShowModal={setShowModal}
-        payType={payType}
         userId={userId}
       />
       <div className=" mx-auto bg-background flex flex-col justify-between p-2">
@@ -53,18 +41,17 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
             </span>
           </li>
           <li className="text-sm flex justify-between text-gray-600 mb-1 maxsm:mb-0">
-            <span className="text-xl maxsm:text-[12px]">Artículos:</span>
-            <span className="text-blue-500 text-xl maxsm:text-[12px]">
+            <span className="text-blue-500 text-2xl maxsm:text-[12px]">
               {productsPOS?.reduce(
                 (acc: any, cartItem: any) => acc + cartItem.quantity,
                 0
               )}
-              (Artículos)
+              <span className="text-sm">(Artículos)</span>
             </span>
           </li>
-          <li className="text-lg font-bold border-t flex justify-between mt-3 maxsm:mt-1 ">
+          <li className="text-lg font-bold border-t flex flex-col justify-between mt-3 maxsm:mt-1 ">
             <span className="text-2xl maxsm:text-[14px]">Total:</span>
-            <span className="text-2xl maxsm:text-[14px]">
+            <span className="text-4xl maxsm:text-[14px]">
               <FormattedPrice amount={totalAmountCalc} />
             </span>
           </li>
@@ -74,7 +61,7 @@ const POSCheckOutForm = ({ userId }: { userId: string }) => {
           <div className="flex flex-col items-center gap-1">
             <div className="flex gap-5 w-full">
               <button
-                onClick={() => handleCheckout("EFECTIVO")}
+                onClick={() => handleCheckout()}
                 className="bg-emerald-700 w-full text-slate-100 py-10 maxsm:py-1.5 uppercase text-xl maxsm:text-xs px-12 hover:bg-black hover:text-white duration-300 ease-in-out cursor-pointer  rounded-md flex items-center gap-2 justify-center"
               >
                 <DollarSign /> Pagar

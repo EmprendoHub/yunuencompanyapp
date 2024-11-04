@@ -10,16 +10,13 @@ import { SiMercadopago } from "react-icons/si";
 import { DollarSign } from "lucide-react";
 import ExitIcon from "../icons/ExitIcon";
 import { payPOSDrawer } from "@/app/_actions";
+import { TbTransfer } from "react-icons/tb";
 
 const PayCartComp = ({
   setShowModal,
-  payType,
-  isPaid,
   userId,
 }: {
   setShowModal: any;
-  payType: any;
-  isPaid: any;
   userId: string;
 }) => {
   const getPathname = usePathname();
@@ -33,10 +30,7 @@ const PayCartComp = ({
   const dispatch = useDispatch();
   const router = useRouter();
   const [transactionNo, setTransactionNo] = useState("EFECTIVO");
-  const [phone, setPhoneNo] = useState("");
   const [note, setNote] = useState("");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [savingPayment, setSavingPayment] = useState(false);
 
   const { productsPOS } = useSelector((state: any) => state.compras);
@@ -69,10 +63,30 @@ const PayCartComp = ({
       setTransactionNo(newTransactionNo); // Still update the state, but don't rely on it immediately
     }
     // Pass the updated transactionNo directly to handleCheckout
-    handleCheckout(newTransactionNo);
+    handleCheckout(newTransactionNo, "TERMINAL");
   };
 
-  const handleCheckout: any = async (newTransactionNo: string) => {
+  const handleTransfer = async () => {
+    let newTransactionNo = transactionNo;
+
+    if (transactionNo === "EFECTIVO") {
+      newTransactionNo = Math.floor(
+        1000000000 + Math.random() * 9000000000
+      ).toString();
+      setTransactionNo(newTransactionNo); // Still update the state, but don't rely on it immediately
+    }
+    // Pass the updated transactionNo directly to handleCheckout
+    handleCheckout(newTransactionNo, "TRANSFERENCIA");
+  };
+
+  const handleCash = async () => {
+    handleCheckout(transactionNo, "EFECTIVO");
+  };
+
+  const handleCheckout: any = async (
+    newTransactionNo: string,
+    payType: string
+  ) => {
     setSavingPayment(true);
 
     if (!amountReceived || totalAmountCalc > amountReceived) {
@@ -86,27 +100,18 @@ const PayCartComp = ({
     } else {
       finalTransactionNo = transactionNo;
     }
-    console.log(finalTransactionNo, "transactionNo");
+    console.log(finalTransactionNo, "transactionNo", payType, "paytype");
 
     const formData = new FormData();
     const items = JSON.stringify(productsPOS);
     formData.append("items", items);
-    formData.append("name", name);
-    formData.append("phone", phone);
     formData.append("note", note);
-    formData.append("email", email);
     formData.append("transactionNo", finalTransactionNo);
     formData.append("amountReceived", amountReceived.toString());
     formData.append("payType", payType);
-    formData.append("pathname", userId);
-
-    // const result: any = await fetch(`/api/payment`, {
-    //   method: "POST",
-    //   body: formData,
-    // });
+    formData.append("userId", userId);
 
     const result: any = await payPOSDrawer(formData);
-    const newOrderJson = JSON.parse(result.newOrder);
 
     if (result?.error) {
       console.log(result?.error);
@@ -160,23 +165,33 @@ const PayCartComp = ({
               </div>
               <div
                 onClick={() => setShowModal(false)}
-                className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[20%] flex flex-row items-center justify-center gap-1 cursor-pointer absolute top-0 right-1"
+                className="my-2 px-4 py-2 text-center text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 w-[15%] flex flex-row items-center justify-center gap-1 cursor-pointer absolute top-0 right-1"
               >
                 <ExitIcon />
               </div>
               {!savingPayment && (
                 <div className="flex flex-row  items-center gap-3 w-full">
                   {/* Add MercadoPago button */}
-                  <button
-                    onClick={handleMercadoPago}
-                    className="my-2 w-[35%] px-4 py-10 text-center text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 flex flex-col items-center justify-center gap-1 text-l"
-                  >
-                    <SiMercadopago className="text-2xl" /> MercadoPago
-                  </button>
+                  <div className="flex w-[35%] items-center justify-center flex-col">
+                    {" "}
+                    <button
+                      onClick={handleMercadoPago}
+                      className="my-2 w-full px-4 py-8 text-center text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 flex flex-col items-center justify-center gap-1 text-l"
+                    >
+                      <SiMercadopago className="text-2xl" /> MercadoPago
+                    </button>
+                    {/* Add Transfer button */}
+                    <button
+                      onClick={handleTransfer}
+                      className="my-2 w-full px-4 py-8 text-center text-white bg-orange-500 border border-transparent rounded-md hover:bg-orange-700 flex flex-col items-center justify-center gap-1 text-l"
+                    >
+                      <TbTransfer className="text-2xl" /> Transferencia
+                    </button>
+                  </div>
 
                   <button
-                    onClick={() => handleCheckout("EFECTIVO")}
-                    className="my-2 w-[65%] px-4 py-10 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-col items-center justify-center gap-1 text-2xl"
+                    onClick={handleCash}
+                    className="my-2 w-[65%] px-4 py-24 text-center text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 flex flex-col items-center justify-center gap-1 text-2xl"
                   >
                     <DollarSign className="text-xl" /> EFECTIVO
                   </button>
