@@ -45,6 +45,7 @@ import APIExpenseFilters from "@/lib/APIExpensesFilters";
 import { DateTime } from "luxon";
 import mongoose from "mongoose";
 import APIReportsFilters from "@/lib/APIReportsFilters";
+import { subDays, format } from "date-fns";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -635,6 +636,7 @@ export async function getDashboard() {
       },
     ]);
 
+    // Step 2: Query the database
     let weeklyExpenseData: any = await Expense.aggregate([
       {
         $match: {
@@ -642,12 +644,11 @@ export async function getDashboard() {
             $gte: startOfLast7Days,
             $lt: endOfLast7Days,
           },
-          expenseIntent: "pagado", // Add filter for paymentIntent
+          expenseIntent: "pagado",
         },
       },
       {
         $group: {
-          // Group by day using the $dateToString operator
           _id: { $dateToString: { format: "%m-%d-%Y", date: "$pay_date" } },
           totalAmount: { $sum: "$amount" },
           count: { $sum: 1 },
@@ -655,16 +656,25 @@ export async function getDashboard() {
       },
       {
         $project: {
-          _id: 0, // Optional: Remove the _id field
-          date: "$_id", // Rename _id to date
-          Total: "$totalAmount", // Rename totalAmount to Total
-          count: 1, // Include the count field as is
+          _id: 0,
+          date: "$_id",
+          Total: "$totalAmount",
+          count: 1,
         },
       },
       {
-        $sort: { _id: 1 }, // Sort by date in ascending order
+        $sort: { date: 1 },
       },
     ]);
+
+    const last7DaysArray = Array.from({ length: 8 }, (_, i) =>
+      format(subDays(startOfToday, i), "MM-dd-yyyy")
+    ).reverse(); // Ascending order
+
+    weeklyExpenseData = last7DaysArray.map((date: any) => {
+      const dayData = weeklyExpenseData.find((data: any) => data.date === date);
+      return dayData || { date, Total: 0, count: 0 };
+    });
 
     let dailyData: any = await Payment.aggregate([
       // Match documents for the desired day
