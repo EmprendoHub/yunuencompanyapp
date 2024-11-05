@@ -46,6 +46,7 @@ import { DateTime } from "luxon";
 import mongoose from "mongoose";
 import APIReportsFilters from "@/lib/APIReportsFilters";
 import { subDays, format } from "date-fns";
+import APIPaymentsFilters from "@/lib/APIPaymentsFilters";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -134,9 +135,16 @@ async function getTotalValueOfItems(orders: any) {
   return totalValue;
 }
 
+async function getTotalValueOfPayments(payments: any) {
+  let totalValue = 0;
+  payments.forEach((payment: any) => {
+    totalValue += payment.amount;
+  });
+  return totalValue;
+}
+
 export async function generateReports(searchParams: any) {
   const session = await getServerSession(options);
-
   if (!session || session.user.role !== "manager") {
     throw new Error("You are not authorized");
   }
@@ -187,6 +195,110 @@ export async function generateReports(searchParams: any) {
     const dataString = JSON.stringify(dataObject);
 
     return dataString;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Orders loading error");
+  }
+}
+
+export async function generatePaymentsExpenseReports(searchParams: any) {
+  const session = await getServerSession(options);
+
+  if (!session || session.user.role !== "manager") {
+    throw new Error("You are not authorized");
+  }
+
+  try {
+    await dbConnect();
+    let orderQuery;
+    let apiReportsFilters: any;
+    if (searchParams.type === "Ventas") {
+      orderQuery = Order.find({ orderStatus: { $ne: "cancelada" } })
+        .populate({
+          path: "user",
+          select: "name",
+        })
+        .populate({
+          path: "branch",
+          select: "name",
+          model: User,
+        });
+      apiReportsFilters = new APIReportsFilters(
+        orderQuery,
+        new URLSearchParams(searchParams)
+      )
+        .searchAllFields()
+        .filter();
+    } else {
+      orderQuery = Payment.find({ paymentIntent: { $eq: "pagado" } })
+        .populate({
+          path: "user",
+          select: "name",
+        })
+        .populate({
+          path: "expense",
+          model: Expense,
+        });
+
+      apiReportsFilters = new APIPaymentsFilters(
+        orderQuery,
+        new URLSearchParams(searchParams)
+      )
+        .searchAllFields()
+        .filter();
+    }
+
+    let filteredOrdersData = await apiReportsFilters.query;
+
+    if (searchParams.type === "Ventas") {
+      const paymentTotals = filteredOrdersData.reduce(
+        (total: number, order: any) => total + order.paymentInfo.amountPaid,
+        0
+      );
+
+      const orderTotals = await getTotalValueOfItems(filteredOrdersData);
+      const itemCount = filteredOrdersData.length;
+
+      filteredOrdersData.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      const dataObject = {
+        orders: { orders: filteredOrdersData },
+        totalOrderCount: itemCount,
+        itemCount,
+        paymentTotals,
+        orderTotals,
+      };
+      const dataString = JSON.stringify(dataObject);
+
+      return dataString;
+    } else {
+      const paymentTotals = filteredOrdersData.reduce(
+        (total: number, payment: any) => total + payment.amount,
+        0
+      );
+
+      const orderTotals = await getTotalValueOfPayments(filteredOrdersData);
+      const itemCount = filteredOrdersData.length;
+      filteredOrdersData.sort(
+        (a: any, b: any) =>
+          new Date(b.pay_date).getTime() - new Date(a.pay_date).getTime()
+      );
+
+      const dataObject = {
+        orders: { orders: filteredOrdersData },
+        totalOrderCount: itemCount,
+        itemCount,
+        paymentTotals,
+        orderTotals,
+      };
+
+      const dataString = JSON.stringify(dataObject);
+
+      return dataString;
+    }
   } catch (error) {
     console.error(error);
     throw new Error("Orders loading error");

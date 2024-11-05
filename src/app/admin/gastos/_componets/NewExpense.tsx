@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
 
-const NewExpense = () => {
+const NewExpense = ({ branchData }: { branchData: any }) => {
   const [type, setType] = useState("");
   const [amount, setAmount] = useState("");
   const [reference, setReference] = useState("");
@@ -19,6 +19,8 @@ const NewExpense = () => {
   const [comment, setComment] = useState("");
   const [activeButton, setActiveButton] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [userId, setUserId] = useState("");
+  const branches = JSON.parse(branchData);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -71,6 +73,7 @@ const NewExpense = () => {
           method,
           comment,
           startDate,
+          userId,
         }),
       });
 
@@ -91,6 +94,8 @@ const NewExpense = () => {
         setReference("");
         setMethod("EFECTIVO");
         setComment("");
+        setUserId("");
+        setStartDate(new Date());
       }
       setActiveButton(false);
     } catch (error) {
@@ -141,6 +146,22 @@ const NewExpense = () => {
                 <SelectItem className="text-2xl" value="NOMINA">
                   NOMINA
                 </SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={userId} onValueChange={(value) => setUserId(value)}>
+              <SelectTrigger className="w-[300px] text-2xl">
+                <SelectValue placeholder="Sucursal" />
+              </SelectTrigger>
+              <SelectContent>
+                {branches.map((opt: any) => (
+                  <SelectItem
+                    className="text-2xl"
+                    value={opt._id}
+                    key={opt._id}
+                  >
+                    {opt.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

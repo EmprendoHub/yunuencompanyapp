@@ -2,7 +2,10 @@
 import AllOrdersFilters from "./AllOrdersFilters";
 import { useState } from "react";
 import AllOrders from "./AllOrders";
-import { generateReports } from "@/app/_actions";
+import {
+  generatePaymentsExpenseReports,
+  generateReports,
+} from "@/app/_actions";
 
 const FilterOrdersComponent = ({
   dataString,
@@ -20,7 +23,7 @@ const FilterOrdersComponent = ({
     setError(null);
 
     try {
-      const newData = await generateReports(searchParams);
+      const newData = await generatePaymentsExpenseReports(searchParams);
       setReportData(newData);
     } catch (err) {
       console.error("Error generating report:", err);

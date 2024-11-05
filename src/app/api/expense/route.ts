@@ -14,10 +14,10 @@ export async function POST(request: any, res: any) {
   }
   try {
     await dbConnect();
-    const { type, amount, reference, method, comment, startDate } =
+    const { userId, type, amount, reference, method, comment, startDate } =
       await request.json();
-
-    const user = { _id: token?.user?._id };
+    const workingId = userId ? userId : token?.user?._id;
+    const user = { _id: workingId };
     const pay_date = startDate;
     const expenseIntent = "pagado";
 

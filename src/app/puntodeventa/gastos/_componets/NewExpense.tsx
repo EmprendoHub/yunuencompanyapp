@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 const NewExpense = () => {
   const [type, setType] = useState("");
@@ -17,6 +18,7 @@ const NewExpense = () => {
   const [method, setMethod] = useState("EFECTIVO");
   const [comment, setComment] = useState("");
   const [activeButton, setActiveButton] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -68,6 +70,7 @@ const NewExpense = () => {
           reference,
           method,
           comment,
+          startDate,
         }),
       });
 
@@ -88,6 +91,7 @@ const NewExpense = () => {
         setReference("");
         setMethod("EFECTIVO");
         setComment("");
+        setStartDate(new Date());
       }
       setActiveButton(false);
     } catch (error) {
@@ -100,11 +104,27 @@ const NewExpense = () => {
     setAmount(inputAmount);
   };
 
+  const handleStartDateChange = (date: Date | null) => {
+    if (date) {
+      const startOfDay = new Date(date);
+      setStartDate(startOfDay);
+    } else {
+      setStartDate(null);
+    }
+  };
+
   return (
     <div className="relative flex w-[70%] h-screen items-center justify-center fle-col py-7  pr-7 m-auto rounded-xl z-10">
       {!activeButton ? (
         <form onSubmit={handleSubmit} className="flex flex-col w-full gap-y-4">
           <div className="flex items-center gap-5">
+            <div className="flex items-center gap-x-2 text-foreground">
+              <DatePicker
+                className="appearance-none rounded-md"
+                onChange={handleStartDateChange}
+                selected={startDate}
+              />
+            </div>
             <Select value={type} onValueChange={(value) => setType(value)}>
               <SelectTrigger className="w-[300px] text-2xl">
                 <SelectValue placeholder="Tipo de Pago" />

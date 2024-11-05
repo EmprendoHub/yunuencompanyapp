@@ -41,7 +41,7 @@ class APIReportsFilters {
       queryCopy[key] = value;
     });
 
-    const removeFields = ["branch", "paid", "page", "per_page"];
+    const removeFields = ["branch", "type", "paid", "page", "per_page"];
     removeFields.forEach((el) => delete queryCopy[el]);
 
     const output: Record<string, any> = {};
