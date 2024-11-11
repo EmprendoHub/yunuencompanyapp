@@ -21,7 +21,7 @@
   ],
   "theme_color": "#5ab9ddff",
   "background_color": "#fff",
-  "start_url": "/",
+  "start_url": "/admin/",
   "display": "standalone",
   "orientation": "portrait"
 }
