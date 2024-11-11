@@ -1,0 +1,27 @@
+{
+  "name": "Global Stoel - Sillas Tolix",
+  "short_name": "Global Stoel",
+  "icons": [
+    {
+      "src": "/icons/globalstoel-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/globalstoel-icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/globalstoel-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#5ab9ddff",
+  "background_color": "#c0a998fb",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,28 +1,33 @@
-import HeaderComponent from "@/components/header/HeaderComponent";
 import CustomSessionProvider from "./SessionProvider";
 import "../css/globals.css";
-import FooterComponent from "@/components/footer/FooterComponent";
-import WhatsAppButton from "@/components/buttons/WhatsAppButton";
-import { getServerSession } from "next-auth";
-import { options } from "./api/auth/[...nextauth]/options";
-import CookieConsentComp from "@/components/cookies/CookieConsent";
-import { getCookiesName } from "@/backend/helpers";
-import { cookies } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
+  manifest: "/manifest.json",
+  metadataBase: new URL("https://www.yunuencompany.com"),
   title: "Yunuen Company",
   description: "Ofertas de liquidación en ropa, accesorios",
+  openGraph: {
+    title: "Yunuen Company - Ropa Americana",
+    description:
+      "Descubre lo mejor en prendas de vestir, accesorios y ropa casual. Nos Especializamos en ropa americana.",
+    image: "url/opengraph-image.jpeg",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@yunuencompany",
+    title: "Yunuen Company - Ropa Americana",
+    description:
+      "Descubre lo mejor en prendas de vestir, accesorios y ropa casual. Nos Especializamos en ropa americana.",
+    image: "url/opengraph-image.jpeg",
+  },
+};
+export const viewport = {
+  themeColor: "#5ab9ddff",
 };
 
 export default async function RootLayout({ children }: { children: any }) {
-  const session = await getServerSession(options);
-  //set cookies
-  const nextCookies = cookies();
-  const cookieName = getCookiesName();
-  const nextAuthSessionToken = nextCookies.get(cookieName);
-  const cookie = `${cookieName}=${nextAuthSessionToken?.value}`;
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`overflow-x-hidden max-w-full`}>
@@ -38,7 +43,6 @@ export default async function RootLayout({ children }: { children: any }) {
             {/* <FooterComponent /> */}
           </ThemeProvider>
         </CustomSessionProvider>
-        <CookieConsentComp />
         <Toaster />
       </body>
     </html>
