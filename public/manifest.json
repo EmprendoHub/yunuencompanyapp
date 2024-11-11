@@ -1,26 +1,26 @@
 {
-  "name": "Global Stoel - Sillas Tolix",
-  "short_name": "Global Stoel",
+  "name": "Yunuen Company - Ropa Americana",
+  "short_name": "Yunuen Company",
   "icons": [
     {
-      "src": "/icons/globalstoel-icon-192x192.png",
+      "src": "/icons/yunuencompany-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/globalstoel-icon-384x384.png",
+      "src": "/icons/yunuencompany-icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "/icons/globalstoel-icon-512x512.png",
+      "src": "/icons/yunuencompany-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
   "theme_color": "#5ab9ddff",
-  "background_color": "#c0a998fb",
+  "background_color": "#fff",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait"
