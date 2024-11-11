@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { generateReports, getAllPOSBranches } from "@/app/_actions";
 import FilterOrdersComponent from "@/components/orders/FilterOrdersComponent";
