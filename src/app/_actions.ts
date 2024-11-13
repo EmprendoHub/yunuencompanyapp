@@ -693,6 +693,8 @@ export async function getDashboard() {
       0
     );
 
+    console.log(startOfToday, "startOfDay");
+
     const endOfToday = new Date(
       today.getFullYear(),
       today.getMonth(),
