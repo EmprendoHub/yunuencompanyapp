@@ -1,6 +1,6 @@
 "use client";
 import { MdAttachMoney } from "react-icons/md";
-import { HiArrowNarrowUp } from "react-icons/hi";
+import { HiArrowNarrowDown, HiArrowNarrowUp } from "react-icons/hi";
 import { GiClothes } from "react-icons/gi";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { FaTags } from "react-icons/fa6";
@@ -361,15 +361,21 @@ const DashComponent = ({ data }: { data: any }) => {
                   <h3 className="text-card-foreground text-sm uppercase">
                     Ventas Totales
                   </h3>
-                  <p className="text-2xl text-slate-700">{totalOrderCount}</p>
+                  <p className="text-2xl text-foreground">{totalOrderCount}</p>
                 </div>
                 <FaTags className="bg-teal-600  text-white rounded-full text-3xl p-1 shadow-lg" />
               </div>
               <div className="flex  gap-2 text-sm">
-                <span className="text-green-700 flex items-center">
-                  <HiArrowNarrowUp />
+                <span className={`flex items-center`}>
+                  {totalOrderCount > orderCountPreviousMonth ? (
+                    <HiArrowNarrowUp className="text-emerald-700" />
+                  ) : (
+                    <HiArrowNarrowDown className="text-red-700" />
+                  )}
+
                   {orderCountPreviousMonth}
                 </span>
+
                 <div className="text-card-foreground">Mes Anterior</div>
               </div>
             </div>
@@ -382,7 +388,7 @@ const DashComponent = ({ data }: { data: any }) => {
                   <h3 className="text-card-foreground text-sm uppercase">
                     Total de Productos
                   </h3>
-                  <p className="text-2xl  text-slate-700">
+                  <p className="text-2xl  text-foreground">
                     {totalProductsSoldThisMonth}
                   </p>
                 </div>

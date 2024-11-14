@@ -10,7 +10,7 @@ export function ModeToggle() {
   const { setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-x-2 justify-start">
+    <div className="flex flex-col items-center gap-y-2 justify-start">
       <Button onClick={() => setTheme("light")} variant="ghost" size="icon">
         <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 text-slate-500 hover:text-slate-500" />
       </Button>

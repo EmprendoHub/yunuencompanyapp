@@ -7,6 +7,7 @@ import { FiLogOut } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { ModeToggle } from "../toggles/ModeToggle";
 
 export interface SidebarContextType {
   expandSidebar: boolean;
@@ -59,6 +60,7 @@ const AdminSidebar = ({ children }: { children: any }) => {
               {children}
             </ul>
           </SidebarContext.Provider>
+          <ModeToggle />
         </div>
         <div>
           <div
