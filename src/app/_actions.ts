@@ -20,7 +20,6 @@ import { revalidatePath } from "next/cache";
 import Post from "@/backend/models/Post";
 import Product from "@/backend/models/Product";
 import User from "@/backend/models/User";
-import Affiliate from "@/backend/models/Affiliate";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import axios from "axios";
@@ -35,11 +34,9 @@ import APIPostsFilters from "@/lib/APIPostsFilters";
 import APIFilters from "@/lib/APIFilters";
 import APIOrderFilters from "@/lib/APIOrderFilters";
 import APIClientFilters from "@/lib/APIClientFilters";
-import APIAffiliateFilters from "@/lib/APIAffiliateFilters";
 import Page from "@/backend/models/Page";
 import Payment from "@/backend/models/Payment";
 import Customer from "@/backend/models/Customer";
-import TestUser from "@/backend/models/TestUser";
 import Expense from "@/backend/models/Expense";
 import APIExpenseFilters from "@/lib/APIExpensesFilters";
 import { DateTime } from "luxon";
@@ -305,45 +302,6 @@ export async function generatePaymentsExpenseReports(searchParams: any) {
   }
 }
 
-export async function updateUserMercadoToken(tokenData: any) {
-  if (!tokenData) {
-    throw new Error(`No token sent`);
-  }
-  const session = await getServerSession(options);
-  try {
-    await dbConnect();
-    const updatedUser = await User.updateOne(
-      { _id: session?.user?._id }, // Query condition
-      { $set: { mercado_token: tokenData } }, // Update operation
-      { new: true, runValidators: true } // Options
-    );
-  } catch (error: any) {
-    console.log(error);
-
-    throw new Error(`Failed to update user: we got error: ${error.message}`);
-  }
-}
-
-export async function getUserMercadoToken() {
-  const session = await getServerSession(options);
-  if (!session) {
-    throw new Error(`No session available`);
-  }
-  try {
-    await dbConnect();
-    const user = await User.findOne(
-      { _id: session?.user?._id } // Query condition
-    );
-
-    const accessToken = user.mercado_token.access_token;
-    return { accessToken };
-  } catch (error: any) {
-    console.log(error);
-
-    throw new Error(`Failed to update user: we got error: ${error.message}`);
-  }
-}
-
 export async function getProductCategories(token: string, inputSearch: string) {
   const response = await fetch(
     `https://api.mercadolibre.com/sites/MLM/domain_discovery/search?limit=8&q=${inputSearch}`,
@@ -362,32 +320,6 @@ export async function getProductCategories(token: string, inputSearch: string) {
   return { data };
 }
 
-export async function getAllOrders(searchParams: any, session: any) {
-  try {
-    const urlParams = {
-      keyword: searchParams.keyword,
-      page: searchParams.page,
-    };
-    const stringSession = JSON.stringify(session);
-    // Filter out undefined values
-    const filteredUrlParams = Object.fromEntries(
-      Object.entries(urlParams).filter(([key, value]) => value !== undefined)
-    );
-    const searchQuery = new URLSearchParams(filteredUrlParams).toString();
-    const URL = `${process.env.NEXTAUTH_URL}/api/orders?${searchQuery}`;
-    const res = await fetch(URL, {
-      headers: {
-        Session: stringSession,
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-    const data = await res.json();
-    return data;
-  } catch (error: any) {
-    console.log(error.message);
-  }
-}
-
 export async function runRevalidationTo(path: string) {
   try {
     revalidatePath(path);
@@ -396,21 +328,6 @@ export async function runRevalidationTo(path: string) {
     throw Error(error);
   }
 }
-
-export const getAffiliateDashboard = async (
-  currentCookies: string,
-  email: any
-) => {
-  const URL = `${process.env.NEXTAUTH_URL}/api/affiliate/dashboard`;
-  const { data } = await axios.get(URL, {
-    headers: {
-      Cookie: currentCookies,
-      userEmail: email,
-    },
-  });
-
-  return data;
-};
 
 export async function payPOSDrawer(data: any) {
   try {
@@ -693,8 +610,6 @@ export async function getDashboard() {
       0
     );
 
-    console.log(startOfToday, "startOfDay");
-
     const endOfToday = new Date(
       today.getFullYear(),
       today.getMonth(),
@@ -869,6 +784,7 @@ export async function getDashboard() {
             $gte: startOfToday,
             $lt: endOfToday,
           },
+          expenseIntent: { $ne: "cancelada" },
         },
       },
       {
@@ -1012,6 +928,7 @@ export async function getDashboard() {
             $gte: startOfCurrentWeek,
             $lt: endOfCurrentWeek,
           },
+          expenseIntent: { $ne: "cancelada" },
         },
       },
       {
@@ -1067,6 +984,7 @@ export async function getDashboard() {
             $gte: startOfMonth,
             $lt: endOfMonth,
           },
+          expenseIntent: { $ne: "cancelada" },
         },
       },
       {
@@ -1103,6 +1021,7 @@ export async function getDashboard() {
             $gte: startOfYear,
             $lt: endOfYear,
           },
+          expenseIntent: { $ne: "cancelada" },
         },
       },
       {
@@ -1560,119 +1479,6 @@ export async function getOnePost(slug: any) {
     console.log(error);
     throw Error(error);
   }
-}
-
-export async function addNewPage(data: any) {
-  const session = await getServerSession(options);
-  const user = { _id: session?.user?._id };
-  let {
-    category,
-    preTitle,
-    mainTitle,
-    subTitle,
-    mainImage,
-    sections,
-    createdAt,
-  } = Object.fromEntries(data);
-
-  sections = JSON.parse(sections);
-  createdAt = new Date(createdAt);
-  // validate form data
-  const result = PageEntrySchema.safeParse({
-    mainTitle: mainTitle,
-    mainImage: mainImage,
-    createdAt: createdAt,
-  });
-  const { error: zodError } = result;
-  if (zodError) {
-    return { error: zodError.format() };
-  }
-
-  //check for errors
-  await dbConnect();
-  const slug = generateUrlSafeTitle(mainTitle);
-
-  const slugExists = await Page.findOne({ slug: slug });
-  if (slugExists) {
-    return {
-      error: {
-        title: { _errors: ["Este Titulo de Pagina ya esta en uso"] },
-      },
-    };
-  }
-  const { error } = await Page.create({
-    category,
-    preTitle,
-    mainTitle,
-    subTitle,
-    slug,
-    mainImage,
-    sections,
-    createdAt,
-    published: true,
-    authorId: { _id: session?.user._id },
-  });
-  if (error) throw Error(error);
-  revalidatePath("/");
-}
-
-export async function updatePage(data: any) {
-  const session = await getServerSession(options);
-  let {
-    _id,
-    category,
-    preTitle,
-    mainTitle,
-    subTitle,
-    mainImage,
-    sections,
-    createdAt,
-  } = Object.fromEntries(data);
-  sections = JSON.parse(sections);
-  const updatedAt = new Date(createdAt);
-  // validate form data
-  const result = PageUpdateSchema.safeParse({
-    category: category,
-    mainTitle: mainTitle,
-    mainImage: mainImage,
-    updatedAt: updatedAt,
-  });
-  const { error: zodError } = result;
-  if (zodError) {
-    return { error: zodError.format() };
-  }
-
-  //check for errors
-  await dbConnect();
-  const slug = generateUrlSafeTitle(mainTitle);
-  const slugExists = await Page.findOne({
-    slug: slug,
-    _id: { $ne: _id },
-  });
-  if (slugExists) {
-    return {
-      error: {
-        title: { _errors: ["Este Titulo de Pagina ya esta en uso"] },
-      },
-    };
-  }
-  const { error }: any = await Page.updateOne(
-    { _id },
-    {
-      category,
-      preTitle,
-      mainTitle,
-      subTitle,
-      slug,
-      mainImage,
-      sections,
-      updatedAt,
-      published: true,
-      authorId: { _id: session?.user._id },
-    }
-  );
-  if (error) throw Error(error);
-  revalidatePath("/");
 }
 
 export async function getAllPost(searchQuery: any) {
@@ -2175,6 +1981,99 @@ export async function getOneProduct(slug: any, id: any = "") {
     product = JSON.stringify(product);
     return { product: product };
     // return { product };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function createOneExpense(data: any) {
+  const session = await getServerSession(options);
+  if (session.user.role !== "manager") {
+    // Return immediately if not authorized
+    throw Error("Unauthorized");
+  }
+  try {
+    await dbConnect();
+
+    let { userId, type, amount, reference, method, comment, startDate } =
+      Object.fromEntries(data);
+
+    const workingId = userId ? userId : session?.user?._id;
+    const user = { _id: workingId };
+    const pay_date = startDate;
+    const expenseIntent = "pagado";
+
+    const newExpense = new Expense({
+      type,
+      amount,
+      reference,
+      expenseIntent,
+      method,
+      comment,
+      pay_date,
+      user,
+    });
+
+    // Save the Product to the database
+    await newExpense.save();
+    const expenseId = newExpense._id;
+    let paymentTransactionData = {
+      type: type,
+      paymentIntent: "pagado",
+      amount: -Math.abs(amount), // Ensure the amount is negative,
+      reference: comment,
+      pay_date,
+      method,
+      expense: expenseId,
+      user,
+    };
+    const newPaymentTransaction = await new Payment(paymentTransactionData);
+    await newPaymentTransaction.save();
+    revalidatePath(`/admin/gastos`);
+    revalidatePath(`/puntodeventa/gastos`);
+    return { status: "success" };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function deleteOneExpense(data: any) {
+  const session = await getServerSession(options);
+  if (session.user.role !== "manager") {
+    // Return immediately if not authorized
+    throw Error("Unauthorized");
+  }
+  try {
+    await dbConnect();
+
+    let { note, expenseId } = Object.fromEntries(data);
+    const soonToDeleteExpense = await Expense.findById(expenseId);
+
+    if (!soonToDeleteExpense) {
+      const notFoundResponse = "Expense not found";
+      return new Response(JSON.stringify(notFoundResponse), { status: 404 });
+    }
+    const payment = await Payment.findOne({ expense: expenseId });
+    // Iterate through order items and update Product quantities
+
+    const cancelExpense = await Expense.findByIdAndUpdate(expenseId, {
+      expenseIntent: "cancelada",
+      comment: note,
+    });
+
+    await Payment.findByIdAndUpdate(payment._id, {
+      paymentIntent: "cancelado",
+      comment: note,
+    });
+
+    revalidatePath(`/admin/gastos`);
+    revalidatePath(`/admin/gastos/gasto/${expenseId}`);
+    revalidatePath(`/puntodeventa/gastos`);
+    revalidatePath(`/puntodeventa/gastos/gasto/${expenseId}`);
+
+    return { status: "success" };
   } catch (error: any) {
     console.log(error);
     throw Error(error);
@@ -2852,129 +2751,6 @@ export async function updateClientPassword(data: any) {
     client.updatedAt = updatedAt;
     client.save();
     revalidatePath("/perfil/actualizar_contrasena");
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getAllAffiliate(searchQuery: any) {
-  try {
-    await dbConnect();
-    const session = await getServerSession(options);
-    let affiliateQuery: any;
-
-    if (session) {
-      if (session?.user?.role === "manager") {
-        affiliateQuery = Affiliate.find({});
-      }
-    }
-
-    const searchParams = new URLSearchParams(searchQuery);
-    const resPerPage = Number(searchParams.get("perpage")) || 5;
-    // Extract page and per_page from request URL
-    const page = Number(searchParams.get("page")) || 1;
-    // total number of documents in database
-    const affiliatesCount = await Affiliate.countDocuments();
-    // Extract all possible categories
-    // Apply search Filters
-    const apiAffiliateFilters: any = new APIAffiliateFilters(
-      affiliateQuery,
-      searchParams
-    )
-      .searchAllFields()
-      .filter();
-
-    let affiliatesData = await apiAffiliateFilters.query;
-
-    const filteredAffiliatesCount = affiliatesData.length;
-
-    apiAffiliateFilters.pagination(resPerPage, page);
-    affiliatesData = await apiAffiliateFilters.query.clone();
-
-    let sortedAffiliates: any[] = affiliatesData
-      .slice()
-      .sort(
-        (a: { createdAt: string }, b: { createdAt: string }) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-
-    let affiliates = JSON.stringify(sortedAffiliates);
-
-    return {
-      affiliates: affiliates,
-      affiliatesCount: affiliatesCount,
-      filteredAffiliatesCount: filteredAffiliatesCount,
-      resPerPage: resPerPage,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getAllAffiliateOrder(searchQuery: any, id: any) {
-  const session = await getServerSession(options);
-
-  try {
-    await dbConnect();
-    const session = await getServerSession(options);
-    let orderQuery: any;
-    let affiliate;
-    if (session) {
-      orderQuery = Order.find({
-        affiliateId: id,
-        orderStatus: { $ne: "Cancelado" },
-      });
-      affiliate = await Affiliate.findOne({ _id: id });
-    }
-
-    const searchParams = new URLSearchParams(searchQuery);
-    const resPerPage = Number(searchParams.get("perpage")) || 5;
-    // Extract page and per_page from request URL
-    const page = Number(searchParams.get("page")) || 1;
-    // Apply descending order based on a specific field (e.g., createdAt)
-    orderQuery = orderQuery.sort({ createdAt: -1 });
-    const totalOrderCount = await Order.countDocuments();
-
-    // Apply search Filters including order_id and orderStatus
-    const apiOrderFilters: any = new APIOrderFilters(orderQuery, searchParams)
-      .searchAllFields()
-      .filter();
-    let ordersData = await apiOrderFilters.query;
-
-    const itemCount = ordersData.length;
-    apiOrderFilters.pagination(resPerPage, page);
-    ordersData = await apiOrderFilters.query.clone();
-
-    let orders = JSON.stringify(ordersData);
-    affiliate = JSON.stringify(affiliate);
-
-    return {
-      orders: orders,
-      affiliate: affiliate,
-      totalOrderCount: totalOrderCount,
-      itemCount: itemCount,
-      resPerPage: resPerPage,
-    };
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function updateAffiliate(_id: any) {
-  //check for errors
-  await dbConnect();
-  try {
-    const affiliate = await Affiliate.findOne({ _id: _id });
-    if (affiliate && affiliate.isActive === false) {
-      affiliate.isActive = true;
-    } else {
-      affiliate.isActive = false;
-    }
-    affiliate.save();
-    revalidatePath("/admin/clientes");
   } catch (error: any) {
     console.log(error);
     throw Error(error);

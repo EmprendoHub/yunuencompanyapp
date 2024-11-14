@@ -14,12 +14,28 @@ interface Expense {
 const POSExpenseDetails = ({ expense }: { expense: Expense }) => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <p>{expense.type}</p>
-      <p>{expense.amount}</p>
-      <p>{expense.reference}</p>
-      <p>{expense.expenseIntent}</p>
-      <p>{expense.method}</p>
-      <p>{expense.comment}</p>
+      <div className="border border-muted rounded-md p-10">
+        <div>
+          <span className="text-muted text-xs">Tipo de Gasto: </span>
+          <span>{expense.type}</span>
+        </div>
+        <div>
+          <span className="text-muted text-xs">Cantidad de Gasto: </span>
+          <span>${expense.amount}</span>
+        </div>
+        <div>
+          <span className="text-muted text-xs">Estado de Gasto: </span>
+          <span>{expense.expenseIntent}</span>
+        </div>
+        <div>
+          <span className="text-muted text-xs">Método de Pago: </span>
+          <span>{expense.method}</span>
+        </div>
+        <div>
+          <span className="text-muted text-xs">Comentario: </span>
+          <span>{expense.comment}</span>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaCircleCheck, FaCircleExclamation } from "react-icons/fa6";
-import { runRevalidationTo } from "@/app/_actions";
+import { deleteOneExpense, runRevalidationTo } from "@/app/_actions";
 import { toast } from "@/components/ui/use-toast";
 
 const CancelExpenseComp = ({
@@ -33,13 +33,18 @@ const CancelExpenseComp = ({
 
     try {
       const formData = new FormData();
-      formData.set("expenseId", expenseId);
+      formData.append("expenseId", expenseId);
+      formData.append("note", note);
       try {
-        const res = await fetch(`/api/expense`, {
-          method: "DELETE",
-          body: formData,
-        });
-        await runRevalidationTo(`/${pathname}/pedidos`);
+        const res: any = await deleteOneExpense(formData);
+
+        if (res.status !== "success") {
+          toast({
+            variant: "destructive",
+            title: "Error al cancelar gasto intenta nuevamente",
+          });
+        }
+        await runRevalidationTo(`/${pathname}/gastos`);
         setShowModal(false);
       } catch (error) {
         toast({
@@ -58,7 +63,7 @@ const CancelExpenseComp = ({
       <div className="w-1/2 maxmd:w-5/6 bg-background pl-4 rounded-lg">
         <section className=" p-6 w-full">
           <h2 className="text-xl maxmd:text-5xl font-semibold text-foreground mb-8 font-EB_Garamond">
-            Cancelar Venta
+            Cancelar Gasto
           </h2>
           <form
             onSubmit={handleSubmit}
@@ -70,7 +75,7 @@ const CancelExpenseComp = ({
                   <label className="block mb-1">Razón de Cancelación ? </label>
                   <textarea
                     rows={5}
-                    className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none focus:border-gray-400 w-full"
+                    className="appearance-none border bg-card rounded-md py-2 px-3 border-gray-300 focus:outline-none focus:border-gray-400 w-full"
                     placeholder="Nota"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}

@@ -75,7 +75,7 @@ const CancelOrderComp = ({
                   <label className="block mb-1">Razón de Cancelación ? </label>
                   <textarea
                     rows={5}
-                    className="appearance-none border bg-gray-100 rounded-md py-2 px-3 border-gray-300 focus:outline-none focus:border-gray-400 w-full"
+                    className="appearance-none border bg-card rounded-md py-2 px-3 border-gray-300 focus:outline-none focus:border-gray-400 w-full"
                     placeholder="Nota"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}

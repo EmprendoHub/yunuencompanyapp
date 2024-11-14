@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { createOneExpense } from "@/app/_actions";
 
 const NewExpense = ({ branchData }: { branchData: any }) => {
   const [type, setType] = useState("");
@@ -18,7 +19,7 @@ const NewExpense = ({ branchData }: { branchData: any }) => {
   const [method, setMethod] = useState("EFECTIVO");
   const [comment, setComment] = useState("");
   const [activeButton, setActiveButton] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const [userId, setUserId] = useState("");
   const branches = JSON.parse(branchData);
 
@@ -61,29 +62,24 @@ const NewExpense = ({ branchData }: { branchData: any }) => {
     setActiveButton(true);
 
     try {
-      const res: any = await fetch(`/api/expense`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          type,
-          amount,
-          reference,
-          method,
-          comment,
-          startDate,
-          userId,
-        }),
-      });
+      const formData = new FormData();
+      formData.append("type", type);
+      formData.append("amount", amount);
+      formData.append("reference", reference);
+      formData.append("method", method);
+      formData.append("comment", comment);
+      formData.append("startDate", startDate.toLocaleString());
+      formData.append("userId", userId);
 
-      if (res.status === 400) {
+      const res: any = await createOneExpense(formData);
+
+      if (res.status !== "success") {
         toast({
           variant: "destructive",
           title: "Error al crear gasto intenta nuevamente",
         });
       }
-      if (res.ok) {
+      if (res.status === "success") {
         toast({
           title: "El gasto se creo exitosamente",
         });
@@ -112,8 +108,6 @@ const NewExpense = ({ branchData }: { branchData: any }) => {
     if (date) {
       const startOfDay = new Date(date);
       setStartDate(startOfDay);
-    } else {
-      setStartDate(null);
     }
   };
 

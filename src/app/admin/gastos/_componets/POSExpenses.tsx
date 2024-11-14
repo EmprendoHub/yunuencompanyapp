@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { TbDeselect } from "react-icons/tb";
 import ModalCancelExpense from "./ModalCancelExpense";
 import exp from "constants";
+import { Delete, DeleteIcon } from "lucide-react";
 
 const POSExpenses = ({
   expenses,
@@ -72,8 +73,10 @@ const POSExpenses = ({
           <tbody>
             {expenses?.map((expense: any, index: number) => (
               <tr
-                className={`bg-background ${
-                  expense?.expenseStatus === "cancelada" && "text-muted"
+                className={`${
+                  expense?.expenseIntent === "cancelada"
+                    ? "text-muted bg-card"
+                    : "bg-background text-foreground"
                 }`}
                 key={index}
               >
@@ -112,7 +115,7 @@ const POSExpenses = ({
                         className={`px-2 py-2 inline-block text-foreground hover:text-foreground bg-red-700
                        shadow-sm border border-gray-200 rounded-md hover:scale-110 cursor-pointer mr-2 duration-200 ease-in-out`}
                       >
-                        <TbDeselect className="text-white" />
+                        <Delete className="text-white" />
                       </button>
                     ) : (
                       ""
