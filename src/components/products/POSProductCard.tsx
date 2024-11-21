@@ -6,6 +6,7 @@ import { addToPOSCart, applyDiscount } from "@/redux/shoppingSlice";
 import { useState } from "react";
 import { toast } from "../ui/use-toast";
 import { title } from "process";
+import { revalidatePath } from "next/cache";
 
 // Define TypeScript interfaces
 interface ProductVariation {
@@ -65,6 +66,7 @@ const POSProductCard = ({ product }: { product: any }) => {
         color: "#ffffff", // Customize text color here
       },
     });
+    revalidatePath("/admin");
   };
 
   const handleDiscountChange = (e: any) => {
