@@ -4,7 +4,7 @@ import { HiArrowNarrowDown, HiArrowNarrowUp } from "react-icons/hi";
 import { GiClothes } from "react-icons/gi";
 import FormattedPrice from "@/backend/helpers/FormattedPrice";
 import { FaTags } from "react-icons/fa6";
-import { Bar, Doughnut, Pie } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { ChartOptions } from "chart.js/auto";
 import { CiMoneyBill } from "react-icons/ci";

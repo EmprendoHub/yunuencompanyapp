@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
-import { createOneExpense } from "@/app/_actions";
+import { createOneExpense, runRevalidationTo } from "@/app/_actions";
 
 const NewExpense = () => {
   const [type, setType] = useState("");
@@ -89,6 +89,7 @@ const NewExpense = () => {
         setComment("");
         setStartDate(new Date());
       }
+      runRevalidationTo(`/admin`);
       setActiveButton(false);
     } catch (error) {
       console.log(error);

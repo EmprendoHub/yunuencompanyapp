@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
-import { createOneExpense } from "@/app/_actions";
+import { createOneExpense, runRevalidationTo } from "@/app/_actions";
 
 const NewExpense = ({ branchData }: { branchData: any }) => {
   const [type, setType] = useState("");
@@ -94,6 +94,7 @@ const NewExpense = ({ branchData }: { branchData: any }) => {
         setStartDate(new Date());
       }
       setActiveButton(false);
+      runRevalidationTo(`/admin`);
     } catch (error) {
       console.log(error);
     }
