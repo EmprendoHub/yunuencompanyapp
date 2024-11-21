@@ -45,6 +45,7 @@ const CancelOrderComp = ({
           body: formData,
         });
         await runRevalidationTo(`/${pathname}/pedidos`);
+        runRevalidationTo(`/admin`);
         setShowModal(false);
       } catch (error) {
         toast({

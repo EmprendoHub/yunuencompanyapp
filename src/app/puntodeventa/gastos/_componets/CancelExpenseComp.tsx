@@ -44,6 +44,7 @@ const CancelExpenseComp = ({
           });
         }
         await runRevalidationTo(`/${pathname}/gastos`);
+        runRevalidationTo(`/admin`);
         setShowModal(false);
       } catch (error) {
         toast({
