@@ -2637,6 +2637,7 @@ export async function changeClientStatus(_id: any) {
       client.active = false;
     }
     client.save();
+    console.log(client);
     revalidatePath("/admin/clientes");
   } catch (error: any) {
     console.log(error);

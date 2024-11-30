@@ -15,6 +15,9 @@ const CustomerSchema = new mongoose.Schema(
     email: {
       type: String,
     },
+    active: {
+      type: Boolean,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
