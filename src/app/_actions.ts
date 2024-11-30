@@ -3603,7 +3603,6 @@ export async function getSorteoParams() {
     let customerCount = await Customer?.countDocuments();
     let customersData = await Customer?.find({}).select("name phone -_id"); // Include name and phone, exclude _id
     const customers = JSON.stringify(customersData);
-    revalidatePath(`/admin/rifa`);
     return {
       ticketCount: customerCount,
       customers: customers,

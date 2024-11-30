@@ -20,6 +20,11 @@ const RaffleRegister = () => {
       return;
     }
 
+    if (lastName === "") {
+      toast("Por favor agregue su correo electrónico para registrarse.");
+      return;
+    }
+
     if (!isValidPhone(phone)) {
       toast("Utilice un teléfono válido.");
       return;
