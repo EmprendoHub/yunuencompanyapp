@@ -2606,10 +2606,7 @@ export async function getAllClient(searchQuery: any) {
       .searchAllFields()
       .filter();
 
-    console.log(apiClientFilters.query, "apiClientFilters");
-
     let clientsData = await apiClientFilters.query;
-    console.log(clientsData, "clientsData");
 
     const filteredClientsCount = clientsData.length;
 
@@ -3641,5 +3638,49 @@ export async function setOneWinnerTicket(searchNumber: string) {
   } catch (error: any) {
     console.log(error);
     throw Error(error);
+  }
+}
+
+export async function sendSMSMessage(
+  message: string,
+  phone: string
+): Promise<boolean> {
+  const data = JSON.stringify({
+    message: message,
+    tpoa: "Sender",
+    recipient: [
+      {
+        msisdn: `521${phone}`,
+      },
+    ],
+  });
+
+  const config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://api.labsmobile.com/json/send",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization:
+        "Basic " +
+        Buffer.from(
+          `${process.env.LABS_MOBILE_API_USER}:${process.env.LABS_MOBILE_API_KEY}`
+        ).toString("base64"),
+    },
+    data: data,
+  };
+
+  try {
+    const response = await axios.request(config);
+
+    // Check for success based on API response
+    if (response.data && response.data.success) {
+      return true; // SMS sent successfully
+    } else {
+      return false; // API response indicates failure
+    }
+  } catch (error) {
+    console.error("SMS sending failed:", error);
+    return false; // Request failed
   }
 }

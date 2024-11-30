@@ -112,6 +112,7 @@ const AllClientsComponent = ({
     // If the client with the same ID doesn't exist, add it to the list
     const receiver: any = {
       id: client?._id,
+      phone: client?.phone,
       email: client?.email,
       name: client?.name,
     };
@@ -149,10 +150,10 @@ const AllClientsComponent = ({
         </div>
         <div className="flex relative mb-2">
           {emailListData?.length > 0 && (
-            <Link href={"/admin/correos"}>
+            <Link href={"/admin/mensajes"}>
               <div className="relative flex items-center justify-start ">
                 <div className="bg-black text-white flex items-center justify-center gap-3 pl-4 pr-6 py-3 rounded-md">
-                  Enviar Correo
+                  Enviar Mensajes
                   <div className="relative">
                     <AiOutlineMail className="text-2xl absolute -top-2" />
                     <span className=" rounded-full font-bold text-xs relative -right-3 -top-3 flex items-center justify-center w-3 h-3 shadow-xl ">

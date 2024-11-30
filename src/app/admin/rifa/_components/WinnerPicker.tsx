@@ -27,7 +27,6 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const totalNumber = lotteryCount;
-  const digitLength = totalNumber.toString().length;
 
   const calculateRotation = useCallback(
     (selectedNumber: number) => {
@@ -59,8 +58,8 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
     setWinnerData(null);
     setShowModal(false);
 
-    // Select a random winner
-    const selectedNumber = Math.floor(Math.random() * totalNumber) + 1;
+    // Select a random winner, ensuring the number is never 1
+    const selectedNumber = Math.floor(Math.random() * (totalNumber - 1)) + 2;
     const winner = customers[selectedNumber - 1];
 
     // Calculate precise rotation
@@ -135,9 +134,7 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
 
               const rangeStart =
                 index * Math.ceil(totalNumber / totalNumber) + 1;
-              const segmentRange = `${rangeStart
-                .toString()
-                .padStart(digitLength, "0")}`;
+              const segmentRange = `${rangeStart.toString()}`;
 
               const colors = [
                 "#FF5733",
@@ -195,11 +192,17 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
                   <p className="text-4xl font-bold">{winnerData.name}</p>
                 </div>
                 <button
-                  className="absolute top-2 right-2 text-gray-700 hover:text-red-500"
+                  className="absolute top-2 right-2 text-red-700 hover:text-red-500 z-[999]"
                   onClick={() => setShowModal(false)}
                 >
-                  ✖
+                  X
                 </button>
+                <div
+                  className="relative cursor-pointer text-white bg-emerald-700 px-6 py-3 mt-3 z-[999]"
+                  onClick={() => setShowModal(false)}
+                >
+                  Finalizar
+                </div>
               </div>
               <div className="firework"></div>
               <div className="firework"></div>
