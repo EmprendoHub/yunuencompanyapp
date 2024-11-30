@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { isValidPhone } from "@/backend/helpers";
 import { toast } from "sonner";
 import LogoComponent from "@/components/logos/LogoComponent";
-import { runRevalidationTo } from "@/app/_actions";
 
 const RaffleRegister = () => {
   const [honeypot, setHoneypot] = useState("");
