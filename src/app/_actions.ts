@@ -3655,6 +3655,7 @@ export async function sendSMSMessage(
       },
     ],
   });
+  console.log(data, "data", process.env.LABS_MOBILE_API_USER);
 
   const config = {
     method: "post",
