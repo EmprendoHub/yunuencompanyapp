@@ -18,6 +18,7 @@ import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
 import Link from "next/link";
 import { Recycle } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -138,6 +139,7 @@ export default function UserLayout({ children }: { children: any }) {
         </AdminSidebar>
         <div className="relative w-full mb-5 p-4 ">{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 }

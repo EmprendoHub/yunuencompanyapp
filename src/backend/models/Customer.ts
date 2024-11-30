@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const CustomerSchema = new mongoose.Schema(
   {
@@ -14,15 +14,14 @@ const CustomerSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
   },
   { timestamps: true }
 );
 
 export default mongoose?.models?.Customer ||
-  mongoose.model('Customer', CustomerSchema);
+  mongoose.model("Customer", CustomerSchema);

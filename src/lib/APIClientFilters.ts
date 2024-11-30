@@ -15,7 +15,7 @@ class APIClientFilters {
     const searchConditions = {
       $or: [
         { name: { $regex: keyword, $options: "i" } },
-        { email: { $regex: keyword, $options: "i" } },
+        { phone: { $regex: keyword, $options: "i" } },
       ],
     };
 
@@ -25,7 +25,7 @@ class APIClientFilters {
       : this.query.getQuery(); // If no keyword, keep existing conditions
 
     // Set the conditions to this.query._conditions
-    this.query = this.query.find(tempConditions);
+    this.query.setQuery(tempConditions);
 
     return this;
   }

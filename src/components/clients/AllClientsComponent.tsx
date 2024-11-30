@@ -182,9 +182,9 @@ const AllClientsComponent = ({
                 Teléfono
               </th>
 
-              <th scope="col" className="px-1 py-3 ">
+              {/* <th scope="col" className="px-1 py-3 ">
                 Email
-              </th>
+              </th> */}
               <th scope="col" className="w-5 px-1 py-3 text-center">
                 ...
               </th>
@@ -211,16 +211,16 @@ const AllClientsComponent = ({
                   </td>
                   <td className="px-6 maxsm:px-2 py-2 maxmd:hidden">
                     <Link key={index} href={`/admin/cliente/${client._id}`}>
-                      {client.name.substring(0, 15)}...
+                      {client.name}
                     </Link>
                   </td>
                   <td className="px-6 maxsm:px-0 py-2">
                     <b>{client.phone}</b>
                   </td>
-
+                  {/* 
                   <td className="px-1 py-2">
                     {client.email.substring(0, 12)}...
-                  </td>
+                  </td> */}
                   <td className="px-1 py-2  w-24 flex flex-row">
                     <div>
                       <Link

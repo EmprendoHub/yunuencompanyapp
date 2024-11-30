@@ -2595,7 +2595,8 @@ export async function getAllClient(searchQuery: any) {
     // Extract page and per_page from request URL
     const page = Number(searchParams.get("page")) || 1;
     // total number of documents in database
-    const clientsCount = await User.countDocuments();
+    const clientsCount = await Customer.countDocuments();
+
     // Extract all possible categories
     // Apply search Filters
     const apiClientFilters: any = new APIClientFilters(
@@ -2605,21 +2606,17 @@ export async function getAllClient(searchQuery: any) {
       .searchAllFields()
       .filter();
 
+    console.log(apiClientFilters.query, "apiClientFilters");
+
     let clientsData = await apiClientFilters.query;
+    console.log(clientsData, "clientsData");
 
     const filteredClientsCount = clientsData.length;
 
     apiClientFilters.pagination(resPerPage, page);
     clientsData = await apiClientFilters.query.clone();
 
-    let sortedClients = clientsData
-      .slice()
-      .sort(
-        (a: { createdAt: string }, b: { createdAt: string }) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-
-    let clients = JSON.stringify(sortedClients);
+    let clients = JSON.stringify(clientsData);
 
     return {
       clients: clients,
@@ -3594,5 +3591,56 @@ export async function resetAccountEmail(data: any) {
         email: { _errors: [`Failed Google Captcha Score: ${res.data?.score}`] },
       },
     };
+  }
+}
+
+export async function getSorteoParams() {
+  try {
+    // Define the model name with the suffix appended with the lottery ID
+    await dbConnect();
+    // Retrieve the dynamically created Ticket model
+
+    let customerCount = await Customer?.countDocuments();
+    let customersData = await Customer?.find({}).select("name phone -_id"); // Include name and phone, exclude _id
+    const customers = JSON.stringify(customersData);
+    revalidatePath(`/rifa`);
+    return {
+      ticketCount: customerCount,
+      customers: customers,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function setOneWinnerTicket(searchNumber: string) {
+  try {
+    // Define the model name with the suffix appended with the lottery ID
+    await dbConnect();
+    // Retrieve the dynamically created Ticket model
+    let ticket = await Customer.findOne({
+      $or: [
+        { num: searchNumber }, // Search in the `num` field
+        { "numbers.num": searchNumber }, // Search in the `numbers` array of objects
+      ],
+    });
+    if (ticket) {
+      let customer;
+      if (ticket.customer) {
+        customer = await Customer.findOne(ticket.customer);
+        customer = JSON.stringify(customer);
+      }
+      console.log(customer, ticket.customer);
+      ticket = JSON.stringify(ticket);
+      revalidatePath(`/admin/ganador/`);
+      return {
+        ticket: ticket,
+        customer: customer,
+      };
+    }
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
   }
 }
