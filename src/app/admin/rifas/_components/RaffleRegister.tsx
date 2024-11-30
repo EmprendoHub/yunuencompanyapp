@@ -48,7 +48,6 @@ const RaffleRegister = () => {
         setLastName("");
         setPhone("");
         toast("Se registró exitosamente al usuario");
-        runRevalidationTo("/admin/rifas");
         return;
       }
     } catch (error) {

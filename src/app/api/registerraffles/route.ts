@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/db";
 import { NextResponse } from "next/server";
 import Customer from "@/backend/models/Customer";
+import { runRevalidationTo } from "@/app/_actions";
 
 export async function POST(request: any) {
   const cookie = await request.headers.get("cookie");
@@ -38,6 +39,7 @@ export async function POST(request: any) {
     });
 
     const res = await newCustomer.save();
+    runRevalidationTo("/admin/rifas");
 
     return NextResponse.json({
       message: "New customer registered",
