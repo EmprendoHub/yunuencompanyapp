@@ -21,7 +21,7 @@ const AdminClientSearch = () => {
       className="relative flex flex-row maxsm:flex-col items-center w-full order-last maxmd:order-none my-5 maxmd:mt-0 "
     >
       <input
-        className="flex-grow appearance-none border border-gray-200 bg-gray-100 rounded-md mr-2 py-2 px-3 maxsm:px-0 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-3/4"
+        className="flex-grow appearance-none border border-gray-200 bg-card rounded-md mr-2 py-2 px-3 maxsm:px-0 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-3/4"
         type="text"
         placeholder="búsqueda"
         value={keyword}

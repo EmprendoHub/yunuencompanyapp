@@ -44,6 +44,7 @@ import mongoose from "mongoose";
 import APIReportsFilters from "@/lib/APIReportsFilters";
 import { subDays, format } from "date-fns";
 import APIPaymentsFilters from "@/lib/APIPaymentsFilters";
+import Template from "@/components/bulkmailer/template/Template";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -3644,7 +3645,8 @@ export async function setOneWinnerTicket(searchNumber: string) {
 
 export async function sendSMSMessage(
   message: string,
-  phone: string
+  phone: string,
+  name: string
 ): Promise<boolean> {
   const data = JSON.stringify({
     message: message,
@@ -3655,7 +3657,6 @@ export async function sendSMSMessage(
       },
     ],
   });
-  console.log(data, "data", process.env.LABS_MOBILE_API_USER);
 
   const config = {
     method: "post",
@@ -3683,6 +3684,129 @@ export async function sendSMSMessage(
     }
   } catch (error) {
     console.error("SMS sending failed:", error);
+    return false; // Request failed
+  }
+}
+
+export async function sendWATemplateMessage(
+  phone: string,
+  name: string
+): Promise<boolean> {
+  const data = JSON.stringify({
+    messaging_product: "whatsapp",
+    to: `52${phone}`,
+    type: "template",
+    template: {
+      name: "descuento_especial",
+      language: {
+        code: "es_MX",
+      },
+    },
+  });
+  console.log(data, "data", process.env.WA_BUSINESS_TOKEN);
+
+  const config = {
+    method: "post",
+    url: "https://graph.facebook.com/v21.0/431500516723038/messages",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.WA_BUSINESS_TOKEN}`,
+    },
+    data: data,
+  };
+
+  try {
+    const response: any = await axios(config);
+
+    // Check for success based on API response
+    if (response && response.status === 200) {
+      return true; // SMS sent successfully
+    } else {
+      return false; // API response indicates failure
+    }
+  } catch (error) {
+    console.error("WA Template sending failed:", error);
+    return false; // Request failed
+  }
+}
+
+export async function sendWATextMessage(
+  message: string,
+  phone: string,
+  name: string
+): Promise<boolean> {
+  const data = JSON.stringify({
+    messaging_product: "whatsapp",
+    to: `52${phone}`,
+    type: "text",
+    text: {
+      body: message,
+    },
+  });
+
+  const config = {
+    method: "post",
+    url: "https://graph.facebook.com/v21.0/431500516723038/messages",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.WA_BUSINESS_TOKEN}`,
+    },
+    data: data,
+  };
+
+  try {
+    const response: any = await axios(config);
+
+    // Check for success based on API response
+    if (response && response.status === 200) {
+      return true; // SMS sent successfully
+    } else {
+      return false; // API response indicates failure
+    }
+  } catch (error) {
+    console.error("WA Template sending failed:", error);
+    return false; // Request failed
+  }
+}
+
+export async function sendWAMediaMessage(
+  message: string,
+  phone: string,
+  mainImage: string,
+  name: string
+): Promise<boolean> {
+  const data = JSON.stringify({
+    messaging_product: "whatsapp",
+    to: `52${phone}`,
+    type: "image",
+    image: {
+      link: mainImage,
+      caption: message,
+    },
+  });
+  console.log(data, "data");
+
+  const config = {
+    method: "post",
+    url: "https://graph.facebook.com/v21.0/431500516723038/messages",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.WA_BUSINESS_TOKEN}`,
+    },
+    data: data,
+  };
+
+  try {
+    const response: any = await axios(config);
+
+    // Check for success based on API response
+    if (response && response.status === 200) {
+      return true; // SMS sent successfully
+    } else {
+      return false; // API response indicates failure
+    }
+  } catch (error) {
+    console.error("WA Template sending failed:", error);
     return false; // Request failed
   }
 }
