@@ -39,7 +39,7 @@ export async function POST(request: any) {
     });
 
     const res = await newCustomer.save();
-    runRevalidationTo("/admin/rifas");
+    runRevalidationTo("/rifas");
     runRevalidationTo("/admin/rifa");
 
     return NextResponse.json({
