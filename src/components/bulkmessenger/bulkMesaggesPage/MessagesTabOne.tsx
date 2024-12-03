@@ -66,12 +66,19 @@ export default function MessagesTabOne() {
 
         // const success = await sendSMSMessage(body, emailListData[i].phone, emailListData[i].name);
 
-        // const success = await sendWATemplateMessage(
-        //   emailListData[i].phone,
-        //   emailListData[i].name
-        // );
         let success;
-        if (mainImage === "/images/product-placeholder-minimalist.jpg") {
+        if (
+          mainImage === "/images/product-placeholder-minimalist.jpg" &&
+          body.length <= 0
+        ) {
+          success = await sendWATemplateMessage(
+            emailListData[i].phone,
+            emailListData[i].name
+          );
+        } else if (
+          mainImage === "/images/product-placeholder-minimalist.jpg" &&
+          body.length > 0
+        ) {
           success = await sendWATextMessage(
             body,
             emailListData[i].phone,
@@ -262,9 +269,9 @@ export default function MessagesTabOne() {
           </button>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full ">
         <div className="relative w-full h-full flex justify-center">
-          <div className="absolute  z-10 bg-red-100 p-5 rounded-md mt-10">
+          <div className="absolute  z-10 bg-red-100 p-5 mx-5 rounded-md mt-10">
             {mainImage !== "/images/product-placeholder-minimalist.jpg" ? (
               <Image
                 id="blogImage"
@@ -282,7 +289,13 @@ export default function MessagesTabOne() {
                 {body}
               </div>
             ) : (
-              ""
+              <div className="bg-slate-100 text-black text-sm p-1 rounded-b-md">
+                ¡OFERTA - Por Tiempo Limitado! ¡No te pierdas esta oportunidad
+                única! Aprovecha nuestras increíbles ofertas antes de que se
+                acaben. ¡Solo por tiempo limitado! 🔥 👉 ¡Haz clic aquí para más
+                detalles y asegura tu descuento! #OfertaEspecial #TiempoLimitado
+                ¿Listo para ahorrar? ¡Contáctanos ahora! 🚀
+              </div>
             )}
           </div>
           <Image

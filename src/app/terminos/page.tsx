@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export const metadata = {
@@ -7,7 +8,7 @@ export const metadata = {
 
 const TerminosPage = () => {
   return (
-    <div className="p-6 px-20 md:px-10 text-card-foreground">
+    <div className="p-6 px-5 md:px-20 text-card-foreground">
       <section className="hero mb-10 bg-card rounded-lg text-center py-20 border border-muted drop-shadow-md h-auto">
         <div className="container mx-auto">
           <h1 className="text-4xl font-extrabold ">Términos de servicio</h1>
@@ -21,7 +22,7 @@ const TerminosPage = () => {
           </p>
         </div>
       </section>
-      <div className=" p-6 px-20 md:px-10 bg-card py-20 border border-muted rounded-lg drop-shadow-md">
+      <div className=" p-6 px-5 md:px-20 bg-card py-20 border border-muted rounded-lg drop-shadow-md">
         <section className="mb-4 text-sm">
           <h2 className="text-2xl font-semibold ">DESCRIPCIÓN GENERAL</h2>
 
@@ -341,8 +342,12 @@ const TerminosPage = () => {
           </h2>
           <p className="mt-2 font-raleway ">
             Nuestro envío de información personal a través de la tienda se rige
-            por nuestra Política de Privacidad. Para ver nuestra Política de
-            Privacidad.
+            por nuestra Política de Privacidad. Para ver nuestra{" "}
+            <Link href={"/politica"} className="text-secondary">
+              {" "}
+              Política de Privacidad sigue este enlace
+            </Link>
+            .
           </p>
         </section>
 

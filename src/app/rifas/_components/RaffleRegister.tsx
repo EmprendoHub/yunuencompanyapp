@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { isValidPhone } from "@/backend/helpers";
 import { toast } from "sonner";
 import LogoComponent from "@/components/logos/LogoComponent";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const RaffleRegister = () => {
   const [honeypot, setHoneypot] = useState("");
@@ -10,19 +12,20 @@ const RaffleRegister = () => {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const route = useRouter();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    setError("");
     if (name === "") {
       toast("Por favor complete el nombre de usuario para registrarse.");
       return;
     }
 
-    if (lastName === "") {
-      toast("Por favor agregue su correo electrónico para registrarse.");
-      return;
-    }
+    // if (lastName === "") {
+    //   toast("Por favor agregue su correo electrónico para registrarse.");
+    //   return;
+    // }
 
     if (!isValidPhone(phone)) {
       toast("Utilice un teléfono válido.");
@@ -52,7 +55,7 @@ const RaffleRegister = () => {
         setLastName("");
         setPhone("");
         toast("Se registró exitosamente al usuario");
-        return;
+        route.push("/rifas/gracias");
       }
     } catch (error) {
       console.log(error);
@@ -79,7 +82,7 @@ const RaffleRegister = () => {
   };
 
   return (
-    <main className="flex min-h-screen maxsm:min-h-[70vh] flex-col items-center justify-center">
+    <main className="flex min-h-screen maxsm:min-h-[70vh] flex-col items-center justify-center  bg-gradient-to-b from-[#22315A] to-[#3A559A]">
       <div className="w-fit flex flex-col items-center bg-primary maxsm:p-8 p-20 shadow-xl text-center mx-auto rounded-lg">
         {/* <LogoComponent /> */}
         <LogoComponent className={"ml-5 mt-4 w-[200px] maxsm:w-[120px]"} />
@@ -92,27 +95,31 @@ const RaffleRegister = () => {
           className="flex flex-col justify-center items-center text-center gap-y-4 text-foreground"
         >
           <input
-            className="text-center py-2"
+            className="text-center py-2 rounded-md"
             type="text"
-            placeholder="Nombre..."
+            placeholder="Nombre completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <input
+          {/* <input
             className="text-center py-2"
             type="lastName"
             placeholder="Apellidos..."
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-          />
+          /> */}
           <input
-            className="text-center py-2"
+            className="text-center py-2 rounded-md"
             type="text"
             placeholder="Teléfono"
             value={phone}
             onChange={handlePhoneChange}
           />
-
+          {error && (
+            <span className=" text-xs text-red-500 bg-slate-100 p-1 rounded-md">
+              {error}
+            </span>
+          )}
           <input
             hidden
             className="text-center py-2"
@@ -123,10 +130,16 @@ const RaffleRegister = () => {
 
           <button
             type="submit"
-            className={`bg-black text-white py-2 px-8 text-xl hover:bg-slate-200 hover:text-foreground ease-in-out duration-700 rounded-md`}
+            className={`bg-black text-white py-2 px-8 text-base hover:bg-slate-200 hover:text-foreground ease-in-out duration-700 rounded-md`}
           >
             Registrarme
           </button>
+          <div className="text-xs">
+            Al regístrate estas aceptando nuestros{" "}
+            <Link href={"/terminos"} target="_blank" className="text-black">
+              términos de servicio.
+            </Link>
+          </div>
         </form>
       </div>
     </main>

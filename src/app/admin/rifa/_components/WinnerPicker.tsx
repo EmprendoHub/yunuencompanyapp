@@ -3,6 +3,9 @@ import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import "./pickerwinner.css";
 import LogoComponent from "@/components/logos/LogoComponent";
+import { CiShare2 } from "react-icons/ci";
+import { toast } from "sonner";
+import { Copy } from "lucide-react";
 
 interface WinnerPickerProps {
   lotteryCount: number;
@@ -78,9 +81,22 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
     }, 5000);
   }, [isSpinning, customers, totalNumber, calculateRotation]);
 
+  const copyToClipboard = () => {
+    const url = "https://www.yunuencompany.com/rifas";
+    navigator.clipboard.writeText(url);
+    toast(`El enlace se copió correctamente a su portapapeles`);
+  };
+
   return (
     <div className="flex items-center">
       <div className="w-1/4">
+        <div
+          className="flex flex-row items-center gap-x-2 cursor-pointer p-2"
+          onClick={copyToClipboard}
+        >
+          {"www.yunuencompany.com/rifas"}
+          <Copy className="text-xl" />
+        </div>
         <div className="bg-card  p-3 rounded-md">
           <h3 className=" font-bold text-2xl">Yuny y Mis Chulas</h3>
           <hr className="my-3 maxmd:my-1 " />

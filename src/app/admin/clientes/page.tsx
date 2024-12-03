@@ -35,7 +35,7 @@ const ClientsPage = async ({ searchParams }: { searchParams: any }) => {
     }
   }
   return (
-    <>
+    <div className="h-full">
       <AllClientsComponent
         clients={clients}
         filteredClientsCount={filteredClientsCount}
@@ -49,7 +49,7 @@ const ClientsPage = async ({ searchParams }: { searchParams: any }) => {
         totalPages={totalPages}
         searchParams={keywordQuery}
       />
-    </>
+    </div>
   );
 };
 

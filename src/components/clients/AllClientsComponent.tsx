@@ -139,7 +139,7 @@ const AllClientsComponent = ({
   };
 
   return (
-    <>
+    <div className="h-full">
       <hr className="my-4" />
       <div className="pl-5 maxsm:pl-3 relative overflow-x-auto shadow-md sm:rounded-lg">
         <div className=" flex flex-row maxsm:flex-col maxsm:items-start items-center justify-between">
@@ -183,9 +183,6 @@ const AllClientsComponent = ({
                 Teléfono
               </th>
 
-              {/* <th scope="col" className="px-1 py-3 ">
-                Email
-              </th> */}
               <th scope="col" className="w-5 px-1 py-3 text-center">
                 ...
               </th>
@@ -210,23 +207,20 @@ const AllClientsComponent = ({
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer"
                     />
                   </td>
-                  <td className="px-6 maxsm:px-2 py-2 maxmd:hidden">
+                  <td className="px-6 maxsm:px-2 py-1">
                     <Link key={index} href={`/admin/cliente/${client._id}`}>
                       {client.name}
                     </Link>
                   </td>
-                  <td className="px-6 maxsm:px-0 py-2">
+                  <td className="px-6 maxsm:px-0 py-1">
                     <b>{client.phone}</b>
                   </td>
-                  {/* 
-                  <td className="px-1 py-2">
-                    {client.email.substring(0, 12)}...
-                  </td> */}
-                  <td className="px-1 py-2  w-24 flex flex-row">
+
+                  <td className="px-1 py-1  w-24 flex flex-row">
                     <div>
                       <Link
                         href={`/admin/cliente/${client._id}`}
-                        className="px-2 py-2 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
+                        className="px-2 py-1 inline-block text-white hover:text-foreground bg-black shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
                       >
                         <FaPencilAlt className="" />
                       </Link>
@@ -237,7 +231,7 @@ const AllClientsComponent = ({
                           onClick={() =>
                             deactivateHandler(client._id, client?.active)
                           }
-                          className="px-2 py-2 inline-block text-white hover:text-foreground bg-slate-400 shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
+                          className="px-2 py-1 inline-block text-white hover:text-foreground bg-slate-400 shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
                         >
                           <TiCancel className="" />
                         </button>
@@ -246,7 +240,7 @@ const AllClientsComponent = ({
                           onClick={() =>
                             deactivateHandler(client._id, client?.active)
                           }
-                          className="px-2 py-2 inline-block text-green-800 hover:text-foreground bg-slate-200 shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
+                          className="px-2 py-1 inline-block text-green-800 hover:text-foreground bg-slate-200 shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer mr-2"
                         >
                           <FaCheck className="" />
                         </button>
@@ -261,7 +255,7 @@ const AllClientsComponent = ({
       </div>
 
       <hr className="my-4" />
-    </>
+    </div>
   );
 };
 
