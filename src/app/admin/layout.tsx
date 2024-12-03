@@ -13,7 +13,13 @@ import { TfiDashboard } from "react-icons/tfi";
 import { MdOutlineFactCheck, MdOutlinePostAdd } from "react-icons/md";
 import { LuReceipt } from "react-icons/lu";
 import { LiaCashRegisterSolid, LiaStoreAltSolid } from "react-icons/lia";
-import { GiClothes, GiExpense, GiVineWhip } from "react-icons/gi";
+import {
+  GiCartwheel,
+  GiClothes,
+  GiExpense,
+  GiSpinningWheel,
+  GiVineWhip,
+} from "react-icons/gi";
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
 import Link from "next/link";
@@ -134,10 +140,19 @@ export default function UserLayout({ children }: { children: any }) {
             active={pathname === "/admin/reportes" ? "true" : "false"}
             url={"/admin/reportes"}
           />
+          <hr className="my-3 maxmd:my-1" />
 
+          <SideBarItem
+            icon={<GiCartwheel size={20} />}
+            text={"Rifa"}
+            active={pathname === "/admin/rifa" ? "true" : "false"}
+            url={"/admin/rifa"}
+          />
           <hr className="my-3 maxmd:my-1" />
         </AdminSidebar>
-        <div className="relative w-full mb-5 p-4 ">{children}</div>
+        <div className="relative w-full mb-5 p-4 bg-background ">
+          {children}
+        </div>
       </div>
       <Toaster />
     </div>

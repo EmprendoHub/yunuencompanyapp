@@ -6,7 +6,7 @@
   :root {
     --background: hsl(50, 10%, 88%);
     --foreground: hsl(0, 0%, 8%);
-    --card: hsla(0, 0%, 91%, 0.952);
+    --card: hsla(0, 0%, 75%, 0.952);
     --card-foreground: hsl(0, 0%, 19%);
     --popover: hsl(0 0% 100%);
     --popover-foreground: hsl(222.2 84% 4.9%);
@@ -32,7 +32,7 @@
   }
 
   .dark {
-    --background: hsl(0, 0%, 5%);
+    --background: hsl(0, 0%, 14%);
     --foreground: hsl(210 40% 98%);
     --card: hsla(0, 0%, 23%, 0.76);
     --card-foreground: hsl(0, 0%, 91%);
