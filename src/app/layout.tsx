@@ -4,7 +4,6 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
-  manifest: "/manifest.json",
   metadataBase: new URL("https://www.yunuencompany.com"),
   title: "Yunuen Company",
   description: "Ofertas de liquidación en ropa, accesorios",
