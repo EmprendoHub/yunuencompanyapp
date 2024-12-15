@@ -30,6 +30,11 @@ const POSCart = ({ userId }: { userId: string }) => {
   const { productsPOS } = useSelector((state: any) => state?.compras);
   const dispatch = useDispatch();
 
+  const lineTotal = productsPOS?.reduce(
+    (acc: any, cartItem: any) => acc + cartItem.quantity * cartItem.price,
+    0
+  );
+
   return (
     <div className="mt-4 mr-2 flex top-5 right-2 w-1/3 maxsm:top-0">
       <section className="bg-gray-100 w-full">
@@ -83,6 +88,9 @@ const POSCart = ({ userId }: { userId: string }) => {
                               className="cursor-pointer"
                             >
                               <FiChevronRight className="w-10 h-10 maxsm:w-4 maxsm:h-4 mx-5" />
+                            </span>
+                            <span className="text-sm">
+                              ${cartItem.price * cartItem.quantity}
                             </span>
                           </div>
                         </div>
