@@ -23,7 +23,7 @@ import {
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
 import Link from "next/link";
-import { Recycle } from "lucide-react";
+import { Recycle, Video } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function UserLayout({ children }: { children: any }) {
@@ -141,7 +141,12 @@ export default function UserLayout({ children }: { children: any }) {
             url={"/admin/reportes"}
           />
           <hr className="my-3 maxmd:my-1" />
-
+          <SideBarItem
+            icon={<Video size={20} />}
+            text={"LIVE"}
+            active={pathname === "/admin/videos" ? "true" : "false"}
+            url={"/admin/videos"}
+          />
           <SideBarItem
             icon={<GiCartwheel size={20} />}
             text={"Rifa"}

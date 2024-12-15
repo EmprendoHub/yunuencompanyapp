@@ -3810,3 +3810,131 @@ export async function sendWAMediaMessage(
     return false; // Request failed
   }
 }
+
+export async function getVideoMessages(videoId: string) {
+  const video = videoId || "122199428270209263";
+
+  // Expanded fields to get more user information
+  const baseUrl = `https://graph.facebook.com/v21.0/${video}/comments?fields=message,created_time,from{id,name,username,picture}&pretty=0&limit=200`;
+
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+    // Add debug headers
+    "X-FB-Debug": "true",
+  };
+
+  let messages: any[] = [];
+  let nextPageUrl: string | null = baseUrl;
+
+  try {
+    console.log("Initial API Call URL:", nextPageUrl);
+
+    while (nextPageUrl) {
+      const config: any = {
+        method: "get",
+        url: nextPageUrl,
+        headers,
+        // Add timeout and more detailed error handling
+        timeout: 10000,
+      };
+
+      try {
+        const response = await axios(config);
+
+        if (response && response.status === 200) {
+          const liveMessages = response.data?.data || [];
+
+          // Log detailed information about each comment
+          const processedMessages = liveMessages.map((message: any) => {
+            console.log("Individual Comment Debug:", {
+              id: message.id,
+              message: message.message,
+              from: message.from
+                ? {
+                    id: message.from.id,
+                    name: message.from.name,
+                    hasUsername: !!message.from.username,
+                  }
+                : "NO FROM INFORMATION",
+            });
+
+            return message;
+          });
+
+          messages = [...messages, ...processedMessages];
+
+          // Safely handle the next page URL
+          nextPageUrl = response.data?.paging?.next || null;
+
+          console.log("Next Page URL:", nextPageUrl);
+          console.log("Current Messages Count:", messages.length);
+        } else {
+          console.warn("Unexpected response status:", response.status);
+          break;
+        }
+      } catch (axiosError: any) {
+        // More detailed Axios error logging
+        if (axiosError.response) {
+          // The request was made and the server responded with a status code
+          console.error("Error Response Data:", axiosError.response.data);
+          console.error("Error Response Status:", axiosError.response.status);
+          console.error("Error Response Headers:", axiosError.response.headers);
+        } else if (axiosError.request) {
+          // The request was made but no response was received
+          console.error("No response received:", axiosError.request);
+        } else {
+          // Something happened in setting up the request
+          console.error("Error setting up request:", axiosError.message);
+        }
+        break;
+      }
+    }
+
+    return {
+      status: 200,
+      messages: JSON.stringify(messages),
+      messageCount: messages.length,
+    };
+  } catch (error) {
+    console.error(
+      "Catastrophic error in fetching Facebook Live Messages:",
+      error
+    );
+    return { status: 400, messages: "", messageCount: 0 };
+  }
+}
+
+export async function getFBLiveVideos() {
+  const account = "173875102485412";
+  const baseUrl = `https://graph.facebook.com/v21.0/${account}?fields=live_videos`;
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+
+  let videos: any[] = [];
+  let nextPageUrl: string | null = baseUrl;
+
+  try {
+    while (nextPageUrl) {
+      const config: any = {
+        method: "get",
+        url: nextPageUrl,
+        headers,
+      };
+
+      const response = await axios(config);
+
+      if (response && response.status === 200) {
+        const liveVideos = response.data.live_videos?.data || [];
+        videos = [...videos, ...liveVideos];
+        nextPageUrl = response.data.live_videos?.paging?.next || null;
+      } else {
+        break;
+      }
+    }
+    return { status: 200, videos: JSON.stringify(videos) };
+  } catch (error) {
+    console.error("Failed to fetch Facebook Live Videos:", error);
+    return { status: 400, videos: "" };
+  }
+}
