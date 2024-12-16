@@ -3906,7 +3906,7 @@ export async function getVideoMessages(videoId: string) {
 
 export async function getFBLiveVideos() {
   const account = "173875102485412";
-  const baseUrl = `https://graph.facebook.com/v21.0/${account}?fields=live_videos`;
+  const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
   };
@@ -3925,13 +3925,14 @@ export async function getFBLiveVideos() {
       const response = await axios(config);
 
       if (response && response.status === 200) {
-        const liveVideos = response.data.live_videos?.data || [];
+        const liveVideos = response.data?.data || [];
         videos = [...videos, ...liveVideos];
-        nextPageUrl = response.data.live_videos?.paging?.next || null;
+        nextPageUrl = response.data?.paging?.next || null;
       } else {
         break;
       }
     }
+
     return { status: 200, videos: JSON.stringify(videos) };
   } catch (error) {
     console.error("Failed to fetch Facebook Live Videos:", error);

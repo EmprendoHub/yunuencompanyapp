@@ -50,15 +50,19 @@ const LiveVideoPicker = ({
           <hr className="my-3 maxmd:my-1 " />
           {lives.map((live: any, i: number) => (
             <div key={i} className="flex flex-col">
-              <Link href={`/admin/live/${live.id}`}>{live.id}</Link>
+              <Link className="text-blue-500" href={`/admin/live/${live.id}`}>
+                {live.id}
+              </Link>
+              <div className="text-xs">{live.message}</div>
               {/* Render embed_html as raw HTML */}
-              <div className="w-40 h-auto bg-background rounded-md">
+              {/* <div className="w-40 h-auto bg-background rounded-md">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: adjustEmbedHtml(live.embed_html, 200, 300), // Change dimensions here
                   }}
                 />
-              </div>
+              </div> */}
+              <hr className="my-3 maxmd:my-1 " />
             </div>
           ))}
         </div>
