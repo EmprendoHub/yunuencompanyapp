@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const incoming = await request.json();
-    console.log(incoming);
+    console.log(incoming.entry[0].changes);
     return new Response(
       JSON.stringify({ message: "POST received", data: incoming }),
       { status: 200 }
