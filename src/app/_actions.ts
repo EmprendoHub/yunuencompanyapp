@@ -3845,23 +3845,23 @@ export async function getVideoMessages(videoId: string) {
           const liveMessages = response.data?.data || [];
 
           // Log detailed information about each comment
-          const processedMessages = liveMessages.map((message: any) => {
-            console.log("Individual Comment Debug:", {
-              id: message.id,
-              message: message.message,
-              from: message.from
-                ? {
-                    id: message.from.id,
-                    name: message.from.name,
-                    hasUsername: !!message.from.username,
-                  }
-                : "NO FROM INFORMATION",
-            });
+          // const processedMessages = liveMessages.map((message: any) => {
+          //   console.log("Individual Comment Debug:", {
+          //     id: message.id,
+          //     message: message.message,
+          //     from: message.from
+          //       ? {
+          //           id: message.from.id,
+          //           name: message.from.name,
+          //           hasUsername: !!message.from.username,
+          //         }
+          //       : "NO FROM INFORMATION",
+          //   });
 
-            return message;
-          });
+          //   return message;
+          // });
 
-          messages = [...messages, ...processedMessages];
+          messages = [...messages, ...liveMessages];
 
           // Safely handle the next page URL
           nextPageUrl = response.data?.paging?.next || null;
