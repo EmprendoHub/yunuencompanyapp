@@ -1,66 +1,47 @@
-export default async function handler(request: any, res: Response) {
-  // Facebook webhook verification
-  if (request.method === "GET") {
-    const {
-      "hub.challenge": challenge,
-      "hub.verify_token": verifyToken,
-      "hub.mode": mode,
-    } = request.query;
+import { NextRequest, NextResponse } from "next/server";
 
-    const FACEBOOK_VERIFY_TOKEN = process.env.FB_WEBHOOKTOKEN;
+const FACEBOOK_VERIFY_TOKEN = process.env.FB_WEBHOOKTOKEN;
 
-    if (mode === "subscribe" && verifyToken === FACEBOOK_VERIFY_TOKEN) {
-      console.log("Webhook verified");
-      return request.status(200).send(challenge);
-    } else {
-      return request.status(403).send("Verification failed");
-    }
+// Facebook webhook verification (GET)
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const challenge = searchParams.get("hub.challenge");
+  const verifyToken = searchParams.get("hub.verify_token");
+  const mode = searchParams.get("hub.mode");
+
+  if (mode === "subscribe" && verifyToken === FACEBOOK_VERIFY_TOKEN) {
+    console.log("Webhook verified");
+    return new Response(challenge, { status: 200 });
+  } else {
+    return new Response("Verification failed", { status: 403 });
   }
+}
 
-  // Webhook POST handling
-  if (request.method === "POST") {
-    const payload: any = request.body;
+// Facebook webhook processing (POST)
+export async function POST(request: NextRequest) {
+  const payload = await request.json();
 
-    // Verify webhook authenticity (optional but recommended)
-    // const signature = request.headers['x-hub.signature-256'];
-    // const hmac = crypto.createHmac('sha256', process.env.FACEBOOK_APP_SECRET);
-    // const computedSignature = `sha256=${hmac.update(JSON.stringify(payload)).digest('hex')}`;
+  try {
+    if (payload.object === "page") {
+      payload.entry.forEach((entry: any) => {
+        const webhookEvent = entry.messaging || entry.changes;
 
-    // if (signature !== computedSignature) {
-    //   return res.status(403).send('Invalid signature');
-    // }
-
-    try {
-      // Process different webhook events
-      if (payload.object === "page") {
-        payload.entry.forEach((entry: { messaging: any; changes: any }) => {
-          const webhookEvent = entry.messaging || entry.changes;
-
-          if (webhookEvent) {
-            webhookEvent.forEach(
-              async (event: { field: string; message: any }) => {
-                // Comment-specific processing
-                if (event.field === "comments") {
-                  await processCommentEvent(event);
-                }
-
-                // Message-specific processing
-                if (event.message) {
-                  await processMessageEvent(event);
-                }
-              }
-            );
-          }
-        });
-      }
-
-      return new Response("EVENT_RECEIVED", { status: 200 });
-    } catch (error: any) {
-      console.error("Webhook processing error:", error);
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
+        if (webhookEvent) {
+          webhookEvent.forEach(async (event: any) => {
+            if (event.field === "comments") {
+              await processCommentEvent(event);
+            }
+            if (event.message) {
+              await processMessageEvent(event);
+            }
+          });
+        }
       });
     }
+    return NextResponse.json({ message: "EVENT_RECEIVED" }, { status: 200 });
+  } catch (error: any) {
+    console.error("Webhook processing error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
@@ -72,10 +53,8 @@ async function processMessageEvent(event: any) {
     const timestamp = event.timestamp;
     const messageText = event.message.text;
 
-    // Retrieve sender details
     const senderDetails = await fetchUserDetails(senderId);
 
-    // Store or process message
     await storeMessage({
       senderId,
       recipientId,
@@ -94,88 +73,49 @@ async function processCommentEvent(event: any) {
   const commentId = event.value.comment_id;
 
   try {
-    // Retrieve detailed comment information
     const commentDetails = await fetchCommentDetails(commentId);
-
-    // Store or process comment (e.g., database, notification)
     await storeComment(commentDetails);
   } catch (error) {
     console.error("Comment processing failed:", error);
   }
 }
 
-// Fetch user details from Facebook Graph API
-async function fetchUserDetails(userId: any) {
+// Fetch user details
+async function fetchUserDetails(userId: string) {
   const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 
   try {
     const response = await fetch(
       `https://graph.facebook.com/v21.0/${userId}?fields=name,profile_pic&access_token=${accessToken}`
     );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch user details");
-    }
+    if (!response.ok) throw new Error("Failed to fetch user details");
 
     return response.json();
   } catch (error) {
     console.error("User details retrieval error:", error);
-    return {
-      name: "Unknown User",
-      profile_pic: null,
-    };
+    return { name: "Unknown User", profile_pic: null };
   }
 }
 
-// Store message in database or processing system
+// Store message (stub implementation)
 async function storeMessage(messageDetails: any) {
-  // Implement your storage logic
-  // Example with Prisma or your preferred database ORM
-  // await prisma.message.create({
-  //   data: {
-  //     facebookSenderId: messageDetails.senderId,
-  //     recipientId: messageDetails.recipientId,
-  //     message: messageDetails.messageText,
-  //     senderName: messageDetails.senderName,
-  //     senderProfilePic: messageDetails.senderProfilePic,
-  //     createdAt: new Date(messageDetails.timestamp),
-  //   },
-  // });
-  console.log(messageDetails);
+  console.log("Message stored:", messageDetails);
 }
 
-// Fetch detailed comment information
-async function fetchCommentDetails(commentId: any) {
+// Fetch comment details
+async function fetchCommentDetails(commentId: string) {
   const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 
   const response = await fetch(
     `https://graph.facebook.com/v21.0/${commentId}?fields=from{id,name,picture},message,created_time&access_token=${accessToken}`
   );
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch comment details");
-  }
+  if (!response.ok) throw new Error("Failed to fetch comment details");
 
   return response.json();
 }
 
-// Store comment in database or processing system
-async function storeComment(commentDetails: {
-  id: any;
-  from: { id: any; name: any };
-  message: any;
-  created_time: string | number | Date;
-}) {
-  // Implement your storage logic
-  // Example with Prisma or your preferred database ORM
-  // await prisma.comment.create({
-  //   data: {
-  //     facebookCommentId: commentDetails.id,
-  //     userId: commentDetails.from.id,
-  //     userName: commentDetails.from.name,
-  //     message: commentDetails.message,
-  //     createdAt: new Date(commentDetails.created_time),
-  //   },
-  // });
-  console.log(commentDetails);
+// Store comment (stub implementation)
+async function storeComment(commentDetails: any) {
+  console.log("Comment stored:", commentDetails);
 }
