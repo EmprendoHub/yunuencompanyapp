@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
     if (payload.object === "page") {
       payload.entry.forEach((entry: any) => {
         const webhookEvent = entry.messaging || entry.changes;
+        console.log(webhookEvent);
 
         if (webhookEvent) {
           webhookEvent.forEach(async (event: any) => {
