@@ -12,3 +12,18 @@ export async function GET(request: Request) {
     return new Response("Forbidden", { status: 403 });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const incoming = await request.json();
+    console.log(incoming);
+    return new Response(
+      JSON.stringify({ message: "POST received", data: incoming }),
+      { status: 200 }
+    );
+  } catch (error: any) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
+  }
+}

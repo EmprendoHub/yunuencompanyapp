@@ -3827,7 +3827,7 @@ export async function getVideoMessages(videoId: string) {
   let nextPageUrl: string | null = baseUrl;
 
   try {
-    console.log("Initial API Call URL:", nextPageUrl);
+    // console.log("Initial API Call URL:", nextPageUrl);
 
     while (nextPageUrl) {
       const config: any = {
@@ -3866,8 +3866,8 @@ export async function getVideoMessages(videoId: string) {
           // Safely handle the next page URL
           nextPageUrl = response.data?.paging?.next || null;
 
-          console.log("Next Page URL:", nextPageUrl);
-          console.log("Current Messages Count:", messages.length);
+          // console.log("Next Page URL:", nextPageUrl);
+          // console.log("Current Messages Count:", messages.length);
         } else {
           console.warn("Unexpected response status:", response.status);
           break;
