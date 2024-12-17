@@ -1,17 +1,14 @@
-export async function POST(request: any) {
-  const headers = await request.headers;
-  //     // Not Signed in
-  //     const notAuthorized = "You are not authorized no no no";
-  //     return new Response(JSON.stringify(notAuthorized), {
-  //       status: 400,
-  //     });
-  //   }
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const mode = searchParams.get("hub.mode");
+  const challenge = searchParams.get("hub.challenge");
+  const token = searchParams.get("hub.verify_token");
 
-  try {
-    const incoming = await request.json();
-    console.log("headers", headers);
-    console.log("incoming", incoming);
-  } catch (error: any) {
-    return new Response(JSON.stringify(error.message), { status: 500 });
+  const VERIFY_TOKEN = process.env.FB_WEBHOOKTOKEN; // Replace with your Facebook app verify token
+
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    return new Response(challenge, { status: 200 });
+  } else {
+    return new Response("Forbidden", { status: 403 });
   }
 }
