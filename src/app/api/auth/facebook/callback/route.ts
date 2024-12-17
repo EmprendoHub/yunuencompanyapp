@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
 
         if (webhookEvent) {
           webhookEvent.forEach(async (event: any) => {
+            console.log(event, "event");
             if (event.field === "comments") {
               await processCommentEvent(event);
             }
