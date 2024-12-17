@@ -18,9 +18,17 @@ export async function POST(request: Request) {
     const incoming = await request.json();
 
     console.log(incoming.entry[0]);
-    if (incoming.entry[0].changes[0].field === "feed") {
+    if (incoming.entry[0].changes[0]?.field === "feed") {
       console.log(incoming.entry[0].changes[0].value);
     }
+
+    if (incoming.entry[0].messaging[0]) {
+      console.log(incoming.entry[0].messaging[0].sender);
+      console.log(incoming.entry[0].messaging[0].recipient);
+
+      console.log(incoming.entry[0].messaging[0].delivery);
+    }
+
     return new Response(
       JSON.stringify({ message: "POST received", data: incoming }),
       { status: 200 }
