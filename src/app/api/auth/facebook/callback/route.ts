@@ -16,18 +16,21 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const incoming = await request.json();
-
+    console.log(incoming);
     console.log(incoming.entry[0]);
-    if (incoming.entry[0].changes[0]?.field === "feed") {
+    if (
+      incoming.entry[0].changes[0]?.field === "feed" ||
+      incoming.entry[0].changes[0]?.field === "live_videos"
+    ) {
       console.log(incoming.entry[0].changes[0].value);
     }
 
-    if (incoming.entry[0].messaging[0]) {
-      console.log(incoming.entry[0].messaging[0].sender);
-      console.log(incoming.entry[0].messaging[0].recipient);
+    // if (incoming.entry[0].messaging[0]) {
+    //   console.log(incoming.entry[0].messaging[0].sender);
+    //   console.log(incoming.entry[0].messaging[0].recipient);
 
-      console.log(incoming.entry[0].messaging[0].delivery);
-    }
+    //   console.log(incoming.entry[0].messaging[0].delivery);
+    // }
 
     return new Response(
       JSON.stringify({ message: "POST received", data: incoming }),
