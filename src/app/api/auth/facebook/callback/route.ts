@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
           webhookEvent.forEach(async (event: any) => {
             console.log(event, "permissions event");
 
-            if (event.field === "feed") {
-              await storeFeedEvent(event.value);
+            if (event.field === "page_events") {
+              console.log(event.value);
             }
           });
         }
