@@ -46,6 +46,22 @@ export async function POST(request: NextRequest) {
         }
       });
     }
+    if (payload.object === "permissions") {
+      payload.entry.forEach((entry: any) => {
+        const webhookEvent = entry.changes;
+
+        if (webhookEvent) {
+          webhookEvent.forEach(async (event: any) => {
+            console.log(event, "permissions event");
+
+            if (event.field === "feed") {
+              await storeFeedEvent(event.value);
+            }
+          });
+        }
+      });
+    }
+
     return NextResponse.json({ message: "EVENT_RECEIVED" }, { status: 200 });
   } catch (error: any) {
     console.error("Webhook processing error:", error);
@@ -69,7 +85,7 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  await dbConnect();
+  //await dbConnect();
   console.log("Feed stored:", feedDetails);
   // const newFeedEvent = await Comment.create({
   //   facebookCommentId: commentDetails.id,
