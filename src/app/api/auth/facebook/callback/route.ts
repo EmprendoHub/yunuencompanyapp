@@ -1,5 +1,6 @@
 import Comment from "@/backend/models/Comment";
 import dbConnect from "@/lib/db";
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 const FACEBOOK_VERIFY_TOKEN = process.env.FB_WEBHOOKTOKEN;
@@ -22,18 +23,21 @@ export async function GET(request: NextRequest) {
 // Facebook webhook processing (POST)
 export async function POST(request: NextRequest) {
   const payload = await request.json();
+  console.log(payload, "payload");
 
   try {
     if (payload.object === "page") {
       payload.entry.forEach((entry: any) => {
         const webhookEvent = entry.messaging || entry.changes;
-        console.log(webhookEvent);
 
         if (webhookEvent) {
           webhookEvent.forEach(async (event: any) => {
             console.log(event, "event");
             if (event.field === "comments") {
-              await processCommentEvent(event);
+              await storeComment(event.value);
+            }
+            if (event.field === "feed") {
+              await storeFeedEvent(event);
             }
             if (event.message) {
               await processMessageEvent(event);
@@ -49,31 +53,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Process comment events
-async function processCommentEvent(event: any) {
-  const commentId = event.value.comment_id;
-
-  try {
-    const commentDetails = await fetchCommentDetails(commentId);
-    await storeComment(commentDetails);
-  } catch (error) {
-    console.error("Comment processing failed:", error);
-  }
-}
-
-// Fetch comment details
-async function fetchCommentDetails(commentId: string) {
-  const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
-
-  const response = await fetch(
-    `https://graph.facebook.com/v21.0/${commentId}?fields=from{id,name,picture},message,created_time&access_token=${accessToken}`
-  );
-
-  if (!response.ok) throw new Error("Failed to fetch comment details");
-
-  return response.json();
-}
-
 // Store comment (stub implementation)
 async function storeComment(commentDetails: any) {
   await dbConnect();
@@ -86,6 +65,20 @@ async function storeComment(commentDetails: any) {
     message: commentDetails.message,
     createdAt: new Date(commentDetails.created_time),
   });
+}
+
+// Store comment (stub implementation)
+async function storeFeedEvent(feedDetails: any) {
+  await dbConnect();
+
+  console.log("Feed stored:", feedDetails);
+  // const newFeedEvent = await Comment.create({
+  //   facebookCommentId: commentDetails.id,
+  //   userId: commentDetails.from.id,
+  //   userName: commentDetails.from.name,
+  //   message: commentDetails.message,
+  //   createdAt: new Date(commentDetails.created_time),
+  // });
 }
 
 // Process message events
@@ -104,7 +97,6 @@ async function processMessageEvent(event: any) {
       timestamp,
       messageText,
       senderName: senderDetails.name,
-      senderProfilePic: senderDetails.profile_pic,
     });
   } catch (error) {
     console.error("Message processing failed:", error);
@@ -116,9 +108,17 @@ async function fetchUserDetails(userId: string) {
   const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 
   try {
-    const response = await fetch(
-      `https://graph.facebook.com/v21.0/${userId}?fields=name,profile_pic&access_token=${accessToken}`
-    );
+    const nextPageUrl = `https://graph.facebook.com/v21.0/${userId}`;
+    const headers = {
+      Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+    };
+    const config: any = {
+      method: "get",
+      url: nextPageUrl,
+      headers,
+    };
+
+    const response: any = await axios(config);
     if (!response.ok) throw new Error("Failed to fetch user details");
 
     return response.json();
@@ -136,7 +136,6 @@ async function storeMessage(messageDetails: any) {
     senderId: messageDetails.senderId,
     recipientId: messageDetails.recipientId,
     senderName: messageDetails.senderName,
-    senderProfilePic: messageDetails.senderProfilePic,
     messageText: messageDetails.messageText,
     timestamp: new Date(messageDetails.timestamp),
   });
