@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
             console.log(event, "permissions event");
 
             if (event.field === "page_events") {
-              console.log(event.value);
+              console.log(event.value, "page_events");
             }
           });
         }
