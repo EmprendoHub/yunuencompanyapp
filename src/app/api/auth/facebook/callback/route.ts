@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
               await storeComment(event.value);
             }
             if (event.field === "feed") {
-              await storeFeedEvent(event);
+              await storeFeedEvent(event.value);
             }
             if (event.message) {
               await processMessageEvent(event);
@@ -70,7 +70,6 @@ async function storeComment(commentDetails: any) {
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
   await dbConnect();
-
   console.log("Feed stored:", feedDetails);
   // const newFeedEvent = await Comment.create({
   //   facebookCommentId: commentDetails.id,
