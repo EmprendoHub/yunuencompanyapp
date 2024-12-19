@@ -1,3 +1,4 @@
+import { runRevalidationTo } from "@/app/_actions";
 import Comment from "@/backend/models/Comment";
 import dbConnect from "@/lib/db";
 import axios from "axios";
@@ -84,8 +85,10 @@ async function storeFeedEvent(feedDetails: any) {
         createdAt: new Date(feedDetails.created_time),
       };
       console.log("commentData", commentData);
+      const newFeedEvent = new Comment(commentData);
 
-      const newFeedEvent = await Comment.create(commentData);
+      const res = await newFeedEvent.save();
+      runRevalidationTo("/admin/live/");
       console.log("Feed stored:", newFeedEvent);
     } catch (error: any) {
       console.error("Webhook processing error:", error);
