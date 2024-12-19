@@ -3812,15 +3812,13 @@ export async function sendWAMediaMessage(
 }
 
 export async function getVideoMessages(videoId: string) {
-  const video = videoId || "122199428270209263";
+  const video = videoId || "421878677666248_122131066880443689";
 
   // Expanded fields to get more user information
-  const baseUrl = `https://graph.facebook.com/v21.0/${video}/comments?fields=message,created_time,from{id,name,username,picture}&pretty=0&limit=200`;
+  const baseUrl = `https://graph.facebook.com/v21.0/${video}/comments?pretty=0&limit=200`;
 
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
-    // Add debug headers
-    "X-FB-Debug": "true",
   };
 
   let messages: any[] = [];
@@ -3834,8 +3832,6 @@ export async function getVideoMessages(videoId: string) {
         method: "get",
         url: nextPageUrl,
         headers,
-        // Add timeout and more detailed error handling
-        timeout: 10000,
       };
 
       try {
