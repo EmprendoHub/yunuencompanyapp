@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
         if (webhookEvent) {
           webhookEvent.forEach(async (event: any) => {
-            console.log(event, "event");
+            //console.log(event, "event");
             if (event.field === "comments") {
               await storeComment(event.value);
             }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 async function storeComment(commentDetails: any) {
   await dbConnect();
 
-  console.log("Comment stored:", commentDetails);
+  //console.log("Comment stored:", commentDetails);
   const newComment = await Comment.create({
     facebookCommentId: commentDetails.id,
     userId: commentDetails.from.id,
@@ -73,6 +73,7 @@ async function storeFeedEvent(feedDetails: any) {
   function extractFirstNumber(str: string) {
     return str.split("_")[0];
   }
+  console.log(feedDetails.item);
   if (feedDetails.item === "comment") {
     const pageID = extractFirstNumber(feedDetails.post.id);
     await dbConnect();
@@ -85,8 +86,8 @@ async function storeFeedEvent(feedDetails: any) {
       message: feedDetails.message,
       createdAt: new Date(feedDetails.created_time),
     });
+    console.log("Feed stored:", newFeedEvent);
   }
-  console.log("Feed stored:", feedDetails);
 }
 
 // Process message events
