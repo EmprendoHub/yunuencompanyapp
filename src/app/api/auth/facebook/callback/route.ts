@@ -36,8 +36,6 @@ export async function POST(request: NextRequest) {
               await storeComment(event.value);
             }
             if (event.field === "feed") {
-              console.log(event.value, "event value");
-
               await storeFeedEvent(event.value);
             }
             if (event.message) {
@@ -71,9 +69,10 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
+  console.log(feedDetails.item === "is if true");
   if (feedDetails.item === "comment") {
     try {
-      const pageID = feedDetails.post.id.split("_")[0];
+      const pageID = feedDetails?.post?.id.split("_")[0];
       await dbConnect();
       console.log(pageID, "pageID");
 
