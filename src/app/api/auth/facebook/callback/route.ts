@@ -68,16 +68,15 @@ async function storeComment(commentDetails: any) {
     createdAt: new Date(commentDetails.created_time),
   });
 }
-async function extractFirstNumber(str: string) {
-  return str.split("_")[0];
-}
+
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  console.log(feedDetails.item, "Feed DetAILS");
   if (feedDetails.item === "comment") {
     try {
-      const pageID = await extractFirstNumber(feedDetails.post.id);
+      const pageID = feedDetails.post.id.split("_")[0];
       await dbConnect();
+      console.log(pageID, "pageID");
+
       const newFeedEvent = await Comment.create({
         pageId: pageID,
         postId: feedDetails.post_id,
@@ -90,7 +89,6 @@ async function storeFeedEvent(feedDetails: any) {
       console.log("Feed stored:", newFeedEvent);
     } catch (error: any) {
       console.error("Webhook processing error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
     }
   }
 }
