@@ -69,17 +69,16 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  console.log(
-    feedDetails.item === "comment",
-    "is if true",
-    typeof feedDetails.item
-  );
   if (feedDetails.item === "comment") {
     try {
-      console.log(feedDetails?.post_id, "postID split");
+      console.log(
+        feedDetails?.post_id,
+        "postID split",
+        typeof feedDetails.post_id
+      );
       const pageID = feedDetails?.post_id.split("_")[0];
-      await dbConnect();
       console.log(pageID, "pageID");
+      await dbConnect();
 
       const newFeedEvent = await Comment.create({
         pageId: pageID,
