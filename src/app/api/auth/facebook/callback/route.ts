@@ -32,11 +32,12 @@ export async function POST(request: NextRequest) {
 
         if (webhookEvent) {
           webhookEvent.forEach(async (event: any) => {
-            //console.log(event, "event");
             if (event.field === "comments") {
               await storeComment(event.value);
             }
             if (event.field === "feed") {
+              console.log(event.value, "event value");
+
               await storeFeedEvent(event.value);
             }
             if (event.message) {
@@ -67,26 +68,30 @@ async function storeComment(commentDetails: any) {
     createdAt: new Date(commentDetails.created_time),
   });
 }
-
+async function extractFirstNumber(str: string) {
+  return str.split("_")[0];
+}
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  function extractFirstNumber(str: string) {
-    return str.split("_")[0];
-  }
-  console.log(feedDetails.item);
+  console.log(feedDetails.item, "Feed DetAILS");
   if (feedDetails.item === "comment") {
-    const pageID = extractFirstNumber(feedDetails.post.id);
-    await dbConnect();
-    const newFeedEvent = await Comment.create({
-      pageId: pageID,
-      postId: feedDetails.post_id,
-      facebookCommentId: feedDetails.id,
-      userId: feedDetails.from.id,
-      userName: feedDetails.from.name,
-      message: feedDetails.message,
-      createdAt: new Date(feedDetails.created_time),
-    });
-    console.log("Feed stored:", newFeedEvent);
+    try {
+      const pageID = await extractFirstNumber(feedDetails.post.id);
+      await dbConnect();
+      const newFeedEvent = await Comment.create({
+        pageId: pageID,
+        postId: feedDetails.post_id,
+        facebookCommentId: feedDetails.id,
+        userId: feedDetails.from.id,
+        userName: feedDetails.from.name,
+        message: feedDetails.message,
+        createdAt: new Date(feedDetails.created_time),
+      });
+      console.log("Feed stored:", newFeedEvent);
+    } catch (error: any) {
+      console.error("Webhook processing error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 }
 
