@@ -69,18 +69,12 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
+  await dbConnect();
   if (feedDetails.item === "comment") {
     try {
-      console.log(
-        feedDetails?.post_id,
-        "postID split",
-        typeof feedDetails.post_id
-      );
       const pageID = feedDetails?.post_id.split("_")[0];
-      console.log(pageID, "pageID");
-      await dbConnect();
 
-      const newFeedEvent = await Comment.create({
+      const commentData = {
         pageId: pageID,
         postId: feedDetails.post_id,
         facebookCommentId: feedDetails.id,
@@ -88,7 +82,10 @@ async function storeFeedEvent(feedDetails: any) {
         userName: feedDetails.from.name,
         message: feedDetails.message,
         createdAt: new Date(feedDetails.created_time),
-      });
+      };
+      console.log("commentData", commentData);
+
+      const newFeedEvent = await Comment.create(commentData);
       console.log("Feed stored:", newFeedEvent);
     } catch (error: any) {
       console.error("Webhook processing error:", error);
