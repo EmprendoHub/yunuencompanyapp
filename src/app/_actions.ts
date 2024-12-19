@@ -3900,6 +3900,50 @@ export async function getVideoMessages(videoId: string) {
   }
 }
 
+export async function subscribeToFbApp(pageId: string) {
+  const fbPage = pageId || "421878677666248";
+
+  // Expanded fields to get more user information
+  const baseUrl = `https://graph.facebook.com/v21.0/${fbPage}/subscribed_apps?subscribed_fields=feed`;
+
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+  const config: any = {
+    method: "post",
+    url: baseUrl,
+    headers,
+  };
+
+  try {
+    // console.log("Initial API Call URL:", nextPageUrl);
+
+    const response: any = await axios(config);
+
+    if (response && response.status === 200) {
+      const subscribeResponse = response;
+      console.log(subscribeResponse.data);
+
+      return {
+        status: 200,
+        response: JSON.stringify(subscribeResponse.data),
+      };
+    }
+
+    if (response && response.error) {
+      /* handle the result */
+      console.log(response.error);
+      return {
+        status: 400,
+        response: JSON.stringify(response.error),
+      };
+    }
+  } catch (error) {
+    console.error("Catastrophic error in subscribing to Facebook page:", error);
+    return { status: 400 };
+  }
+}
+
 export async function getFBLiveVideos() {
   const account = "421878677666248";
   // "173875102485412";
