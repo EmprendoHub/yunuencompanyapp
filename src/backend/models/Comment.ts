@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const CommentSchema = new mongoose.Schema({
+  pageId: {
+    type: String,
+  },
+  postId: {
+    type: String,
+  },
   facebookCommentId: {
     type: String,
   },

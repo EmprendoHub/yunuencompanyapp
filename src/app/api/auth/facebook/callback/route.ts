@@ -46,21 +46,6 @@ export async function POST(request: NextRequest) {
         }
       });
     }
-    if (payload.object === "permissions") {
-      payload.entry.forEach((entry: any) => {
-        const webhookEvent = entry.changes;
-
-        if (webhookEvent) {
-          webhookEvent.forEach(async (event: any) => {
-            console.log(event, "permissions event");
-
-            if (event.field === "page_events") {
-              console.log(event.value, "page_events");
-            }
-          });
-        }
-      });
-    }
 
     return NextResponse.json({ message: "EVENT_RECEIVED" }, { status: 200 });
   } catch (error: any) {
@@ -85,15 +70,23 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  //await dbConnect();
+  function extractFirstNumber(str: string) {
+    return str.split("_")[0];
+  }
+  if (feedDetails.item === "comment") {
+    const pageID = extractFirstNumber(feedDetails.post.id);
+    await dbConnect();
+    const newFeedEvent = await Comment.create({
+      pageId: pageID,
+      postId: feedDetails.post_id,
+      facebookCommentId: feedDetails.id,
+      userId: feedDetails.from.id,
+      userName: feedDetails.from.name,
+      message: feedDetails.message,
+      createdAt: new Date(feedDetails.created_time),
+    });
+  }
   console.log("Feed stored:", feedDetails);
-  // const newFeedEvent = await Comment.create({
-  //   facebookCommentId: commentDetails.id,
-  //   userId: commentDetails.from.id,
-  //   userName: commentDetails.from.name,
-  //   message: commentDetails.message,
-  //   createdAt: new Date(commentDetails.created_time),
-  // });
 }
 
 // Process message events
