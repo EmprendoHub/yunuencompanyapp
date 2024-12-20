@@ -70,11 +70,11 @@ async function storeComment(commentDetails: any) {
 
 // Store comment (stub implementation)
 async function storeFeedEvent(feedDetails: any) {
-  await dbConnect();
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
       console.log("pageID", pageID);
+      await dbConnect();
 
       const commentData = {
         pageId: pageID,
