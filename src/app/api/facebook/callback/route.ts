@@ -21,30 +21,35 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Facebook webhook processing (POST)
 export async function POST(request: NextRequest) {
   const payload = await request.json();
   console.log(payload, "payload");
 
   try {
-    if (payload.object === "page") {
-      payload.entry.forEach((entry: any) => {
-        const webhookEvent = entry.messaging || entry.changes;
+    // Connect to DB once at the start of the request
+    await dbConnect();
+    console.log("Database connected at request start");
 
-        if (webhookEvent) {
-          webhookEvent.forEach(async (event: any) => {
-            if (event.field === "comments") {
-              await storeComment(event.value);
-            }
-            if (event.field === "feed") {
-              await storeFeedEvent(event.value);
-            }
-            if (event.message) {
-              await processMessageEvent(event);
-            }
-          });
-        }
-      });
+    if (payload.object === "page") {
+      // Use Promise.all to handle all events concurrently
+      const entries = await Promise.all(
+        payload.entry.map(async (entry: any) => {
+          const webhookEvent = entry.messaging || entry.changes;
+
+          if (webhookEvent) {
+            const eventPromises = webhookEvent.map(async (event: any) => {
+              if (event.field === "feed") {
+                return storeFeedEvent(event.value);
+              }
+              if (event.message) {
+                return processMessageEvent(event);
+              }
+            });
+
+            await Promise.all(eventPromises);
+          }
+        })
+      );
     }
 
     return NextResponse.json({ message: "EVENT_RECEIVED" }, { status: 200 });
@@ -54,34 +59,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Store comment (stub implementation)
-async function storeComment(commentDetails: any) {
-  await dbConnect();
-
-  //console.log("Comment stored:", commentDetails);
-  const newComment = await Comment.create({
-    facebookCommentId: commentDetails.id,
-    userId: commentDetails.from.id,
-    userName: commentDetails.from.name,
-    message: commentDetails.message,
-    createdAt: new Date(commentDetails.created_time),
-  });
-}
-
-// Store comment (stub implementation)
+// Modify storeFeedEvent to not handle DB connection
 async function storeFeedEvent(feedDetails: any) {
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
       console.log("pageID", pageID);
-      console.log("Attempting database connection...");
-      try {
-        await dbConnect();
-        console.log("Database connected successfully");
-      } catch (dbError) {
-        console.error("Database connection failed:", dbError);
-        throw dbError; // Re-throw to be caught by outer catch block
-      }
 
       const commentData = {
         pageId: pageID,
@@ -98,8 +81,10 @@ async function storeFeedEvent(feedDetails: any) {
       const res = await newFeedEvent.save();
       runRevalidationTo("/admin/live/");
       console.log("Feed stored:", newFeedEvent);
+      return res;
     } catch (error: any) {
-      console.error("Webhook processing error:", error);
+      console.error("Feed event processing error:", error);
+      throw error; // Propagate error up
     }
   }
 }
