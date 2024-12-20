@@ -26,26 +26,42 @@ if (!global.mongooseCache) {
 }
 
 async function dbConnect(): Promise<typeof mongoose> {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGO_URL!, opts);
-  }
-
   try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
+    console.log("Starting DB connection attempt...");
 
-  return mongoose;
+    if (cached.conn) {
+      console.log("Using cached connection");
+      return cached.conn;
+    }
+
+    if (!cached.promise) {
+      console.log("No cached promise, creating new connection...");
+      const opts = {
+        bufferCommands: false,
+      };
+
+      cached.promise = mongoose.connect(MONGO_URL!, opts);
+    }
+
+    try {
+      console.log("Awaiting connection...");
+      cached.conn = await cached.promise;
+      console.log("Successfully connected to MongoDB");
+    } catch (e) {
+      console.error("Error while awaiting connection:", e);
+      cached.promise = null;
+      throw e;
+    }
+
+    return mongoose;
+  } catch (error) {
+    console.error("Database connection error:", error);
+    console.error(
+      "MongoDB URL (redacted):",
+      MONGO_URL?.substring(0, 10) + "..."
+    );
+    throw error;
+  }
 }
 
 export default dbConnect;
