@@ -5,8 +5,16 @@ import { persistor, tienda } from "@/redux/store";
 import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
+import { useEffect } from "react";
 
 const CustomSessionProvider = ({ children }: { children: any }) => {
+  useEffect(() => {
+    const initWebSocket = async () => {
+      await fetch("/api/socket"); // This initializes the WebSocket server
+    };
+
+    initWebSocket();
+  }, []);
   return (
     <Provider store={tienda}>
       <AuthProvider>

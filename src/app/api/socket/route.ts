@@ -1,37 +1,43 @@
-import { Server as IOServer } from "socket.io";
-import { NextApiRequest, NextApiResponse } from "next";
-import { Server as HTTPServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
+import { headers } from "next/headers";
 
-interface Comment {
-  message: string;
-  userName: string;
+// Declare the global variable `io` if it is not defined
+declare global {
+  var io: SocketIOServer | undefined;
 }
 
-const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
-  const socketServer = res.socket as any;
+export async function GET() {
+  const headersList = headers();
 
-  // Check if the Socket.IO server is already initialized
-  if (!socketServer.server.io) {
-    const httpServer: HTTPServer = socketServer.server;
-    const io = new IOServer(httpServer);
-    socketServer.server.io = io;
+  // Initialize globalThis.io if it hasn't been initialized yet
+  if (!globalThis.io) {
+    console.log("Initializing Socket.IO server...");
 
-    io.on("connection", (socket) => {
-      console.log("A user connected");
-
-      socket.on("newComment", (comment: Comment) => {
-        io.emit("commentAdded", comment);
-      });
-
-      socket.on("disconnect", () => {
-        console.log("A user disconnected");
-      });
+    // Create a new Socket.IO server instance
+    globalThis.io = new SocketIOServer({
+      path: "/api/socket",
+      addTrailingSlash: false,
     });
 
-    console.log("Socket.IO server initialized");
+    // Attach event listeners
+    globalThis.io.on("connection", (socket) => {
+      console.log("Client connected:", socket.id);
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected:", socket.id);
+      });
+
+      // Handle other socket events here
+    });
   }
 
-  res.end();
-};
-
-export default SocketHandler;
+  // Return a simple response to confirm the initialization
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
