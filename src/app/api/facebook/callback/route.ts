@@ -4,6 +4,28 @@ import dbConnect from "@/lib/db";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
+interface FacebookComment {
+  from: {
+    id: string;
+    name: string;
+  };
+  post: {
+    status_type: string;
+    is_published: boolean;
+    updated_time: string;
+    permalink_url: string;
+    promotion_status: string;
+    id: string;
+  };
+  message: string;
+  post_id: string;
+  comment_id: string;
+  created_time: string;
+  item: string;
+  parent_id: string;
+  verb: string;
+}
+
 const FACEBOOK_VERIFY_TOKEN = process.env.FB_WEBHOOKTOKEN;
 
 // Facebook webhook verification (GET)
@@ -59,22 +81,20 @@ export async function POST(request: NextRequest) {
 }
 
 // Modify storeFeedEvent to not handle DB connection
-async function storeFeedEvent(feedDetails: any) {
+async function storeFeedEvent(feedDetails: FacebookComment) {
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
-      console.log("feedDetails", feedDetails);
 
       const commentData = {
         pageId: pageID,
         postId: feedDetails.post_id,
-        facebookCommentId: feedDetails.id,
+        facebookCommentId: feedDetails.comment_id,
         userId: feedDetails.from.id,
         userName: feedDetails.from.name,
         message: feedDetails.message,
         createdAt: new Date(feedDetails.created_time),
       };
-      console.log("commentData", commentData);
       const newFeedEvent = new Comment(commentData);
 
       const res = await newFeedEvent.save();
