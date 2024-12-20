@@ -74,6 +74,7 @@ async function storeFeedEvent(feedDetails: any) {
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
+      console.log("pageID", pageID);
 
       const commentData = {
         pageId: pageID,
