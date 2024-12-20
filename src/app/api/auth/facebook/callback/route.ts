@@ -75,6 +75,7 @@ async function storeFeedEvent(feedDetails: any) {
       const pageID = feedDetails?.post_id.split("_")[0];
       console.log("pageID", pageID);
       await dbConnect();
+      console.log("Database connected"); // Add this to confirm DB connection
 
       const commentData = {
         pageId: pageID,
