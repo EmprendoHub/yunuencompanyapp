@@ -45,7 +45,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const payload = await request.json();
-  console.log(payload, "payload");
 
   try {
     // Connect to DB once at the start of the request
@@ -56,6 +55,7 @@ export async function POST(request: NextRequest) {
       const entries = await Promise.all(
         payload.entry.map(async (entry: any) => {
           const webhookEvent = entry.messaging || entry.changes;
+          console.log(webhookEvent, "webhookEvent");
 
           if (webhookEvent) {
             const eventPromises = webhookEvent.map(async (event: any) => {
@@ -93,7 +93,7 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
         userId: feedDetails.from.id,
         userName: feedDetails.from.name,
         message: feedDetails.message,
-        createdAt: new Date(feedDetails.updated_time),
+        createdAt: new Date(feedDetails.post.updated_time),
       };
       const newFeedEvent = new Comment(commentData);
 
