@@ -17,27 +17,27 @@ const LivePicker: React.FC<LivePickerProps> = ({ initialData }) => {
   const data = JSON.parse(initialData || "[]");
   const [comments, setComments] = useState<Comment[]>(data);
   const [socket, setSocket] = useState<Socket | null>(null);
-  useEffect(() => {
-    const initWebSocket = async () => {
-      await fetch("/api/socket"); // This initializes the WebSocket server
-    };
+  // useEffect(() => {
+  //   const initWebSocket = async () => {
+  //     await fetch("/api/socket"); // This initializes the WebSocket server
+  //   };
 
-    initWebSocket();
-  }, []);
+  //   initWebSocket();
+  // }, []);
 
-  useEffect(() => {
-    const socketInstance = io();
+  // useEffect(() => {
+  //   const socketInstance = io();
 
-    setSocket(socketInstance);
+  //   setSocket(socketInstance);
 
-    socketInstance.on("commentAdded", (newComment: Comment) => {
-      setComments((prevComments) => [...prevComments, newComment]);
-    });
+  //   socketInstance.on("commentAdded", (newComment: Comment) => {
+  //     setComments((prevComments) => [...prevComments, newComment]);
+  //   });
 
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     socketInstance.disconnect();
+  //   };
+  // }, []);
 
   return (
     <div className="live-picker">
