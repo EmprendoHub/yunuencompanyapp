@@ -98,7 +98,7 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
       const newFeedEvent = new Comment(commentData);
 
       const res = await newFeedEvent.save();
-      runRevalidationTo("/admin/live/");
+      runRevalidationTo(`/admin/live/${feedDetails.post_id}`);
       return res;
     } catch (error: any) {
       console.error("Feed event processing error:", error);
