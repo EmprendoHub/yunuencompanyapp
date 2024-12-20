@@ -30,7 +30,6 @@ const LiveVideoPicker = ({
   const adjustEmbedHtml = (html: string, width: number, height: number) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-    console.log(tempDiv.innerHTML);
 
     const videoElement = tempDiv.querySelector("iframe");
 

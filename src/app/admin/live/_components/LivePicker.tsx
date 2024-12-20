@@ -10,7 +10,7 @@ interface WinnerData {
 }
 
 const LivePicker = ({ data }: { data?: string }) => {
-  const messages = JSON.parse(data || "[]");
+  const comments = JSON.parse(data || "[]");
 
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [winningNumber, setWinningNumber] = useState<string | null>(null);
@@ -24,17 +24,15 @@ const LivePicker = ({ data }: { data?: string }) => {
         <div className="bg-card  p-3 rounded-md h-screen overflow-y-auto">
           <h3 className=" font-bold text-2xl">Yuny y Mis Chulas</h3>
           <hr className="my-3 maxmd:my-1 " />
-          {messages &&
-            messages.map((message: any, i: number) => (
+          {comments &&
+            comments.map((comment: any, i: number) => (
               <div key={i} className="text-xs flex flex-col">
-                <div className="text-[10px] text-muted">{message.id}</div>
-                <div>{message.message}</div>
+                <div className="text-[10px] text-muted">{comment.id}</div>
+                <div>{comment.message}</div>
                 <div className="text-[12px] text-bold text-blue-500">
-                  {message.from?.name}
+                  {comment.userName}
                 </div>
-                <div className="text-[10px] text-bold">
-                  {message.created_time}
-                </div>
+                <div className="text-[10px] text-bold">{comment.createdAt}</div>
                 <hr className="my-3 maxmd:my-1 " />
               </div>
             ))}

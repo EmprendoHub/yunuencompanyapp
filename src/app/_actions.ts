@@ -45,6 +45,7 @@ import APIReportsFilters from "@/lib/APIReportsFilters";
 import { subDays, format } from "date-fns";
 import APIPaymentsFilters from "@/lib/APIPaymentsFilters";
 import Template from "@/components/bulkmailer/template/Template";
+import Comment from "@/backend/models/Comment";
 
 // Function to get the document count for all from the previous month
 const getDocumentCountPreviousMonth = async (model: any) => {
@@ -3978,5 +3979,25 @@ export async function getFBLiveVideos() {
   } catch (error) {
     console.error("Failed to fetch Facebook Live Videos:", error);
     return { status: 400, videos: "" };
+  }
+}
+
+export async function getPostDBComments(videoId: string) {
+  const video = videoId || "421878677666248_122131066880443689";
+
+  await dbConnect();
+
+  try {
+    const commentsData = await Comment.find({ postId: video }).sort({
+      createdAt: -1,
+    });
+    return {
+      status: 200,
+      commentsData: JSON.stringify(commentsData),
+      commentsDataCount: commentsData.length,
+    };
+  } catch (error: any) {
+    // Something happened in setting up the request
+    console.error("Error setting up request:", error);
   }
 }

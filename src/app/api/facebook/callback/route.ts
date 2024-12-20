@@ -20,7 +20,7 @@ interface FacebookComment {
   message: string;
   post_id: string;
   comment_id: string;
-  created_time: string;
+  updated_time: string;
   item: string;
   parent_id: string;
   verb: string;
@@ -93,7 +93,7 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
         userId: feedDetails.from.id,
         userName: feedDetails.from.name,
         message: feedDetails.message,
-        createdAt: new Date(feedDetails.created_time),
+        createdAt: new Date(feedDetails.updated_time),
       };
       const newFeedEvent = new Comment(commentData);
 
