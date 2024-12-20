@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
   try {
     // Connect to DB once at the start of the request
     await dbConnect();
-    console.log("Database connected at request start");
 
     if (payload.object === "page") {
       // Use Promise.all to handle all events concurrently
@@ -64,7 +63,7 @@ async function storeFeedEvent(feedDetails: any) {
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
-      console.log("pageID", pageID);
+      console.log("feedDetails", feedDetails);
 
       const commentData = {
         pageId: pageID,
@@ -80,7 +79,6 @@ async function storeFeedEvent(feedDetails: any) {
 
       const res = await newFeedEvent.save();
       runRevalidationTo("/admin/live/");
-      console.log("Feed stored:", newFeedEvent);
       return res;
     } catch (error: any) {
       console.error("Feed event processing error:", error);
