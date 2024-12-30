@@ -3902,7 +3902,7 @@ export async function getVideoMessages(videoId: string) {
 }
 
 export async function getFBLiveVideos() {
-  const account = "421878677666248";
+  const account = "173875102485412";
   // "173875102485412";
   const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
   const headers = {
@@ -3959,7 +3959,7 @@ export async function getPostDBComments(videoId: string) {
 }
 
 export async function getFBPosts() {
-  const account = "421878677666248";
+  const account = "173875102485412";
   const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
@@ -3980,27 +3980,31 @@ export async function getFBPosts() {
 
       if (response && response.status === 200) {
         const postData = response.data?.data || [];
+        const liveVideos = response.data?.data || [];
+        posts = [...posts, ...liveVideos];
 
         // Fetch images for each post
-        const postsWithImages = await Promise.all(
-          postData.map(async (post: any) => {
-            const attachmentsResponse = await axios.get(
-              `https://graph.facebook.com/v21.0/${post.id}?fields=attachments`,
-              { headers }
-            );
+        // const postsWithImages = await Promise.all(
+        //   postData.map(async (post: any) => {
+        //     const attachmentsResponse = await axios.get(
+        //       `https://graph.facebook.com/v21.0/${post.id}?fields=attachments`,
+        //       { headers }
+        //     );
 
-            const imageUrl =
-              attachmentsResponse.data?.attachments?.data?.[0]?.media?.image
-                ?.src || null;
+        //     const imageUrl =
+        //       attachmentsResponse.data?.attachments?.data?.[0]?.media?.image
+        //         ?.src || null;
 
-            return {
-              ...post,
-              imageUrl,
-            };
-          })
-        );
+        //     // return {
+        //     //   ...post,
+        //     //   imageUrl,
+        //     // };
 
-        posts = [...posts, ...postsWithImages];
+        //     return post
+        //   })
+        // );
+        // posts = [...posts, ...postsWithImages];
+
         nextPageUrl = response.data?.paging?.next || null;
       } else {
         break;

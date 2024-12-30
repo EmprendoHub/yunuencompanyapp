@@ -1,6 +1,6 @@
 "use client";
 import AdminSidebar, { SideBarItem } from "@/components/admin/AdminSidebar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   TbDeviceIpadDollar,
   TbNewSection,
@@ -11,8 +11,6 @@ import { PiUserListLight } from "react-icons/pi";
 import { CiGrid31 } from "react-icons/ci";
 import { TfiDashboard } from "react-icons/tfi";
 import { MdOutlineFactCheck, MdOutlinePostAdd } from "react-icons/md";
-import { LuReceipt } from "react-icons/lu";
-import { LiaCashRegisterSolid, LiaStoreAltSolid } from "react-icons/lia";
 import {
   GiCartwheel,
   GiClothes,
@@ -22,13 +20,18 @@ import {
 } from "react-icons/gi";
 import { FaCartPlus, FaInstagram } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
-import Link from "next/link";
-import { Recycle, Video } from "lucide-react";
+import { LogOut, Recycle, Video } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import { supabase } from "@/lib/supabase";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const logout = async () => {
+    await supabase.auth.signOut();
 
+    router.refresh();
+  };
   return (
     <div className="max-w-full">
       <div className="flex items-start w-full ">
@@ -152,6 +155,13 @@ export default function UserLayout({ children }: { children: any }) {
             text={"Rifa"}
             active={pathname === "/admin/rifa" ? "true" : "false"}
             url={"/admin/rifa"}
+          />
+          <hr className="my-3 maxmd:my-1" />
+
+          <LogOut
+            size={20}
+            onClick={logout}
+            className="text-blue-500 hover:text-blue-700 cursor-pointer"
           />
           <hr className="my-3 maxmd:my-1" />
         </AdminSidebar>

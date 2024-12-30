@@ -1,8 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./video.css";
 import LogoComponent from "@/components/logos/LogoComponent";
 import Link from "next/link";
+import { useSupabase } from "@/hooks/useSupabase";
+import Image from "next/image";
+import { formatReadableDate } from "@/lib/utils";
 
 interface WinnerData {
   ticketNumber: string;
@@ -17,9 +20,15 @@ const LiveVideoPicker = ({
   data: string;
   pagingData?: string;
 }) => {
-  const lives = JSON.parse(data);
-  const paging = JSON.parse(pagingData || "{}");
+  const { getSupaSession } = useSupabase();
 
+  useEffect(() => {
+    getSupaSession();
+  }, []);
+
+  console.log("data", data);
+
+  const lives = JSON.parse(data || "[]");
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [winningNumber, setWinningNumber] = useState<string | null>(null);
   const [winnerData, setWinnerData] = useState<WinnerData | null>(null);
@@ -45,22 +54,37 @@ const LiveVideoPicker = ({
     <div className="flex items-center">
       <div className="w-1/2">
         <div className="bg-card  p-3 rounded-md h-screen overflow-y-auto">
-          <h3 className=" font-bold text-2xl">Yuny y Mis Chulas</h3>
+          <h3 className=" font-bold text-2xl">Publicaciones</h3>
           <hr className="my-3 maxmd:my-1 " />
           {lives.map((live: any, i: number) => (
             <div key={i} className="flex flex-col">
+              <p className="text-xs text-gray-600">
+                {" "}
+                {formatReadableDate(live.created_time)}
+              </p>
               <Link className="text-blue-500" href={`/admin/live/${live.id}`}>
-                {live.id}
-              </Link>
-              <div className="text-xs">{live.message}</div>
-              {/* Render embed_html as raw HTML */}
-              {/* <div className="w-40 h-auto bg-background rounded-md">
+                <div className="text-xs">{live.message}</div>
+                {/* Render embed_html as raw HTML */}
+                {/* <div className="w-40 h-auto bg-background rounded-md">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: adjustEmbedHtml(live.embed_html, 200, 300), // Change dimensions here
                   }}
                 />
               </div> */}
+                <Image
+                  src={
+                    live.imageUrl ||
+                    "/images/product-placeholder-minimalist.jpg"
+                  }
+                  alt="post-image"
+                  width={100}
+                  height={150}
+                  priority
+                  className="rounded-md w-auto h-auto"
+                />
+              </Link>
+
               <hr className="my-3 maxmd:my-1 " />
             </div>
           ))}
