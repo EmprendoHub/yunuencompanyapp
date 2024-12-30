@@ -39,8 +39,6 @@ export async function POST(request: any) {
     });
 
     const res = await newCustomer.save();
-    runRevalidationTo("/rifas");
-    runRevalidationTo("/admin/rifa");
 
     return NextResponse.json({
       message: "New customer registered",

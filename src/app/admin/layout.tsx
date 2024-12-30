@@ -150,12 +150,6 @@ export default function UserLayout({ children }: { children: any }) {
             active={pathname === "/admin/videos" ? "true" : "false"}
             url={"/admin/videos"}
           />
-          <SideBarItem
-            icon={<GiCartwheel size={20} />}
-            text={"Rifa"}
-            active={pathname === "/admin/rifa" ? "true" : "false"}
-            url={"/admin/rifa"}
-          />
           <hr className="my-3 maxmd:my-1" />
 
           <LogOut
