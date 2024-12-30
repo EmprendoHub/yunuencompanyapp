@@ -3,7 +3,6 @@ import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import "./pickerwinner.css";
 import LogoComponent from "@/components/logos/LogoComponent";
-import { CiShare2 } from "react-icons/ci";
 import { toast } from "sonner";
 import { Copy } from "lucide-react";
 

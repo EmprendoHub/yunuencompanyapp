@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { useState } from "react";
 import "./live.css";
 
 interface Comment {
@@ -16,28 +15,6 @@ interface LivePickerProps {
 const LivePicker: React.FC<LivePickerProps> = ({ initialData }) => {
   const data = JSON.parse(initialData || "[]");
   const [comments, setComments] = useState<Comment[]>(data);
-  const [socket, setSocket] = useState<Socket | null>(null);
-  // useEffect(() => {
-  //   const initWebSocket = async () => {
-  //     await fetch("/api/socket"); // This initializes the WebSocket server
-  //   };
-
-  //   initWebSocket();
-  // }, []);
-
-  // useEffect(() => {
-  //   const socketInstance = io();
-
-  //   setSocket(socketInstance);
-
-  //   socketInstance.on("commentAdded", (newComment: Comment) => {
-  //     setComments((prevComments) => [...prevComments, newComment]);
-  //   });
-
-  //   return () => {
-  //     socketInstance.disconnect();
-  //   };
-  // }, []);
 
   return (
     <div className="live-picker">

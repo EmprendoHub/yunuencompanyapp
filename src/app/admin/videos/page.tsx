@@ -1,4 +1,4 @@
-import { getFBLiveVideos, subscribeToFbApp } from "@/app/_actions";
+import { getFBLiveVideos } from "@/app/_actions";
 import React from "react";
 import LiveVideoPicker from "./_components/LiveVideoPicker";
 
