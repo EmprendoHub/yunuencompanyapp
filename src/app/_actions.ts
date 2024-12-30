@@ -3901,50 +3901,6 @@ export async function getVideoMessages(videoId: string) {
   }
 }
 
-export async function subscribeToFbApp(pageId: string) {
-  const fbPage = pageId || "421878677666248";
-
-  // Expanded fields to get more user information
-  const baseUrl = `https://graph.facebook.com/v21.0/${fbPage}/subscribed_apps?subscribed_fields=feed`;
-
-  const headers = {
-    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
-  };
-  const config: any = {
-    method: "post",
-    url: baseUrl,
-    headers,
-  };
-
-  try {
-    // console.log("Initial API Call URL:", nextPageUrl);
-
-    const response: any = await axios(config);
-
-    if (response && response.status === 200) {
-      const subscribeResponse = response;
-      console.log(subscribeResponse.data);
-
-      return {
-        status: 200,
-        response: JSON.stringify(subscribeResponse.data),
-      };
-    }
-
-    if (response && response.error) {
-      /* handle the result */
-      console.log(response.error);
-      return {
-        status: 400,
-        response: JSON.stringify(response.error),
-      };
-    }
-  } catch (error) {
-    console.error("Catastrophic error in subscribing to Facebook page:", error);
-    return { status: 400 };
-  }
-}
-
 export async function getFBLiveVideos() {
   const account = "421878677666248";
   // "173875102485412";
@@ -3999,5 +3955,155 @@ export async function getPostDBComments(videoId: string) {
   } catch (error: any) {
     // Something happened in setting up the request
     console.error("Error setting up request:", error);
+  }
+}
+
+export async function getFBPosts() {
+  const account = "421878677666248";
+  const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+
+  let posts: any[] = [];
+  let nextPageUrl: string | null = baseUrl;
+
+  try {
+    while (nextPageUrl) {
+      const config: any = {
+        method: "get",
+        url: nextPageUrl,
+        headers,
+      };
+
+      const response = await axios(config);
+
+      if (response && response.status === 200) {
+        const postData = response.data?.data || [];
+
+        // Fetch images for each post
+        const postsWithImages = await Promise.all(
+          postData.map(async (post: any) => {
+            const attachmentsResponse = await axios.get(
+              `https://graph.facebook.com/v21.0/${post.id}?fields=attachments`,
+              { headers }
+            );
+
+            const imageUrl =
+              attachmentsResponse.data?.attachments?.data?.[0]?.media?.image
+                ?.src || null;
+
+            return {
+              ...post,
+              imageUrl,
+            };
+          })
+        );
+
+        posts = [...posts, ...postsWithImages];
+        nextPageUrl = response.data?.paging?.next || null;
+      } else {
+        break;
+      }
+    }
+
+    return { status: 200, posts: JSON.stringify(posts) };
+  } catch (error) {
+    console.error("Failed to fetch Facebook posts with images:", error);
+    return { status: 400, posts: "" };
+  }
+}
+
+export async function respondToFBComment(commentId: string, message: string) {
+  const baseUrl = `https://graph.facebook.com/v21.0/${commentId}/comments`;
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+
+  try {
+    const response = await axios.post(baseUrl, { message }, { headers });
+
+    if (response.status === 200) {
+      console.log("Successfully responded to comment:", response.data);
+      return { status: 200, data: response.data };
+    } else {
+      console.error("Unexpected response status:", response.status);
+      return { status: response.status, data: response.data };
+    }
+  } catch (error: any) {
+    console.error(
+      "Failed to respond to Facebook comment:",
+      error.response?.data || error.message
+    );
+    return { status: 400, error: error.response?.data || error.message };
+  }
+}
+
+export async function likeToFBComment(commentId: string) {
+  const baseUrl = `https://graph.facebook.com/v21.0/${commentId}/likes`;
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+
+  try {
+    const response = await axios.post(baseUrl, {}, { headers });
+
+    if (response.status === 200) {
+      console.log("Successfully liked to comment:", response.data);
+      return { status: 200, data: response.data };
+    } else {
+      console.error("Unexpected response status to like:", response.status);
+      return { status: response.status, data: response.data };
+    }
+  } catch (error: any) {
+    console.error(
+      "Failed to like Facebook comment:",
+      error.response?.data || error.message
+    );
+    return { status: 400, error: error.response?.data || error.message };
+  }
+}
+
+export async function subscribeToFbApp(pageId: string) {
+  const fbPage = pageId || "173875102485412";
+
+  // Expanded fields to get more user information
+  const baseUrl = `https://graph.facebook.com/v21.0/${fbPage}/subscribed_apps?subscribed_fields=feed`;
+
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+  };
+  const config: any = {
+    method: "post",
+    url: baseUrl,
+    headers,
+  };
+
+  try {
+    // console.log("Initial API Call URL:", nextPageUrl);
+
+    const response: any = await axios(config);
+
+    if (response && response.status === 200) {
+      const subscribeResponse = response;
+      console.log(subscribeResponse.data);
+
+      return {
+        status: 200,
+        response: JSON.stringify(subscribeResponse.data),
+      };
+    }
+
+    if (response && response.error) {
+      /* handle the result */
+      console.log(response.error);
+      return {
+        status: 400,
+        response: JSON.stringify(response.error),
+      };
+    }
+  } catch (error) {
+    console.error("Catastrophic error in subscribing to Facebook page:", error);
+    return { status: 400 };
   }
 }

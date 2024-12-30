@@ -133,3 +133,16 @@ export function extractNumberFromString(string: string) {
   const number = parseInt(numberString);
   return number;
 }
+
+export const formatReadableDate = (isoTimestamp: string): string => {
+  const date = new Date(isoTimestamp);
+
+  return date.toLocaleString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};

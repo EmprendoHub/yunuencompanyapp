@@ -1,14 +1,12 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import "./pickerwinner.css";
 import LogoComponent from "@/components/logos/LogoComponent";
-import { toast } from "sonner";
-import { Copy } from "lucide-react";
+import { useClients } from "@/hooks/useClients";
 
 interface WinnerPickerProps {
-  lotteryCount: number;
-  customersData: string;
+  postId: string;
 }
 
 interface WinnerData {
@@ -17,11 +15,14 @@ interface WinnerData {
   prize: string;
 }
 
-const WinnerPicker: React.FC<WinnerPickerProps> = ({
-  lotteryCount,
-  customersData,
-}) => {
-  const customers = JSON.parse(customersData);
+const WinnerPicker: React.FC<WinnerPickerProps> = ({ postId }) => {
+  const { getClients, clients, subscribeToClients } = useClients();
+
+  subscribeToClients();
+
+  useEffect(() => {
+    getClients(postId);
+  }, []);
 
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [winningNumber, setWinningNumber] = useState<string | null>(null);
@@ -29,7 +30,7 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
   const [spinDegrees, setSpinDegrees] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const totalNumber = lotteryCount;
+  const totalNumber = clients.length;
 
   const calculateRotation = useCallback(
     (selectedNumber: number) => {
@@ -63,7 +64,7 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
 
     // Select a random winner, ensuring the number is never 1
     const selectedNumber = Math.floor(Math.random() * (totalNumber - 1)) + 2;
-    const winner = customers[selectedNumber - 1];
+    const winner = clients[selectedNumber - 1];
 
     // Calculate precise rotation
     const rotation = calculateRotation(selectedNumber);
@@ -78,29 +79,24 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
       setShowModal(true);
       setIsSpinning(false);
     }, 5000);
-  }, [isSpinning, customers, totalNumber, calculateRotation]);
-
-  const copyToClipboard = () => {
-    const url = "https://www.yunuencompany.com/rifas";
-    navigator.clipboard.writeText(url);
-    toast(`El enlace se copió correctamente a su portapapeles`);
-  };
+  }, [isSpinning, clients, totalNumber, calculateRotation]);
 
   return (
     <div className="flex items-center">
-      <div className="w-1/4">
-        <div
-          className="flex flex-row items-center gap-x-2 cursor-pointer p-2"
-          onClick={copyToClipboard}
-        >
-          {"www.yunuencompany.com/rifas"}
-          <Copy className="text-xl" />
-        </div>
+      <div className="w-auto flex mr-2">
         <div className="bg-card  p-3 rounded-md">
-          <h3 className=" font-bold text-2xl">Yuny y Mis Chulas</h3>
+          <h3 className=" font-bold text-2xl">Compartidos</h3>
           <hr className="my-3 maxmd:my-1 " />
-          {customers.map((customer: any) => (
-            <div key={customer.phone}>
+          {clients.map((customer: any, index: number) => (
+            <div
+              key={customer.id}
+              className={`${
+                winningNumber === (index + 1).toString()
+                  ? "bg-emerald-700 text-white text-2xl"
+                  : "text-xs "
+              }`}
+            >
+              {index + 1}.-
               {customer.name !== "SUCURSAL" ? customer.name : ""}
             </div>
           ))}
@@ -116,7 +112,7 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
         </button>
         <div
           className="relative mt-10"
-          style={{ width: "600px", height: "600px" }}
+          style={{ width: "500px", height: "500px" }}
         >
           <div
             style={{
@@ -141,8 +137,8 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({
               ease: "easeInOut",
             }}
             style={{
-              width: "600px",
-              height: "600px",
+              width: "500px",
+              height: "500px",
               borderRadius: "50%",
               overflow: "hidden",
               position: "absolute",

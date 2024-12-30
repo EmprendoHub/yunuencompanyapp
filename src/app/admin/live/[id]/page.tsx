@@ -1,11 +1,17 @@
-import { getPostDBComments } from "@/app/_actions";
 import React from "react";
 import LivePicker from "../_components/LivePicker";
+import HostComment from "../_components/HostComment";
+import WinnerPicker from "../../rifa/_components/WinnerPicker";
 
 const winnerPickerPage = async ({ params }: { params: any }) => {
-  const data: any = await getPostDBComments(params.id);
+  return (
+    <div className="flex items-center">
+      <LivePicker postId={params.id} />
+      {/* <HostComment /> */}
 
-  return <LivePicker initialData={data.commentsData} />;
+      <WinnerPicker postId={params.id} />
+    </div>
+  );
 };
 
 export default winnerPickerPage;
