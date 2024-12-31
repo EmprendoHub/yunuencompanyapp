@@ -86,17 +86,18 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({ postId }) => {
       <div className="w-auto flex mr-2">
         <div className="bg-card  p-3 rounded-md  max-h-[80vh] overflow-y-auto">
           <h3 className=" font-bold text-2xl">Compartidos</h3>
+          <p className="text-center">{clients.length}</p>
           <hr className="my-3 maxmd:my-1 " />
-          {clients.map((customer: any, index: number) => (
+          {[...clients].reverse().map((customer: any, index: number) => (
             <div
               key={customer.id}
               className={`${
-                winningNumber === (index + 1).toString()
+                winningNumber === (clients.length - index).toString()
                   ? "bg-emerald-700 text-white text-2xl"
                   : "text-xs "
               }`}
             >
-              {index + 1}.-
+              {clients.length - index}.-
               {customer.name !== "SUCURSAL" ? customer.name : ""}
             </div>
           ))}

@@ -88,11 +88,28 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
       const pageID = feedDetails?.post_id.split("_")[0];
       let type = "";
       let intent = "none";
+      const filterWords = [
+        "compartido",
+        "Compartido",
+        "compartiendo",
+        "Compatido",
+        "Conpartido",
+        "Comprartido",
+        "Compartir",
+        "Compatidoy",
+        "Cómpartido",
+        "Compartirdo",
+        "COMPARTIDO",
+      ];
+
       if (
-        feedDetails.message.includes("compartido") ||
-        feedDetails.message.includes("Compartido")
-      )
+        filterWords.some((word) =>
+          feedDetails.message.toLowerCase().includes(word.toLowerCase())
+        )
+      ) {
         type = "fake_share";
+        intent = "share";
+      }
 
       if (
         feedDetails.message ===
@@ -112,7 +129,7 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
           { status: 201 }
         );
 
-      if (feedDetails.message) {
+      if (feedDetails.message && type !== "fake_share") {
         const openai = new OpenAI({
           apiKey: process.env.OPEN_AI_KEY,
         });
@@ -151,7 +168,6 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
             aiPromptRequest.choices[0].message.content || "none"
           );
           intent = responseJson.intention;
-          console.log("intent", intent);
         }
       }
 
@@ -179,8 +195,6 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
       const data = await supabase.from("messages").insert(commentData);
       if (type === "fake_share") {
         const fb_client = await supabase.from("fb_clients").insert(clientData);
-
-        console.log(fb_client);
       }
       //const res = await newFeedEvent.save();
 

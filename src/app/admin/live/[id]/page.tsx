@@ -5,7 +5,7 @@ import WinnerPicker from "../../rifa/_components/WinnerPicker";
 
 const winnerPickerPage = async ({ params }: { params: any }) => {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-5">
       <LivePicker postId={params.id} />
       {/* <HostComment /> */}
 

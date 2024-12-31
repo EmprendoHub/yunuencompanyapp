@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export const useMessages = () => {
   const [messages, setMessages] = useState<any[]>([]);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
 
   const getMessages = async (postId: string) => {
     try {
@@ -31,6 +32,8 @@ export const useMessages = () => {
             const exists = prevMessages.some(
               (message) => message.id === payload.new.id
             );
+
+            setNewMessagesCount((prevCount) => prevCount + 1);
 
             // Only add the new message if it doesn't already exist
             if (!exists) {
@@ -103,5 +106,7 @@ export const useMessages = () => {
     subscribeToMessages,
     setMessageType,
     getSupabaseFBComments,
+    newMessagesCount,
+    setNewMessagesCount,
   };
 };

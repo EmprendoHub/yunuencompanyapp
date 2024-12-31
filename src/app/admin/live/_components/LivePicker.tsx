@@ -22,10 +22,15 @@ interface LivePickerProps {
 }
 
 const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
-  const { getMessages, messages, subscribeToMessages, setMessageType } =
-    useMessages();
+  const {
+    getMessages,
+    messages,
+    subscribeToMessages,
+    setMessageType,
+    newMessagesCount,
+    setNewMessagesCount,
+  } = useMessages();
   const [searchQuery, setSearchQuery] = useState("");
-  const [newMessagesCount, setNewMessagesCount] = useState(0);
   const [filteredMessages, setFilteredMessages] = useState(messages);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -96,19 +101,19 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
   console.log(messages);
 
   return (
-    <div className="live-picker">
-      <h2 className="title">Live Comments</h2>
+    <div className="live-picker relative flex flex-col items-center">
+      <h2 className="title">Comentarios FB</h2>
 
       <input
         type="text"
-        placeholder="Search messages..."
-        className="search-input mb-3"
+        placeholder="Buscar comentario..."
+        className="search-input mb-3 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm placeholder-gray-400"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
       <div
-        className="live-picker max-h-[80vh] overflow-y-auto"
+        className="live-picker max-h-[60vh] overflow-y-auto"
         ref={containerRef}
       >
         <div className="comment-list">
@@ -205,10 +210,11 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
 
       {newMessagesCount > 0 && (
         <button
-          className="new-messages-button hover:bg-emerald-700 bg-emerald-500 text-white fixed bottom-4 right-4 p-2 rounded-full shadow-md"
+          className="new-messages-button hover:bg-blue-700 bg-black text-white text-xs absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full shadow-md"
           onClick={handleScrollToBottom}
         >
-          {newMessagesCount} New Message(s)
+          {newMessagesCount} Mensaje{newMessagesCount > 1 && "s"} Nuevo
+          {newMessagesCount > 1 && "s"}
         </button>
       )}
     </div>
