@@ -53,6 +53,8 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
     await likeToFBComment(commentId);
   };
 
+  console.log(messages);
+
   return (
     <div className="live-picker">
       <h2 className="title">Live Comments</h2>
@@ -64,12 +66,12 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
               <div
                 className={`comment flex ${
                   comment.type === "fake_share"
-                    ? "bg-yellow-200"
+                    ? "bg-yellow-400"
                     : comment.type === "sold"
                     ? "bg-emerald-700"
-                    : comment.intent === "purchase"
-                    ? "bg-emerald-200"
-                    : "bg-white"
+                    : ""
+                } ${
+                  comment.intent === "purchase" ? "bg-emerald-200" : "bg-white"
                 }`}
               >
                 <div className="flex flex-col">
