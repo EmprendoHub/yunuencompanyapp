@@ -38,8 +38,6 @@ export async function POST(request: NextRequest) {
     password,
   });
 
-  console.log(response);
-
   return NextResponse.redirect(url.origin, {
     status: 301,
   });

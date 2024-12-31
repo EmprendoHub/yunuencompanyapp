@@ -41,8 +41,6 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  console.log(response);
-
   return NextResponse.redirect(url.origin, {
     status: 301,
   });

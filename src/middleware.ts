@@ -37,7 +37,10 @@ export async function middleware(request: any) {
       return NextResponse.redirect(signInUrl);
     }
 
-    if (token?.user?.role === "manager" && pathname.includes("admin/videos")) {
+    if (token?.user?.role === "manager" && pathname.includes("/admin/videos")) {
+      return await updateSession(request);
+    }
+    if (token?.user?.role === "manager" && pathname.includes("/admin/signup")) {
       return await updateSession(request);
     }
   }

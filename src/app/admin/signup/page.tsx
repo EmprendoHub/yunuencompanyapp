@@ -5,14 +5,14 @@ import React from "react";
 const LoginPage = () => {
   return (
     <form
-      action={"/admin/auth/signin"}
+      action={"/admin/auth/signup"}
       method="POST"
       className="flex flex-col items-center gap-3"
     >
       <label htmlFor="email">Email</label>
       <input name="email" type="email" />
       <input type="password" name="password" />
-      <Button type="submit">Login</Button>
+      <Button type="submit">Sign Up</Button>
     </form>
   );
 };
