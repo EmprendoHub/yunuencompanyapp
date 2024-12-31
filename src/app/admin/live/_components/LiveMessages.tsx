@@ -21,7 +21,7 @@ interface LivePickerProps {
   postId: string;
 }
 
-const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
+const LiveMessages: React.FC<LivePickerProps> = ({ postId }) => {
   const {
     getMessages,
     messages,
@@ -42,8 +42,10 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
 
   useEffect(() => {
     setFilteredMessages(
-      messages?.filter((comment) =>
-        comment.message.toLowerCase().includes(searchQuery.toLowerCase())
+      messages?.filter(
+        (comment) =>
+          comment.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          comment.userName.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
   }, [messages, searchQuery]);
@@ -97,8 +99,6 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
   const handleSetAsLiked = async (commentId: string) => {
     await likeToFBComment(commentId);
   };
-
-  console.log(messages);
 
   return (
     <div className="live-picker relative flex flex-col items-center">
@@ -221,4 +221,4 @@ const LivePicker: React.FC<LivePickerProps> = ({ postId }) => {
   );
 };
 
-export default LivePicker;
+export default LiveMessages;

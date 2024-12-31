@@ -1,15 +1,15 @@
 import React from "react";
-import LivePicker from "../_components/LivePicker";
+import LiveMessages from "../_components/LiveMessages";
 import HostComment from "../_components/HostComment";
-import WinnerPicker from "../../rifa/_components/WinnerPicker";
+import RaffleShareList from "../_components/RaffleShareList";
 
 const winnerPickerPage = async ({ params }: { params: any }) => {
   return (
     <div className="flex items-center gap-5">
-      <LivePicker postId={params.id} />
+      <LiveMessages postId={params.id} />
       {/* <HostComment /> */}
 
-      <WinnerPicker postId={params.id} />
+      <RaffleShareList postId={params.id} />
     </div>
   );
 };
