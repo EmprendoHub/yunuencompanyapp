@@ -84,7 +84,7 @@ const WinnerPicker: React.FC<WinnerPickerProps> = ({ postId }) => {
   return (
     <div className="flex items-center">
       <div className="w-auto flex mr-2">
-        <div className="bg-card  p-3 rounded-md">
+        <div className="bg-card  p-3 rounded-md  max-h-[80vh] overflow-y-auto">
           <h3 className=" font-bold text-2xl">Compartidos</h3>
           <hr className="my-3 maxmd:my-1 " />
           {clients.map((customer: any, index: number) => (
