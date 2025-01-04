@@ -43,7 +43,7 @@ const LiveVideoPicker = ({
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center ">
       <div className="w-1/2">
         <div className="bg-card  p-3 rounded-md h-screen overflow-y-auto">
           <h3 className=" font-bold text-2xl">Publicaciones</h3>
