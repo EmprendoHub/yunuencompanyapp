@@ -12,7 +12,15 @@ export async function middleware(request: any) {
   if (token?.user) {
     if (
       token?.user?.role === "sucursal" &&
-      !pathname.includes("puntodeventa")
+      !pathname.startsWith("/puntodeventa")
+    ) {
+      signInUrl = new URL("/puntodeventa", request.url);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    if (
+      token?.user?.role === "sucursal_principal" &&
+      !pathname.startsWith("/puntodeventa")
     ) {
       signInUrl = new URL("/puntodeventa", request.url);
       return NextResponse.redirect(signInUrl);
@@ -54,7 +62,10 @@ export async function middleware(request: any) {
       return NextResponse.redirect(signInUrl);
     }
 
-    if (token?.user?.role !== "sucursal") {
+    if (
+      token?.user?.role !== "sucursal" &&
+      token?.user?.role !== "sucursal_principal"
+    ) {
       signInUrl = new URL("/no-autorizado", request.url);
       return NextResponse.redirect(signInUrl);
     }

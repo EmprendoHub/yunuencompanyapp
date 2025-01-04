@@ -1701,7 +1701,10 @@ export async function getAllPOSOrder(searchQuery: any) {
     await dbConnect();
     const session = await getServerSession(options);
     let orderQuery: any;
-    if (session?.user?.role === "sucursal") {
+    if (
+      session?.user?.role === "sucursal" ||
+      session?.user?.role === "sucursal_principal"
+    ) {
       orderQuery = Order.find({
         $and: [
           { branch: session?.user?._id.toString() },
@@ -1866,7 +1869,10 @@ export async function getAllPOSOExpenses(searchQuery: any) {
     const session = await getServerSession(options);
     let expenseQuery: any;
 
-    if (session?.user?.role === "sucursal") {
+    if (
+      session?.user?.role === "sucursal" ||
+      session?.user?.role === "sucursal_principal"
+    ) {
       expenseQuery = Expense.find({
         $and: [
           { user: session?.user?._id.toString() },
@@ -2439,7 +2445,12 @@ export async function getAllProduct(searchQuery: any) {
     const session = await getServerSession(options);
 
     let productQuery: any;
-    if (session && ["manager", "sucursal"].includes(session?.user?.role)) {
+    if (
+      session &&
+      ["manager", "sucursal", "sucursal_principal"].includes(
+        session?.user?.role
+      )
+    ) {
       productQuery = Product.find();
     } else {
       productQuery = Product.find({ published: true });
@@ -2586,7 +2597,8 @@ export async function getAllClient(searchQuery: any) {
     if (session) {
       if (
         session?.user?.role === "manager" ||
-        session?.user?.role === "sucursal"
+        session?.user?.role === "sucursal" ||
+        session?.user?.role === "sucursal_principal"
       ) {
         clientQuery = Customer.find({});
       }

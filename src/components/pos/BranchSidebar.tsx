@@ -24,7 +24,7 @@ const BranchSidebar = ({ children }: { children: any }) => {
   return (
     <aside className="h-screen print:hidden ">
       <nav className="h-full flex flex-col bg-background border-r border-r-slate-300 shadow-sm">
-        <div className="p-4 maxmd:p-2 pb-2 flex justify-between maxmd:justify-center items-center">
+        <div className="p-2 maxmd:p-2 pb-2 flex justify-between maxmd:justify-center items-center">
           <Image
             alt="image"
             src={"/logos/yunuen_logo_Horixontal.webp"}
@@ -126,12 +126,12 @@ export function SideBarItem({
 
   return (
     <li
-      className={`relative flex flex-col items-center justify-center py-8 px-3 maxmd:pr-1 my-2 font-medium rounded-md cursor-pointer gap-x-1 transition-colors group ${
+      className={`relative flex flex-col items-center justify-center py-5 px-3 maxmd:pr-1 my-2 font-medium rounded-md cursor-pointer gap-x-1 transition-colors group ${
         active ? "bg-card text-primary" : "hover:bg-card text-gray-500"
       }`}
       onClick={handleDropdownToggle}
     >
-      <div className="flex items-center justify-center text-2xl">
+      <div className="flex items-center justify-center text-xl">
         {icon}
         <span
           className={`flex justify-between items-center overflow-hidden transition-all ease-in-out   ${

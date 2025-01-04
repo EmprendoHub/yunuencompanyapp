@@ -4,15 +4,17 @@ import { usePathname } from "next/navigation";
 import { TbDeviceIpadDollar } from "react-icons/tb";
 import {
   LiaCashRegisterSolid,
-  LiaMonero,
   LiaMoneyBillAlt,
   LiaReceiptSolid,
 } from "react-icons/lia";
 import Link from "next/link";
-import { LucideTicketPlus } from "lucide-react";
+import { LucideTicketPlus, Video } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
+  const session: any = useSession();
+  console.log("session", session.data);
 
   return (
     <div className="max-w-full pr-2">
@@ -30,7 +32,7 @@ export default function UserLayout({ children }: { children: any }) {
           <SideBarItem
             icon={<TbDeviceIpadDollar size={20} />}
             text={"Ventas"}
-            active={pathname === "/puntodeventa/pedidos" ?? true}
+            active={pathname === "/puntodeventa/pedidos" && true}
             url={"/puntodeventa/pedidos"}
           />
           <SideBarItem
@@ -60,12 +62,25 @@ export default function UserLayout({ children }: { children: any }) {
             }
             url={"/puntodeventa/corte"}
           />
+          {session.data && session.data.user.role === "sucursal_principal" && (
+            <SideBarItem
+              icon={<Video size={20} />}
+              text={"Publicaciones"}
+              active={
+                pathname === "/puntodeventa/publicaciones" ||
+                (pathname === "/puntodeventa/publicaciones" && true)
+              }
+              url={"/puntodeventa/publicaciones"}
+            />
+          )}
         </BranchSidebar>
         <div className="relative w-full mb-5 ">{children}</div>
         {!pathname.includes("tienda") &&
         !pathname.includes("gastos") &&
         !pathname.includes("corte") &&
         !pathname.includes("pedidos") &&
+        !pathname.includes("publicaciones") &&
+        !pathname.includes("live") &&
         !pathname.includes("pedido") ? (
           <Link
             className="absolute right-3 bottom-3 z-50 text-4xl text-blue-500 bg-black px-7 py-5 flex items-center justify-center rounded-full hover:scale-110 duration-300 ease-in-out"
