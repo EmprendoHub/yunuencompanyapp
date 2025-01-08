@@ -3975,6 +3975,7 @@ export async function getFBPosts() {
   const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+    "Cache-Control": "no-cache",
   };
 
   let posts: any[] = [];
