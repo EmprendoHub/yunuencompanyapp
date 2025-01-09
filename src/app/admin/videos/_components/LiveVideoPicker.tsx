@@ -26,8 +26,6 @@ const LiveVideoPicker = ({
     getSupaSession();
   }, []);
 
-  console.log("data", data);
-
   const lives = JSON.parse(data || "[]");
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [winningNumber, setWinningNumber] = useState<string | null>(null);

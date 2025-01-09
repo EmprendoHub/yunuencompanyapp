@@ -5,9 +5,11 @@ export const useSupabase = () => {
     const {
       data: { session },
     } = await supabase.auth.getSession();
+    if (session) {
+      const { access_token, refresh_token }: any = session;
+      await setSupaSession(access_token, refresh_token);
+    }
 
-    const { access_token, refresh_token }: any = session;
-    await setSupaSession(access_token, refresh_token);
     return session;
   };
 

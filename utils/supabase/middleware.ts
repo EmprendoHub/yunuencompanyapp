@@ -5,7 +5,6 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
-
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -43,22 +42,49 @@ export async function updateSession(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (
-    !session &&
-    !request.nextUrl.pathname.startsWith("admin/login") &&
-    !request.nextUrl.pathname.startsWith("admin/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/login";
-    return NextResponse.redirect(url);
+  if (request.nextUrl.pathname.startsWith("/puntodeventa/")) {
+    if (
+      !session &&
+      !request.nextUrl.pathname.startsWith("/puntodeventa/login") &&
+      !request.nextUrl.pathname.startsWith("/puntodeventa/signup") &&
+      !request.nextUrl.pathname.startsWith("/puntodeventa/auth")
+    ) {
+      // no user, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = "/puntodeventa/login";
+      return NextResponse.redirect(url);
+    }
+
+    if (
+      session &&
+      request.nextUrl.pathname.startsWith("/puntodeventa/signup")
+    ) {
+      // no user, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = "/puntodeventa/publicaciones";
+      return NextResponse.redirect(url);
+    }
   }
 
-  if (session && request.nextUrl.pathname.startsWith("/admin/signup")) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/videos";
-    return NextResponse.redirect(url);
+  if (request.nextUrl.pathname.startsWith("/admin/")) {
+    if (
+      !session &&
+      !request.nextUrl.pathname.startsWith("/admin/login") &&
+      !request.nextUrl.pathname.startsWith("/admin/signup") &&
+      !request.nextUrl.pathname.startsWith("/admin/auth")
+    ) {
+      // no user, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      return NextResponse.redirect(url);
+    }
+
+    if (session && request.nextUrl.pathname.startsWith("/admin/signup")) {
+      // no user, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/videos";
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

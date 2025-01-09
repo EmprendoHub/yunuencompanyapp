@@ -33,13 +33,13 @@ export async function POST(request: NextRequest) {
     }
   );
 
-  console.log(supabase);
-  const response = await supabase.auth.signInWithPassword({
+  const response = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      emailRedirectTo: `${url.origin}/puntodeventa/auth/callback`,
+    },
   });
-
-  console.log(response);
 
   return NextResponse.redirect(url.origin, {
     status: 301,

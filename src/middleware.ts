@@ -63,6 +63,19 @@ export async function middleware(request: any) {
     }
 
     if (
+      token?.user?.role === "sucursal_principal" &&
+      pathname.includes("/puntodeventa/publicaciones")
+    ) {
+      return await updateSession(request);
+    }
+    if (
+      token?.user?.role === "sucursal_principal" &&
+      pathname.includes("/puntodeventa/signup")
+    ) {
+      return await updateSession(request);
+    }
+
+    if (
       token?.user?.role !== "sucursal" &&
       token?.user?.role !== "sucursal_principal"
     ) {

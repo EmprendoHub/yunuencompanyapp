@@ -1,6 +1,6 @@
 "use client";
 import BranchSidebar, { SideBarItem } from "@/components/pos/BranchSidebar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { TbDeviceIpadDollar } from "react-icons/tb";
 import {
   LiaCashRegisterSolid,
@@ -8,14 +8,35 @@ import {
   LiaReceiptSolid,
 } from "react-icons/lia";
 import Link from "next/link";
-import { LucideTicketPlus, Video } from "lucide-react";
+import { LogOut, LucideTicketPlus, Video } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
 
 export default function UserLayout({ children }: { children: any }) {
   const pathname = usePathname();
   const session: any = useSession();
-  console.log("session", session.data);
+  const router = useRouter();
+  const [supaBase, setSupaBase] = useState<any>(null);
+  console.log("supaBase", supaBase);
 
+  useEffect(() => {
+    async function getSupaSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      setSupaBase(session);
+    }
+
+    getSupaSession();
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+
+    router.push("/puntodeventa/signup");
+  };
   return (
     <div className="max-w-full pr-2">
       <div className="flex items-start w-full ">
@@ -62,6 +83,8 @@ export default function UserLayout({ children }: { children: any }) {
             }
             url={"/puntodeventa/corte"}
           />
+
+          <hr className="my-3 maxmd:my-1" />
           {session.data && session.data.user.role === "sucursal_principal" && (
             <SideBarItem
               icon={<Video size={20} />}
@@ -73,6 +96,13 @@ export default function UserLayout({ children }: { children: any }) {
               url={"/puntodeventa/publicaciones"}
             />
           )}
+          <hr className="my-3 maxmd:my-1" />
+
+          <LogOut
+            size={20}
+            onClick={logout}
+            className="text-blue-500 hover:text-blue-700 cursor-pointer"
+          />
         </BranchSidebar>
         <div className="relative w-full mb-5 ">{children}</div>
         {!pathname.includes("tienda") &&

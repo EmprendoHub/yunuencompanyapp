@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const email = String(formData.get("email"));
   const password = String(formData.get("password"));
-
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -33,13 +32,10 @@ export async function POST(request: NextRequest) {
     }
   );
 
-  console.log(supabase);
   const response = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-
-  console.log(response);
 
   return NextResponse.redirect(url.origin, {
     status: 301,
