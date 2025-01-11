@@ -3972,6 +3972,62 @@ export async function getPostDBComments(videoId: string) {
 
 export async function getFBPosts() {
   const account = "173875102485412";
+  const pre_id = "173875102485412_";
+  const baseVideoUrl = `https://graph.facebook.com/v21.0/${account}/live_videos?fields=status,stream_url,embed_html,secure_stream_url,id,description,creation_time`;
+
+  const headers = {
+    Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
+    "Cache-Control": "no-cache",
+  };
+
+  try {
+    // Fetch live videos
+    const config = {
+      method: "get",
+      url: baseVideoUrl,
+      headers,
+    };
+
+    const response = await axios(config);
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch live videos");
+    }
+
+    const liveVideoData = response.data?.data || [];
+
+    // Process each live video to extract the post ID from embed_html
+    const processedPosts = liveVideoData.map((live_video: any) => {
+      try {
+        // Extract post ID from embed_html using regex
+        const postIdMatch = live_video.embed_html.match(/videos%2F(\d+)/);
+        const postId = postIdMatch ? postIdMatch[1] : null;
+
+        return {
+          ...live_video,
+          post_id: pre_id + postId,
+        };
+      } catch (error) {
+        console.warn(`Error processing video ${live_video.id}:`, error);
+        return live_video;
+      }
+    });
+
+    return {
+      status: 200,
+      posts: JSON.stringify(processedPosts),
+    };
+  } catch (error: any) {
+    console.error("Failed to fetch Facebook posts:", error);
+    return {
+      status: error?.response?.status || 400,
+      posts: "",
+      error: error?.message || "Unknown error occurred",
+    };
+  }
+}
+
+export async function getAllFBPosts() {
+  const account = "173875102485412";
   const baseUrl = `https://graph.facebook.com/v21.0/${account}/posts`;
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
