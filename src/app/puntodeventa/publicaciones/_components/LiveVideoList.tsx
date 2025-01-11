@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import "./video.css";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/useSupabase";
-import Image from "next/image";
 import { formatReadableDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -21,7 +20,6 @@ const LiveVideoList = ({ data }: { data: string; pagingData?: string }) => {
   }, []);
 
   const lives = JSON.parse(data || "[]");
-  console.log("lives", lives);
 
   // Function to modify width and height of the iframe
   const adjustEmbedHtml = (html: string, width: number, height: number) => {
