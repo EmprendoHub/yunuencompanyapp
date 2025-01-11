@@ -18,7 +18,6 @@ export default function UserLayout({ children }: { children: any }) {
   const session: any = useSession();
   const router = useRouter();
   const [supaBase, setSupaBase] = useState<any>(null);
-  console.log("supaBase", supaBase);
 
   useEffect(() => {
     async function getSupaSession() {

@@ -13,9 +13,6 @@ export const useClients = () => {
         .eq("postId", postId)
         .order("created_at", { ascending: true });
 
-      console.log("data", data);
-
-      console.log(data);
       if (data) {
         setClients(data);
       }
