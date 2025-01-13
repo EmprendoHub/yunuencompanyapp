@@ -7,7 +7,7 @@ const LoginPage = () => {
     <form
       action={"/admin/auth/signin"}
       method="POST"
-      className="flex flex-col items-center gap-3"
+      className="flex flex-col items-center gap-3 "
     >
       <label htmlFor="email">Email</label>
       <input name="email" type="email" />
