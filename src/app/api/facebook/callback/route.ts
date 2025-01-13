@@ -61,6 +61,11 @@ export async function POST(request: NextRequest) {
           if (webhookEvent) {
             const eventPromises = webhookEvent.map(async (event: any) => {
               if (event.field === "feed") {
+                if (event.value.verb === "remove")
+                  return NextResponse.json(
+                    { message: "EVENT_RECEIVED" },
+                    { status: 200 }
+                  );
                 return storeFeedEvent(event.value);
               }
               if (event.message) {
