@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
                 return storeFeedEvent(event.value);
               }
               if (event.field === "live_videos") {
-                return storeFeedEvent(event.value);
+                return storeLiveEvent(event.value);
               }
               if (event.message) {
                 return processMessageEvent(event);
