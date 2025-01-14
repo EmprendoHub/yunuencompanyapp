@@ -68,6 +68,9 @@ export async function POST(request: NextRequest) {
                   );
                 return storeFeedEvent(event.value);
               }
+              if (event.field === "live_videos") {
+                return storeFeedEvent(event.value);
+              }
               if (event.message) {
                 return processMessageEvent(event);
               }
@@ -178,6 +181,132 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
 
       const commentData = {
         pageId: pageID,
+        postId: feedDetails.post_id,
+        facebookCommentId: feedDetails.comment_id,
+        userId: feedDetails.from.id,
+        userName: feedDetails.from.name,
+        message: feedDetails.message,
+        type,
+        intent,
+        email: "yunuengmc@gmail.com",
+        createdAt: new Date(feedDetails.post.updated_time),
+      };
+
+      const clientData = {
+        fb_id: feedDetails.from.id,
+        name: feedDetails.from.name,
+        postId: feedDetails.post_id,
+      };
+      // const newFeedEvent = new Comment(commentData);
+      //supbase comment
+
+      const data = await supabase.from("messages").insert(commentData);
+      if (type === "fake_share") {
+        const fb_client = await supabase.from("fb_clients").insert(clientData);
+      }
+      //const res = await newFeedEvent.save();
+
+      return data;
+    } catch (error: any) {
+      console.error("Feed event processing error:", error);
+      throw error; // Propagate error up
+    }
+  }
+}
+
+// Modify storeFeedEvent to not handle DB connection
+async function storeLiveEvent(feedDetails: any) {
+  console.log(feedDetails, "feedDetails");
+  if (feedDetails.item === "comment") {
+    try {
+      const liveID = feedDetails?.id;
+      let type = "";
+      let intent = "none";
+      const filterWords = [
+        "compartido",
+        "Compartido",
+        "compartiendo",
+        "Compatido",
+        "Conpartido",
+        "Comprartido",
+        "Compartir",
+        "Compatidoy",
+        "Cómpartido",
+        "Compartirdo",
+        "COMPARTIDO",
+      ];
+
+      if (
+        filterWords.some((word) =>
+          feedDetails.message.toLowerCase().includes(word.toLowerCase())
+        )
+      ) {
+        type = "fake_share";
+        intent = "share";
+      }
+
+      if (
+        feedDetails.message ===
+        "Gracias por tu compra este articulo te lo ganaste tu!"
+      )
+        return NextResponse.json(
+          { message: "PURCHASE CONFIRMED" },
+          { status: 201 }
+        );
+
+      if (
+        feedDetails.message ===
+        "Una disculpa hubo un error y este articulo se lo gano alguien mas!"
+      )
+        return NextResponse.json(
+          { message: "PURCHASE CANCELLED" },
+          { status: 201 }
+        );
+
+      if (feedDetails.message && type !== "fake_share") {
+        const openai = new OpenAI({
+          apiKey: process.env.OPEN_AI_KEY,
+        });
+
+        const aiPromptRequest = await openai.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: `
+                    Eres un asistente experto en ventas en vivo que ayuda a evaluar la intención de compra de los clientes en un live stream. Tu tarea principal es analizar los mensajes enviados por los clientes en español para determinar si están expresando una intención de compra, y si es así, identificar los detalles clave del mensaje como:
+              
+                    1. Producto mencionado (si corresponde).
+                    2. Cantidad o precio indicado.
+                    3. Nombre o referencia personal (si se menciona, por ejemplo, "yo," "mía," "mío").
+              
+                    Ejemplo:
+                    - Mensaje: "yo camisa negra" -> Respuesta: { intención: "compra", producto: "camisa negra", cantidad: 1 }
+                    - Mensaje: "mia bolsa 150" -> Respuesta: { intención: "compra", producto: "bolsa", precio: 150 }
+                    - Mensaje: "solo mirando" -> Respuesta: { intención: "sin compra" }
+              
+                    Si no hay suficiente información para determinar una intención clara o detalles del producto, responde con: { intención: "indeterminada" }.
+              
+                    Sé preciso y utiliza un formato JSON en tus respuestas. Contesta siempre en Ingles Americano y mantén la información directa y profesional si se determina que si existe una intencion de compra en el mensaje marca intent: purchase.
+                    `,
+            },
+            {
+              role: "user",
+              content: feedDetails.message,
+            },
+          ],
+          model: "gpt-3.5-turbo-0125",
+        });
+
+        if (aiPromptRequest.choices[0].message.content) {
+          const responseJson = JSON.parse(
+            aiPromptRequest.choices[0].message.content || "none"
+          );
+          intent = responseJson.intention;
+        }
+      }
+
+      const commentData = {
+        pageId: liveID,
         postId: feedDetails.post_id,
         facebookCommentId: feedDetails.comment_id,
         userId: feedDetails.from.id,
