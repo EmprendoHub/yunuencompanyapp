@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
   const mode = searchParams.get("hub.mode");
 
   if (mode === "subscribe" && verifyToken === FACEBOOK_VERIFY_TOKEN) {
-    console.log("Webhook verified");
     return new Response(challenge, { status: 200 });
   } else {
     return new Response("Verification failed", { status: 403 });
@@ -66,11 +65,14 @@ export async function POST(request: NextRequest) {
                     { message: "EVENT_RECEIVED" },
                     { status: 200 }
                   );
+
                 return storeFeedEvent(event.value);
               }
+
               if (event.field === "live_videos") {
                 return storeLiveEvent(event.value);
               }
+
               if (event.message) {
                 return processMessageEvent(event);
               }
@@ -90,7 +92,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Modify storeFeedEvent to not handle DB connection
-async function storeFeedEvent(feedDetails: FacebookComment) {
+async function storeFeedEvent(feedDetails: any) {
   if (feedDetails.item === "comment") {
     try {
       const pageID = feedDetails?.post_id.split("_")[0];
@@ -180,6 +182,31 @@ async function storeFeedEvent(feedDetails: FacebookComment) {
     } catch (error: any) {
       console.error("Feed event processing error:", error);
       throw error; // Propagate error up
+    }
+  }
+
+  if (feedDetails.item === "status") {
+    if (feedDetails.published === 1) {
+      try {
+        const pageID = feedDetails?.post_id.split("_")[0];
+
+        const postData = {
+          pageId: pageID,
+          postId: feedDetails.post_id,
+          message: feedDetails.message,
+          email: "yunuengmc@gmail.com",
+          createdAt: new Date(),
+        };
+
+        // supabase post
+
+        const data = await supabase.from("posts").insert(postData);
+
+        return data;
+      } catch (error: any) {
+        console.error("Feed event processing error:", error);
+        throw error; // Propagate error up
+      }
     }
   }
 }
