@@ -3973,7 +3973,7 @@ export async function getPostDBComments(videoId: string) {
 export async function getFBPosts() {
   const account = "173875102485412";
   const pre_id = "173875102485412_";
-  const baseVideoUrl = `https://graph.facebook.com/v21.0/${account}/live_videos?fields=status,stream_url,embed_html,secure_stream_url,id,description,creation_time`;
+  const baseVideoUrl = `https://graph.facebook.com/v21.0/${account}/live_videos?fields=status,stream_url,embed_html,secure_stream_url,id,description,creation_time&limit=8`;
 
   const headers = {
     Authorization: `Bearer ${process.env.FB_LAIF_TOKEN}`,
@@ -4011,7 +4011,7 @@ export async function getFBPosts() {
         return live_video;
       }
     });
-
+    revalidatePath("/puntodeventa/publicaciones");
     return {
       status: 200,
       posts: JSON.stringify(processedPosts),
