@@ -121,7 +121,7 @@ const LiveMessages: React.FC<LivePickerProps> = ({ postId }) => {
         />
 
         <div
-          className="live-picker max-h-[40vh] overflow-y-auto"
+          className="live-picker max-h-[70vh] overflow-y-auto"
           ref={containerRef}
         >
           <div className="comment-list">
@@ -166,50 +166,52 @@ const LiveMessages: React.FC<LivePickerProps> = ({ postId }) => {
                       <DropdownMenuTrigger>
                         <p className="text-black">...</p>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
+                      <DropdownMenuContent
+                        onCloseAutoFocus={(event) => event.preventDefault()}
+                      >
                         <DropdownMenuLabel>
                           {comment.type === "fake_share" ? (
-                            <div
-                              onClick={() =>
-                                handleSetAsLiked(comment.facebookCommentId)
-                              }
-                              className="flex gap-2 items-center bg-slate-200 cursor-pointer text-gray-600 hover:text-blue-600 rounded-md p-1"
+                            <DropdownMenuItem
+                              onClick={() => {
+                                handleSetAsLiked(comment.facebookCommentId);
+                              }}
+                              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 rounded-full p-1 cursor-pointer"
                             >
-                              Dar Like <FaThumbsUp />
-                            </div>
+                              <FaThumbsUp />
+                            </DropdownMenuItem>
                           ) : comment.type === "sold" ? (
-                            <div
-                              onClick={() =>
+                            <DropdownMenuItem
+                              onClick={() => {
                                 handleCancelSold(
                                   comment.facebookCommentId,
                                   comment.id
-                                )
-                              }
-                              className="flex gap-2 items-center bg-slate-200 cursor-pointer text-gray-600 hover:text-red-600 rounded-md p-1"
+                                );
+                              }}
+                              className="flex items-center gap-2 text-gray-600 hover:text-red-600 rounded-full p-1 cursor-pointer"
                             >
-                              Cancelar <X />
-                            </div>
+                              <X />
+                            </DropdownMenuItem>
                           ) : comment.intent === "purchase" ? (
-                            <div
-                              onClick={() =>
+                            <DropdownMenuItem
+                              onClick={() => {
                                 handleSetAsSold(
                                   comment.facebookCommentId,
                                   comment.id
-                                )
-                              }
-                              className="flex gap-2 items-center bg-slate-200 cursor-pointer text-gray-600 hover:text-emerald-700 rounded-md p-1"
+                                );
+                              }}
+                              className="flex items-center gap-2 text-gray-600 hover:text-emerald-700 rounded-full p-1 cursor-pointer"
                             >
-                              Vender <FaMoneyBill />
-                            </div>
+                              <FaMoneyBill />
+                            </DropdownMenuItem>
                           ) : (
-                            <div
-                              onClick={() =>
-                                handleSetAsLiked(comment.facebookCommentId)
-                              }
-                              className="flex gap-2 items-center bg-slate-200 cursor-pointer text-gray-600 hover:text-blue-600 rounded-md p-1"
+                            <DropdownMenuItem
+                              onClick={() => {
+                                handleSetAsLiked(comment.facebookCommentId);
+                              }}
+                              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 rounded-full p-1 cursor-pointer"
                             >
-                              Dar Like <FaThumbsUp />
-                            </div>
+                              <FaThumbsUp />
+                            </DropdownMenuItem>
                           )}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
@@ -231,29 +233,6 @@ const LiveMessages: React.FC<LivePickerProps> = ({ postId }) => {
             {newMessagesCount > 1 && "s"}
           </button>
         )}
-      </div>
-      <div className="w-auto flex mr-2 min-h-full">
-        <div className="text-black bg-white p-2 rounded-md  ">
-          <h3 className="  text-sm text-center">
-            Compartidos {clients.length}
-          </h3>
-          <div className="live-picker max-h-[30dvh] overflow-y-auto">
-            {" "}
-            {[...clients].reverse().map((customer: any, index: number) => (
-              <div
-                key={customer.id}
-                className={`${
-                  winningNumber === (clients.length - index).toString()
-                    ? "bg-emerald-700 text-white text-2xl"
-                    : "text-xs "
-                }`}
-              >
-                {clients.length - index}.-
-                {customer.name !== "SUCURSAL" ? customer.name : ""}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

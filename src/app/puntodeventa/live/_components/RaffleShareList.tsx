@@ -82,19 +82,16 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
   }, [isSpinning, clients, totalNumber, calculateRotation]);
 
   return (
-    <div className="flex maxmd:flex-col items-center">
-      <div className="w-full winner-picker flex items-center justify-center flex-col min-h-screen relative overflow-hidden">
+    <div className="flex flex-col items-center justify-between gap-4 ">
+      <div className="w-full winner-picker relative flex items-center justify-center flex-col h-auto overflow-hidden">
         <button
           onClick={handleSpin}
           disabled={isSpinning}
-          className="bg-purple-800 text-white px-6 py-3 rounded-lg"
+          className="bg-blue-800 text-white px-6 py-3 rounded-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20"
         >
-          {isSpinning ? "..." : "Girar Ruleta"}
+          {isSpinning ? <span className="loader"></span> : "Girar"}
         </button>
-        <div
-          className="relative mt-10"
-          style={{ width: "500px", height: "500px" }}
-        >
+        <div className="relative mt-5 w-[450px] h-[450px]">
           <div
             style={{
               position: "absolute",
@@ -106,7 +103,7 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
               borderLeft: "20px solid transparent",
               borderRight: "20px solid transparent",
               borderTop: "30px solid red",
-              zIndex: 10,
+              zIndex: 50,
             }}
           />
           <motion.div
@@ -118,8 +115,8 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
               ease: "easeInOut",
             }}
             style={{
-              width: "500px",
-              height: "500px",
+              width: "450px",
+              height: "450px",
               borderRadius: "50%",
               overflow: "hidden",
               position: "absolute",
@@ -189,7 +186,7 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
           <>
             {winnerData?.name && (
               <div className="fixed top-0 left-0 w-full min-h-screen flex items-center justify-center z-50 bg-black bg-opacity-50">
-                <div className="max-w-[500px] relative m-auto text-center bg-slate-300 p-6 rounded-lg shadow-lg">
+                <div className="max-w-[450px] relative m-auto text-center bg-slate-300 p-6 rounded-lg shadow-lg">
                   <LogoComponent className=" self-center mx-auto" />
                   <div className="text-black">
                     <h2 className="text-3xl font-bold text-green-600 mb-4">
@@ -201,7 +198,7 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
                     <p className="text-4xl font-bold">{winnerData.name}</p>
                   </div>
                   <button
-                    className="absolute top-2 right-2 text-red-700 hover:text-red-500 z-[999]"
+                    className="absolute top-2 right-2 text-red-700 hover:text-red-500 z-[20]"
                     onClick={() => setShowModal(false)}
                   >
                     X
@@ -220,6 +217,29 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
             )}
           </>
         )}
+      </div>
+      <div className="w-auto flex mr-2 h-auto items-center justify-center">
+        <div className="text-black bg-white p-2 rounded-md  ">
+          <h3 className="  text-sm text-center">
+            Compartidos {clients.length}
+          </h3>
+          <div className="live-picker max-h-[20dvh] overflow-y-auto">
+            {" "}
+            {[...clients].reverse().map((customer: any, index: number) => (
+              <div
+                key={customer.id}
+                className={`${
+                  winningNumber === (clients.length - index).toString()
+                    ? "bg-emerald-700 text-white text-sm"
+                    : "text-xs "
+                }`}
+              >
+                {clients.length - index}.-
+                {customer.name !== "SUCURSAL" ? customer.name : ""}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
