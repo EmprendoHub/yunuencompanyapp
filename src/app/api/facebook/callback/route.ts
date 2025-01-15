@@ -112,7 +112,28 @@ async function storeFeedEvent(feedDetails: any) {
         "COMPARTIDO",
       ];
 
-      const purchaseWords = ["yo", "Yo", "mio", "Mio", "Mia", "mia"];
+      const purchaseWords = [
+        "yo",
+        "Yo",
+        "mio",
+        "Mio",
+        "mios",
+        "Mios",
+        "Mia",
+        "mia",
+        "mias",
+        "Mias",
+        "Lo quiero",
+        "Los quiero",
+        "La quiero",
+        "Las quiero",
+        "pónmela",
+        "ponmela",
+        "pónmelas",
+        "ponmelas",
+        "pon ela",
+        "pon mela",
+      ];
 
       if (
         filterWords.some((word) =>
@@ -144,7 +165,7 @@ async function storeFeedEvent(feedDetails: any) {
       if (feedDetails.message && type !== "fake_share") {
         if (
           purchaseWords.some((word) =>
-            feedDetails.message.toLowerCase().includes(word.toLowerCase())
+            new RegExp(`\\b${word}\\b`, "i").test(feedDetails.message)
           )
         ) {
           intent = "purchase";

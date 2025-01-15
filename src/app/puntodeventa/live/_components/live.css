@@ -180,7 +180,7 @@ body {
 .comment-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .comment {
@@ -190,7 +190,7 @@ body {
 }
 
 .comment-message {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #555;
 }
 

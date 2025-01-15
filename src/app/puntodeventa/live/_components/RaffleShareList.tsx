@@ -82,30 +82,7 @@ const RaffleShareList: React.FC<WinnerPickerProps> = ({ postId }) => {
   }, [isSpinning, clients, totalNumber, calculateRotation]);
 
   return (
-    <div className="flex items-center">
-      <div className="w-auto flex mr-2 min-h-full">
-        <div className="text-black bg-white p-3 rounded-md h-full">
-          <h3 className="  text-2xl">Compartidos</h3>
-          <p className="text-center">{clients.length}</p>
-          <hr className="my-3 maxmd:my-1 " />
-          <div className="live-picker max-h-[60vh] overflow-y-auto">
-            {" "}
-            {[...clients].reverse().map((customer: any, index: number) => (
-              <div
-                key={customer.id}
-                className={`${
-                  winningNumber === (clients.length - index).toString()
-                    ? "bg-emerald-700 text-white text-2xl"
-                    : "text-xs "
-                }`}
-              >
-                {clients.length - index}.-
-                {customer.name !== "SUCURSAL" ? customer.name : ""}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    <div className="flex maxmd:flex-col items-center">
       <div className="w-full winner-picker flex items-center justify-center flex-col min-h-screen relative overflow-hidden">
         <button
           onClick={handleSpin}
